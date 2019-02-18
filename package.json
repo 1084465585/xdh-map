@@ -1,0 +1,75 @@
+{
+  "name": "xdh-map",
+  "version": "0.1.0",
+  "description": "基于Openlayers的Vue组件封装",
+  "private": false,
+  "main": "lib/xdhmap.common.min.js",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "lib": "vue-cli-service build --target lib --name xdhmap --dest lib packages/index.js"
+  },
+  "dependencies": {
+    "ol": "^5.3.0",
+    "vue": "^2.6.6"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.4.0",
+    "@vue/cli-plugin-eslint": "^3.4.0",
+    "@vue/cli-service": "^3.4.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.6"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "@vue/standard"
+    ],
+    "rules": {
+      "indent": 0,
+      "vue/script-indent": 0,
+      "vue/require-prop-type-constructor": 0,
+      "vue/no-use-v-if-with-v-for": 0,
+      "no-console": 0,
+      "no-trailing-spaces": 0,
+      "no-multiple-empty-lines": 0,
+      "no-extra-boolean-cast": 0,
+      "valid-jsdoc": 0,
+      "one-var": 0,
+      "semi": 0,
+      "no-new": 0,
+      "no-extra-semi": 0,
+      "keyword-spacing": 0,
+      "space-before-function-paren": 0,
+      "arrow-parens": 0,
+      "generator-star-spacing": 0,
+      "no-mixed-operators": 0,
+      "padded-blocks": 0,
+      "eol-last": 0,
+      "object-curly-spacing": 0
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}
