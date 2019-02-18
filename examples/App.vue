@@ -1,14 +1,15 @@
 <template>
-  <div>
-    <p>App</p>
-    <xdh-map></xdh-map>
-  </div>
+  <router-view></router-view>
 </template>
 
 <script>
   export default {}
 </script>
 
-<style scoped>
-
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 </style>
