@@ -49,6 +49,10 @@
       }
     },
     methods: {
+      /**
+       * 切换地图类型
+       * @param {string} type 地图类型，如： Baidu / Amap / OSM
+       */
       changeType(type) {
         if (!type) return
 

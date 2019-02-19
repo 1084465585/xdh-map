@@ -1,5 +1,5 @@
 import Map from './map'
-import './theme/index.scss'
+import '../theme/index.scss'
 
 const components = [
   Map

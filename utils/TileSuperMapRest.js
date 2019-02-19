@@ -153,7 +153,8 @@ function getMeterPerMapUnit(mapUnit) {
  * @extends {ol.source.TileImage}
  */
 export default class TileSuperMapRest extends TileImage {
-
+  
+  // eslint-disable-next-line
   constructor(options) {
     options = options || {};
     if (options.url === undefined) {
