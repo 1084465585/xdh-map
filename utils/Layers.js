@@ -97,7 +97,7 @@ function createFounderLayer(config) {
  *       })
  */
 export function createLayer(key = 'OSM') {
-  if (!validate(key)) return
+  if (!validate(key)) return null
   
   const config = getConfig(key)
   let layer = null
