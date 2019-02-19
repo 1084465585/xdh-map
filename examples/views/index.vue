@@ -1,8 +1,9 @@
 <template>
-  <div>Index</div>
+  <xdh-map></xdh-map>
 </template>
 
 <script>
+
   export default {}
 </script>
 

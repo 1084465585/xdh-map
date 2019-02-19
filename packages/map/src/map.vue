@@ -1,20 +1,20 @@
 <template>
-  <div class="xdh-map" ref="map"></div>
+  <div class="xdh-map" ref="map">
+    <div class="xdh-map__inner"></div>
+  </div>
 </template>
 
 <script>
   import Map from 'ol/Map';
   import View from 'ol/View';
-  import TileLayer from 'ol/layer/Tile';
-  import OSM from 'ol/source/OSM';
+  import {createLayer} from '../../../utils/layers'
 
   export default {
     name: 'XdhMap',
     mounted() {
-      new Map({
-        layers: [new TileLayer({
-          source: new OSM()
-        })],
+      const layer = createLayer('Amap')
+      const map = new Map({
+        layers: [layer],
         target: this.$refs.map,
         overlays: [],
         view: new View({
@@ -22,8 +22,10 @@
           center: [120, 30],
           zoom: 4
         })
-
       });
+      map.on('pointermove', (e) => {
+        console.log(e)
+      })
     }
   }
 </script>
