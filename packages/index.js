@@ -1,11 +1,12 @@
 import Map from './map'
 import Text from './text'
-
+import Circle from './circle'
 import '../theme/index.scss'
 
 const components = [
   Map,
-  Text
+  Text,
+  Circle
 ]
 
 const install = function (Vue) {

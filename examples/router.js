@@ -8,6 +8,10 @@ const router = new Router({
       {
         path: '/',
         component: () => import('./views/index.vue')
+      },
+      {
+        path: '/circle-view',
+        component: () => import('./views/circle-view.vue')
       }
     ]
   
