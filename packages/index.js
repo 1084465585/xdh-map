@@ -1,8 +1,11 @@
 import Map from './map'
+import Text from './text'
+
 import '../theme/index.scss'
 
 const components = [
-  Map
+  Map,
+  Text
 ]
 
 const install = function (Vue) {

@@ -107,6 +107,7 @@ export function createLayer(key = 'OSM') {
         source: new OSM()
       })
       break
+    // Google和高德的方式相同
     case 'Google':
     case 'Amap':
       layer = new TileLayer({
