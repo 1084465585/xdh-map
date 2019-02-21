@@ -14,6 +14,8 @@ export default {
         this.$parent.addFeature(this.feature)
         this.$parent.bindEvents(this)
       }
+      // 绘制完成事件
+      this.$emit('draw', this.feature)
     },
     update() {
       if (!this.feature) return
@@ -21,6 +23,9 @@ export default {
       const geometry = this.createGeometry()
       // 更新图形
       this.feature.setGeometry(geometry)
+      
+      // 更新完成事件
+      this.$emit('update', this.feature)
     },
     setStyle() {
       // createStyle 方法由父类实现
