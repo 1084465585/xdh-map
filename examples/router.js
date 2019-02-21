@@ -28,6 +28,10 @@ const router = new Router({
           {
             path: 'circle',
             component: () => import('./views/circle.vue')
+          },
+          {
+            path: 'line',
+            component: () => import('./views/line.vue')
           }
         ]
       }

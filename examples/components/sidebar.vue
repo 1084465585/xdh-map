@@ -17,6 +17,9 @@
       <dd>
         <router-link to="/circle">Circle</router-link>
       </dd>
+      <dd>
+        <router-link to="/line">Line</router-link>
+      </dd>
     </dl>
   </div>
 </template>
