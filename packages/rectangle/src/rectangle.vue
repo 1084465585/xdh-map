@@ -4,8 +4,8 @@
 
 <script>
   import Polygon from 'ol/geom/Polygon'
-  import {parse} from 'utils/style'
-  import FeatureMixin from 'utils/feature'
+  import {featureStyleRender} from 'utils/util'
+  import FeatureMixin from 'utils/mixins/feature'
   import BaseMixin from 'utils/mixins/base'
   import StrokeMixin from 'utils/mixins/stroke'
   import TextMixin from 'utils/mixins/text'
@@ -42,15 +42,7 @@
     },
     methods: {
       createStyle() {
-        return parse({
-          ...this.baseStyleRender(),
-          fill: {
-            className: 'Fill',
-            color: this.fill
-          },
-          stroke: this.strokeRender(),
-          text: this.textRender()
-        })
+        return featureStyleRender.call(this)
       },
       createGeometry() {
         return new Polygon([this.coordinates])

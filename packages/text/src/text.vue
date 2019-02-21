@@ -4,8 +4,8 @@
 
 <script>
   import {parse} from 'utils/style'
-  import FeatureMixin from 'utils/feature'
   import Point from 'ol/geom/Point'
+  import FeatureMixin from 'utils/mixins/feature'
   import BaseMixin from 'utils/mixins/base'
   import StrokeMixin from 'utils/mixins/stroke'
   import TextMixin from 'utils/mixins/text'
