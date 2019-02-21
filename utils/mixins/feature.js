@@ -6,10 +6,7 @@ export default {
       // createGeometry 方法由父类实现
       const geometry = this.createGeometry()
       this.feature = new Feature(geometry)
-      
-      // createStyle 方法由父类实现
-      const style = this.createStyle()
-      this.feature.setStyle(style)
+      this.setStyle()
       // 在图形实例记录当前vue组件的实例引用，方便从事件中取会vue组件实例
       this.feature._vm = this
       // 在图层上画图形
@@ -24,6 +21,11 @@ export default {
       const geometry = this.createGeometry()
       // 更新图形
       this.feature.setGeometry(geometry)
+    },
+    setStyle() {
+      // createStyle 方法由父类实现
+      const style = this.createStyle()
+      this.feature.setStyle(style)
     }
   },
   mounted() {
