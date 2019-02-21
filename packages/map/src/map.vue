@@ -205,7 +205,7 @@
        */
       zoomIn() {
         const view = this.map.getView()
-        this.zoom(view.getZoom() + 1)
+        this.zoomTo(view.getZoom() + 1)
       },
 
       /**
@@ -213,7 +213,7 @@
        */
       zoomOut() {
         const view = this.map.getView()
-        this.zoom(view.getZoom() - 1)
+        this.zoomTo(view.getZoom() - 1)
       },
       /**
        * 移动到指定经纬度居中

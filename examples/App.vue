@@ -12,4 +12,10 @@
     margin: 0;
     padding: 0;
   }
+
+  button, select {
+    height: 30px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
 </style>

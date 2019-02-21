@@ -10,6 +10,8 @@ export default {
       const geometry = this.createGeometry()
       this.feature = new Feature(geometry)
       this.feature.setStyle(style)
+      // 在图形实例记录当前vue组件的实例引用，方便从事件中取会vue组件实例
+      this.feature._vm = this
       // 在图层上画图形
       if (this.$parent && this.$parent.addFeature) {
         this.$parent.addFeature(this.feature)
@@ -43,6 +45,7 @@ export default {
   },
   beforeDestroy() {
     if (this.$parent && this.$parent.removeFeature && this.feature) {
+      this.feature._vm = null
       this.$parent.removeFeature(this.feature)
       this.$parent.unbindEvents(this)
     }
