@@ -7,8 +7,8 @@ import WMTS from 'ol/source/WMTS'
 import TileImage from 'ol/source/TileImage'
 import {get as getProj} from 'ol/proj'
 import {getWidth, getTopLeft} from 'ol/extent'
-import TileSuperMapRest from './TileSuperMapRest'
-import {validate, get as getConfig} from './LayerSetting'
+import TileSuperMapRest from './plugins/TileSuperMapRest'
+import {validate, get as getConfig} from './setting'
 
 
 // 创建百度地图图层
