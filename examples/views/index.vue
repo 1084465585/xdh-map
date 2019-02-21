@@ -2,7 +2,7 @@
   <xdh-map type="Baidu" :zoom="10" :min-zoom="2" :max-zoom="17" ref="map" v-if="active" @movestart="handleClick">
     <xdh-map-text v-for="(item, index) in locArray"
                   :key="index"
-                  :loc="item"
+                  :position="item"
                   text="阿迪所发"
                   color="red"
                   font="20px"
@@ -16,7 +16,7 @@
     <!--<xdh-map-rectangle :loc="[120,30]" :width="1" :height="1" background="rgba(0,0,0,0.5)" stroke-color="#000" :z-index="1" :stroke-width="4"></xdh-map-rectangle>-->
 
     <xdh-map-rectangle ref="rectangle"
-                       :loc="[120,30]"
+                       :position="position"
                        :width="1"
                        :height="1"
                        fill="red"
@@ -37,7 +37,8 @@
       return {
         total: 100,
         active: true,
-        locArray: []
+        locArray: [],
+        position: [120, 30]
       }
     },
     methods: {
@@ -53,7 +54,7 @@
       // console.log(this.$refs.map)
 
       setTimeout(() => {
-
+        this.position = [121, 30]
       }, 2000)
     }
   }

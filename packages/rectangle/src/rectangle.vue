@@ -15,15 +15,13 @@
     name: 'XdhMapRectangle',
     mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin],
     props: {
-      loc: {
-        type: Array,
-        required: true
-      },
+      // 宽度经纬度距离
       width: {
         type: Number,
         default: 0,
         required: true
       },
+      // 高度经纬度距离
       height: {
         type: Number,
         default: 0,
@@ -31,10 +29,6 @@
       }
     },
     computed: {
-      coordinate() {
-        // 转换坐标的数组类型
-        return this.loc.map(n => Number.parseFloat(n))
-      },
       coordinates() {
         const loc = this.coordinate
         return [

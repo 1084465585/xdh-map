@@ -29,15 +29,9 @@
     mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, factory(options)],
     props: {
       // 经纬度坐标
-      loc: {
+      position: {
         type: Array,
         required: true
-      }
-    },
-    computed: {
-      coordinate() {
-        // 转换坐标的数组类型
-        return this.loc.map(n => Number.parseFloat(n))
       }
     },
     watch: {
