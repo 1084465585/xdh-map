@@ -1,19 +1,17 @@
 <template>
-  <div></div>
+  <xdh-map-polygon v-bind="$attrs" :coordinates="coordinates"></xdh-map-polygon>
 </template>
 
 <script>
-  import Polygon from 'ol/geom/Polygon'
-  import {featureStyleRender} from 'utils/util'
-  import FeatureMixin from 'utils/mixins/feature'
-  import BaseMixin from 'utils/mixins/base'
-  import StrokeMixin from 'utils/mixins/stroke'
-  import TextMixin from 'utils/mixins/text'
+
+  import XdhMapPolygon from '../../polygon/src/polygon'
 
   // 左上角为开始点
   export default {
     name: 'XdhMapRectangle',
-    mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin],
+    components: {
+      XdhMapPolygon
+    },
     props: {
       // 宽度经纬度距离
       width: {
@@ -30,7 +28,7 @@
     },
     computed: {
       coordinates() {
-        const loc = this.coordinate
+        const loc = (this.$attrs.position || []).map(n => Number.parseFloat(n))
         return [
           loc,
           [loc[0] + this.width, loc[1]],
@@ -38,14 +36,6 @@
           [loc[0], loc[1] - this.height],
           loc
         ]
-      }
-    },
-    methods: {
-      createStyle() {
-        return featureStyleRender.call(this)
-      },
-      createGeometry() {
-        return new Polygon([this.coordinates])
       }
     }
   }

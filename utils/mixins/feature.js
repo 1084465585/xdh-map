@@ -2,6 +2,13 @@ import Feature from 'ol/Feature'
 
 export default {
   methods: {
+    getParent() {
+      let parent = this.$parent
+      while (parent && !parent.isMap) {
+        parent = parent.$parent
+      }
+      return parent
+    },
     draw() {
       // createGeometry 方法由父类实现
       const geometry = this.createGeometry()
@@ -10,9 +17,9 @@ export default {
       // 在图形实例记录当前vue组件的实例引用，方便从事件中取会vue组件实例
       this.feature._vm = this
       // 在图层上画图形
-      if (this.$parent && this.$parent.addFeature) {
-        this.$parent.addFeature(this.feature)
-        this.$parent.bindEvents(this)
+      if (this.parent) {
+        this.parent.addFeature(this.feature)
+        this.parent.bindEvents(this)
       }
       // 绘制完成事件
       this.$emit('draw', this.feature)
@@ -33,6 +40,10 @@ export default {
       this.feature.setStyle(style)
     }
   },
+  created() {
+    // 获取地图组件实例
+    this.parent = this.getParent()
+  },
   mounted() {
     // 文本组件不需要生成html节点
     if (this.$el && this.$el.parentNode) {
@@ -40,21 +51,21 @@ export default {
     }
     
     // 先检查父组件的地图是否初始化完成
-    if (this.$parent && this.$parent.map) {
+    if (this.parent && this.parent.map) {
       this.draw()
       return
     }
     // 父组件地图未初始化，侦听完成事件
-    this.$parent.$on('ready', map => {
+    this.parent.$on('ready', map => {
       this.draw()
     })
-    
+
   },
   beforeDestroy() {
-    if (this.$parent && this.$parent.removeFeature && this.feature) {
+    if (this.parent && this.feature) {
       this.feature._vm = null
-      this.$parent.removeFeature(this.feature)
-      this.$parent.unbindEvents(this)
+      this.parent.removeFeature(this.feature)
+      this.parent.unbindEvents(this)
     }
   }
   

@@ -227,6 +227,9 @@
       }
     },
     created() {
+      // 标记是地图组件
+      this.isMap = true
+
       /**
        * 图形绑定的事件集合，存储格式：
        * { click: [{type, feature, listener, uid}, ...], movestart: [..]}
