@@ -31,7 +31,8 @@ module.exports = {
     resolve: {
       alias: {
         'utils': resolve('utils'),
-        'A': resolve('packages'),
+        'packages': resolve('packages'),
+        'sources': resolve('sources'),
         '@': resolve('src'),
         'vue$': process.env.NODE_ENV === 'production' ? 'vue' : 'vue/dist/vue.esm.js'
       }

@@ -2,9 +2,12 @@
   <div>
     <example>
       <xdh-map :zoom="8">
-        <xdh-map-line :coordinates="coordinates"
-                      stroke-color="red"
-                      :stroke-width="5"></xdh-map-line>
+        <xdh-map-line ref="line"
+                      :coordinates="coordinates"
+                      :arrow="arrow"
+                      :arrow-each="true"
+                      stroke-color="#000"
+                      :stroke-width="2"></xdh-map-line>
 
 
       </xdh-map>
@@ -13,9 +16,11 @@
 </template>
 
 <script>
+
   export default {
     data() {
       return {
+        arrow: require('../../sources/panE.png'),
         coordinates: [
           [120, 30],
           [120, 29],
@@ -23,6 +28,8 @@
           [118, 30.5]
         ]
       }
+    },
+    mounted() {
     }
   }
 </script>

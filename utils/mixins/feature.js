@@ -3,12 +3,12 @@ import Feature from 'ol/Feature'
 export default {
   methods: {
     draw() {
-      // createStyle 方法由父类实现
-      const style = this.createStyle()
-      
       // createGeometry 方法由父类实现
       const geometry = this.createGeometry()
       this.feature = new Feature(geometry)
+      
+      // createStyle 方法由父类实现
+      const style = this.createStyle()
       this.feature.setStyle(style)
       // 在图形实例记录当前vue组件的实例引用，方便从事件中取会vue组件实例
       this.feature._vm = this
