@@ -9,8 +9,8 @@
   import View from 'ol/View'
   import VectorLayer from 'ol/layer/Vector'
   import VectorSource from 'ol/source/Vector'
-  import {set as setLayerConfig} from '../../../utils/LayerSetting'
-  import {createLayer} from '../../../utils/Layers'
+  import {set as setLayerConfig} from 'utils/setting'
+  import {createLayer} from 'utils/layers'
   /*
    地图支持以下事件：
     change        (module:ol/events/Event~Event)    - Generic change event. Triggered when the revision counter is increased.change:layerGroup (module:ol/Object.ObjectEvent)
@@ -205,7 +205,7 @@
        */
       zoomIn() {
         const view = this.map.getView()
-        this.zoom(view.getZoom() + 1)
+        this.zoomTo(view.getZoom() + 1)
       },
 
       /**
@@ -213,7 +213,7 @@
        */
       zoomOut() {
         const view = this.map.getView()
-        this.zoom(view.getZoom() - 1)
+        this.zoomTo(view.getZoom() - 1)
       },
       /**
        * 移动到指定经纬度居中

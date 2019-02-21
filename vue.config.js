@@ -1,3 +1,9 @@
+const path = require('path')
+
+function resolve(dir) {
+  return path.join(__dirname, dir)
+}
+
 module.exports = {
   pages: {
     index: {
@@ -16,5 +22,19 @@ module.exports = {
       .use('babel')
       .loader('babel-loader')
       .tap(options => options)
+  },
+  configureWebpack: {
+    // 不显示文件过大优化建议
+    performance: {
+      hints: false
+    },
+    resolve: {
+      alias: {
+        'utils': resolve('utils'),
+        'A': resolve('packages'),
+        '@': resolve('src'),
+        'vue$': process.env.NODE_ENV === 'production' ? 'vue' : 'vue/dist/vue.esm.js'
+      }
+    }
   }
 }

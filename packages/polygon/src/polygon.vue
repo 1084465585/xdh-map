@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import Circle from 'ol/geom/Circle'
+  import Polygon from 'ol/geom/Polygon'
   import {featureStyleRender} from 'utils/util'
   import FeatureMixin from 'utils/mixins/feature'
   import BaseMixin from 'utils/mixins/base'
@@ -11,17 +11,19 @@
   import TextMixin from 'utils/mixins/text'
 
   export default {
-    name: 'XdhMapCircle',
+    name: 'XdhMapPolygon',
     mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin],
     props: {
-      // 半径
-      radius: {
-        type: Number,
-        required: true
+      // 坐标数组
+      coordinates: {
+        type: Array,
+        default() {
+          return []
+        }
       }
     },
     watch: {
-      radius() {
+      coordinates() {
         this.update()
       }
     },
@@ -30,7 +32,7 @@
         return featureStyleRender.call(this)
       },
       createGeometry() {
-        return new Circle(this.coordinate, this.radius)
+        return new Polygon([this.coordinates])
       }
     }
   }
