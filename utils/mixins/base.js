@@ -3,8 +3,11 @@
  */
 export default {
   props: {
+    // 经纬度坐标
     position: Array,
+    // 层级
     zIndex: Number,
+    // 填充颜色
     fill: String
   },
   watch: {

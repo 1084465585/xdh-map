@@ -26,6 +26,10 @@
                        color="#fff"
                        :stroke-width="4"></xdh-map-rectangle>
 
+    <xdh-map-polygon></xdh-map-polygon>
+
+    <xdh-map-polygon :coordinates="coordinates" fill="blue" text="测试文字"></xdh-map-polygon>
+
 
   </xdh-map>
 </template>
@@ -38,7 +42,10 @@
         total: 100,
         active: true,
         locArray: [],
-        position: [120, 30]
+        position: [120, 30],
+        coordinates: [
+
+        ]
       }
     },
     methods: {
@@ -54,7 +61,15 @@
       // console.log(this.$refs.map)
 
       setTimeout(() => {
-        this.position = [121, 30]
+        // this.position = [121, 30]
+        this.coordinates = [
+          [120, 30],
+          [120.2, 30.1],
+          [120.05, 29],
+          [120.1, 29.3],
+          [120, 30]
+        ]
+
       }, 2000)
     }
   }

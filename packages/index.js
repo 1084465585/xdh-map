@@ -1,12 +1,14 @@
 import Map from './map'
 import Text from './text'
 import Rectangle from './rectangle'
+import Polygon from './polygon'
 import '../theme/index.scss'
 
 const components = [
   Map,
   Text,
-  Rectangle
+  Rectangle,
+  Polygon
 ]
 
 const install = function (Vue) {
