@@ -24,6 +24,10 @@ const router = new Router({
           {
             path: 'polygon',
             component: () => import('./views/polygon.vue')
+          },
+          {
+            path: 'circle',
+            component: () => import('./views/circle.vue')
           }
         ]
       }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <example>
-      <xdh-map zoom="8">
+      <xdh-map :zoom="8">
         <xdh-map-polygon :coordinates="coordinates"
                          fill="#f00"
                          stroke-color="yellow"

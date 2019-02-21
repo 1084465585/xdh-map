@@ -14,6 +14,9 @@
       <dd>
         <router-link to="/polygon">Polygon</router-link>
       </dd>
+      <dd>
+        <router-link to="/circle">Circle</router-link>
+      </dd>
     </dl>
   </div>
 </template>
@@ -29,6 +32,13 @@
     background: lightgray;
     height: 100%;
     overflow: hidden;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    /deep/ .router-link-active {
+      color: red;
+    }
   }
 
   .list {

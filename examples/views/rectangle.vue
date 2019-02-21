@@ -5,7 +5,7 @@
         <xdh-map-rectangle :position="[120, 30]"
                            fill="#f00"
                            :width="1"
-                           height="1"
+                           :height="1"
                            text="文字文字"
                            color="#fff"
                            font="20px"

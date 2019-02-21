@@ -27,10 +27,10 @@
   }
 
   .content {
-    float: left;
-    width: calc(100% - 200px);
+    padding-left: 200px;
   }
-  .inner{
+
+  .inner {
     padding: 20px;
   }
 </style>
