@@ -20,6 +20,8 @@
       <dd>
         <router-link to="/line">Line</router-link>
       </dd>
+      <dt>工具组件</dt>
+      <dt>动效组件</dt>
     </dl>
   </div>
 </template>
@@ -50,7 +52,7 @@
     line-height: 1.8em;
     dt {
       margin-top: 10px;
-      font-size: 18px;
+      font-size: 16px;
       color: #666;
     }
     dd {
