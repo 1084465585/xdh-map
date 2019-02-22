@@ -10,6 +10,7 @@
   import StrokeMixin from 'utils/mixins/stroke'
   import TextMixin from 'utils/mixins/text'
   import factory from 'utils/mixins/factory'
+  import {mixProps} from 'utils/util'
 
   const options = {
     maxAngle: Number,
@@ -23,26 +24,22 @@
     textBaseline: String,
     padding: Array
   }
+  const factoryMixin = factory(options)
+
+  const vueProps = {
+    // 经纬度坐标
+    position: {
+      type: Array,
+      required: true
+    }
+  }
+
+  export const props = mixProps({props: vueProps}, BaseMixin, StrokeMixin, TextMixin, factoryMixin)
 
   export default {
     name: 'XdhMapText',
-    mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, factory(options)],
-    props: {
-      // 经纬度坐标
-      position: {
-        type: Array,
-        required: true
-      }
-    },
-    watch: {
-      /**
-       * 文本变化更新图形样式
-       */
-      content() {
-        const style = this.getStyle()
-        this.feature && this.feature.setStyle(style)
-      }
-    },
+    mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, factoryMixin],
+    props: props,
     methods: {
       createStyle() {
         return parse({

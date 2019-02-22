@@ -1,5 +1,7 @@
 import {parse} from './style'
 
+const BASE_TYPES = [Array, String, Boolean, Object, Function]
+
 /**
  * capitalize('fooBar'); // 'FooBar'
  * capitalize('fooBar', true); // 'Foobar'
@@ -70,5 +72,20 @@ export function featureStyleRender() {
     stroke: this.strokeRender(),
     text: this.textRender()
   })
+}
+
+/**
+ * 合并组件的props
+ * @return {any}
+ */
+export function mixProps() {
+  const propsArray = Array.from(arguments).map(item => item.props || {})
+  const props = Object.assign({}, ...propsArray)
+  const fixedProps = Object.create(null)
+  Object.entries(props).forEach(item => {
+    const key = item[0]
+    fixedProps[key] = BASE_TYPES.includes(item[1]) ? {type: item[1]} : item[1]
+  })
+  return fixedProps
 }
 
