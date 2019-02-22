@@ -5,7 +5,7 @@ function resolve(dir) {
 }
 
 module.exports = {
-  publicPath: '/dist/',
+  publicPath: '/xdh-map/',
   pages: {
     index: {
       entry: 'examples/main.js',
