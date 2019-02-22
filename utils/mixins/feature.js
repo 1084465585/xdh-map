@@ -37,7 +37,7 @@ export default {
     setStyle() {
       // createStyle 方法由父类实现
       const style = this.createStyle()
-      this.feature.setStyle(style)
+      this.feature && this.feature.setStyle(style)
     }
   },
   created() {
