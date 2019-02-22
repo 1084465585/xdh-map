@@ -1,5 +1,5 @@
 <template>
-  <xdh-map-polygon v-bind="$props" :coordinates="coords"></xdh-map-polygon>
+  <xdh-map-polygon ref="polygon" v-bind="$props" :coordinates="coords" @draw="handleDraw"></xdh-map-polygon>
 </template>
 
 <script>
@@ -44,6 +44,11 @@
           [loc[0], loc[1] - this.height],
           loc
         ]
+      }
+    },
+    methods: {
+      handleDraw(feature) {
+        this.feature = feature
       }
     }
   }

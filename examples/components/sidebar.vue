@@ -21,6 +21,9 @@
         <router-link to="/line">Line</router-link>
       </dd>
       <dt>控件组件</dt>
+      <dd>
+        <router-link to="/pointer">Pointer</router-link>
+      </dd>
       <dt>动效组件</dt>
       <dt>性能测试</dt>
       <dd>
