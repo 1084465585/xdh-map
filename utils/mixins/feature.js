@@ -3,6 +3,9 @@ import {getParent, mapReady} from 'utils/util'
 
 export default {
   methods: {
+    /**
+     * 在地图上画图形
+     */
     draw() {
       // createGeometry 方法由父类实现
       const geometry = this.createGeometry()
@@ -18,6 +21,9 @@ export default {
       // 绘制完成事件
       this.$emit('draw', this.feature)
     },
+    /**
+     * 更新图形对象，不包括图形样式
+     */
     update() {
       if (!this.feature) return
       
@@ -28,10 +34,20 @@ export default {
       // 更新完成事件
       this.$emit('update', this.feature)
     },
+    /**
+     * 更新图形样式
+     */
     setStyle() {
       // createStyle 方法由父类实现
       const style = this.createStyle()
       this.feature && this.feature.setStyle(style)
+    },
+    /**
+     * 重画图形，包括图形对象和样式
+     */
+    redraw() {
+      this.update()
+      this.setStyle()
     }
   },
   created() {
