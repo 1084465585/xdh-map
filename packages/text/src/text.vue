@@ -9,6 +9,7 @@
   import BaseMixin from 'utils/mixins/base'
   import StrokeMixin from 'utils/mixins/stroke'
   import TextMixin from 'utils/mixins/text'
+  import CleanMixin from 'utils/mixins/clean'
   import factory from 'utils/mixins/factory'
   import {mixProps} from 'utils/util'
 
@@ -38,7 +39,7 @@
 
   export default {
     name: 'XdhMapText',
-    mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, factoryMixin],
+    mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, factoryMixin, CleanMixin],
     props: props,
     methods: {
       createStyle() {

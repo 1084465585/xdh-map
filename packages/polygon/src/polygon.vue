@@ -9,6 +9,7 @@
   import BaseMixin from 'utils/mixins/base'
   import StrokeMixin from 'utils/mixins/stroke'
   import TextMixin from 'utils/mixins/text'
+  import CleanMixin from 'utils/mixins/clean'
 
   const vueProps = {
     // 坐标数组
@@ -27,7 +28,7 @@
 
   export default {
     name: 'XdhMapPolygon',
-    mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin],
+    mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, CleanMixin],
     props: props,
     watch: {
       coordinates() {

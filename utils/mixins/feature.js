@@ -45,11 +45,6 @@ export default {
     this.parent = this.getParent()
   },
   mounted() {
-    // 文本组件不需要生成html节点
-    if (this.$el && this.$el.parentNode) {
-      this.$el.parentNode.removeChild(this.$el)
-    }
-    
     // 先检查父组件的地图是否初始化完成
     if (this.parent && this.parent.map) {
       this.draw()
@@ -59,11 +54,12 @@ export default {
     this.parent.$on('ready', map => {
       this.draw()
     })
-
+    
   },
   beforeDestroy() {
     if (this.parent && this.feature) {
       this.feature._vm = null
+      this.feature.disposeInternal()
       this.parent.removeFeature(this.feature)
       this.parent.unbindEvents(this)
     }

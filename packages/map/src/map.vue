@@ -180,6 +180,7 @@
         const tileLayer = layers.find(layer => layer.type === 'TILE')
         if (tileLayer) {
           this.map.removeLayer(tileLayer)
+          tileLayer.disposeInternal()
         }
         this.map.addLayer(createLayer(type))
       },

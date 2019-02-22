@@ -20,8 +20,12 @@
       <dd>
         <router-link to="/line">Line</router-link>
       </dd>
-      <dt>工具组件</dt>
+      <dt>控件组件</dt>
       <dt>动效组件</dt>
+      <dt>性能测试</dt>
+      <dd>
+        <router-link to="/performance">Performance</router-link>
+      </dd>
     </dl>
   </div>
 </template>

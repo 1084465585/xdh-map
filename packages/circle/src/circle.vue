@@ -9,6 +9,7 @@
   import BaseMixin from 'utils/mixins/base'
   import StrokeMixin from 'utils/mixins/stroke'
   import TextMixin from 'utils/mixins/text'
+  import CleanMixin from 'utils/mixins/clean'
 
   const vueProps = {
     // 半径
@@ -22,7 +23,7 @@
 
   export default {
     name: 'XdhMapCircle',
-    mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin],
+    mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, CleanMixin],
     props: props,
     watch: {
       radius() {

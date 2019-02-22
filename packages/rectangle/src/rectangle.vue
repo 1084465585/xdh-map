@@ -5,6 +5,7 @@
 <script>
 
   import XdhMapPolygon from '../../polygon/src/polygon'
+  import CleanMixin from 'utils/mixins/clean'
   import {mixProps} from 'utils/util'
 
   const vueProps = {
@@ -28,6 +29,7 @@
   // 左上角为开始点
   export default {
     name: 'XdhMapRectangle',
+    mixins: [CleanMixin],
     components: {
       XdhMapPolygon
     },

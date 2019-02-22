@@ -32,6 +32,10 @@ const router = new Router({
           {
             path: 'line',
             component: () => import('./views/line.vue')
+          },
+          {
+            path: 'performance',
+            component: () => import('./views/performance.vue')
           }
         ]
       }
