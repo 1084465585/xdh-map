@@ -89,3 +89,31 @@ export function mixProps() {
   return fixedProps
 }
 
+/**
+ * 获取组件的父级的地图组件
+ * @return {*|Vue}
+ */
+export function getParent() {
+  let parent = this.$parent
+  while (parent && !parent.isMap) {
+    parent = parent.$parent
+  }
+  return parent
+}
+
+/**
+ * 地图初始化完成回调
+ * @param callback
+ */
+export function mapReady(callback) {
+  // 先检查父组件的地图是否初始化完成
+  if (this.parent && this.parent.map) {
+    callback(this.parent.map, this.parent)
+    return
+  }
+  // 父组件地图未初始化，侦听完成事件
+  this.parent.$once('ready', (map, vm) => {
+    callback(map, vm)
+  })
+}
+

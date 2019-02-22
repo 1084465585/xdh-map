@@ -1,14 +1,8 @@
 import Feature from 'ol/Feature'
+import {getParent, mapReady} from 'utils/util'
 
 export default {
   methods: {
-    getParent() {
-      let parent = this.$parent
-      while (parent && !parent.isMap) {
-        parent = parent.$parent
-      }
-      return parent
-    },
     draw() {
       // createGeometry 方法由父类实现
       const geometry = this.createGeometry()
@@ -42,19 +36,10 @@ export default {
   },
   created() {
     // 获取地图组件实例
-    this.parent = this.getParent()
+    this.parent = getParent.call(this)
   },
   mounted() {
-    // 先检查父组件的地图是否初始化完成
-    if (this.parent && this.parent.map) {
-      this.draw()
-      return
-    }
-    // 父组件地图未初始化，侦听完成事件
-    this.parent.$on('ready', map => {
-      this.draw()
-    })
-    
+    mapReady.call(this, this.draw)
   },
   beforeDestroy() {
     if (this.parent && this.feature) {

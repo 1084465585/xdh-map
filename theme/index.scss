@@ -12,3 +12,65 @@
   position: relative;
 
 }
+
+.xdh-map-placement {
+  position: absolute;
+  &.left-top {
+    left: 0;
+    top: 0;
+  }
+  &.center-top {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+  }
+  &.right-top {
+    right: 0;
+    top: 0;
+  }
+  &.left-center {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  &.center-center {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  &.right-center {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  &.left-bottom {
+    left: 0;
+    bottom: 0;
+  }
+  &.center-bottom {
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+  }
+  &.right-bottom {
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.xdh-map-pointer {
+  &__btn {
+    font-size: 13px;
+    background: $--pointer-bg;
+    border-radius: 4px;
+    color: $--pointer-color;
+    padding: 5px;
+    text-align: center;
+    min-width: 150px;
+    cursor: pointer;
+    &.is-lock {
+      background: $--pointer-lock-bg;
+      color: $--pointer-lock-color;
+    }
+  }
+}
