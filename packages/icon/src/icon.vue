@@ -1,6 +1,6 @@
 <template>
   <xdh-map-html :position="position">
-    <i :class="icon"></i>
+    <i :class="icon" v-on="$listeners"></i>
   </xdh-map-html>
 </template>
 

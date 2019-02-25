@@ -79,8 +79,8 @@
   font-size: 14px;
   position: relative;
   min-width: 120px;
-  background: #fff;
-  color: #666;
+  background: $--popup-bg;
+  color: $--popup-color;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, .5);
   border-radius: 2px;
 
@@ -90,7 +90,7 @@
     width: 0;
     height: 0;
     border: 8px solid transparent;
-    border-top: 12px solid #fff;
+    border-top: 12px solid $--popup-bg;
     position: absolute;
     left: 50%;
     bottom: 0;
@@ -103,7 +103,7 @@
 
   &__title {
     height: 30px;
-    background: #ddd;
+    background: $--popup-title-bg;
     line-height: 30px;
     border-radius: 2px 2px 0 0;
     padding: 0 5px;
@@ -128,10 +128,10 @@
   }
 
   &.is-dark {
-    background: rgba(0, 0, 0, .8);
-    color: #eee;
+    background: $--popup-bg-dark;
+    color: $--popup-color-dark;
     .xdh-map-popup__title {
-      background: rgba(0, 0, 0, .9);
+      background: $--popup-title-bg-dark;
     }
     .xdh-map-popup__close {
       background: url(../sources/popup/close_dark.png);
