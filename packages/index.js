@@ -9,6 +9,7 @@ import Pointer from './pointer'
 import Marker from './marker'
 import Html from './html'
 import Icon from './icon'
+import Popup from './popup'
 import '../theme/index.scss'
 
 const components = [
@@ -22,7 +23,8 @@ const components = [
   Pointer,
   Marker,
   Html,
-  Icon
+  Icon,
+  Popup
 ]
 
 const install = function (Vue) {

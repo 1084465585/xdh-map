@@ -29,6 +29,9 @@
       <dd>
         <router-link to="/icon">Icon</router-link>
       </dd>
+      <dd>
+        <router-link to="/popup">Popup</router-link>
+      </dd>
       <dt>控件组件</dt>
       <dd>
         <router-link to="/pointer">Pointer</router-link>

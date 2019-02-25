@@ -11,12 +11,30 @@
   export default {
     name: 'XdhMapHtml',
     props: {
+      positioning: {
+        type: String,
+        default: 'center-center',
+        validator(val) {
+          return ['bottom-left',
+            'bottom-center',
+            'bottom-right',
+            'center-left',
+            'center-center',
+            'center-right',
+            'top-left',
+            'top-center',
+            'top-right'].includes(val)
+        }
+      },
       // 显示位置
       position: Array,
       // 位置偏移
       offset: Array,
       // 是否阻止时间冒泡，默认 true
-      stopEvent: Boolean,
+      stopEvent: {
+        type: Boolean,
+        default: true
+      },
       insertFirst: Boolean,
       // CSS class name
       className: String
@@ -33,8 +51,8 @@
         this.overlay = new Overlay(options)
         map.addOverlay(this.overlay)
       },
-      show() {
-        this.overlay && this.overlay.setPosition(this.position)
+      show(position) {
+        this.overlay && this.overlay.setPosition(position || this.position)
       },
       hide() {
         this.overlay && this.overlay.setPosition(null)
