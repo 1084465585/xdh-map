@@ -1,53 +1,47 @@
 <template>
-  <div class="xdh-map-text hidden"></div>
+  <div></div>
 </template>
 
 <script>
-  import {parse} from 'utils/style'
   import Point from 'ol/geom/Point'
+  import {mixProps} from 'utils/util'
+  import {parse} from 'utils/style'
   import FeatureMixin from 'utils/mixins/feature'
   import BaseMixin from 'utils/mixins/base'
   import StrokeMixin from 'utils/mixins/stroke'
   import TextMixin from 'utils/mixins/text'
-  import CleanMixin from 'utils/mixins/clean'
   import factory from 'utils/mixins/factory'
-  import {mixProps} from 'utils/util'
+  import CleanMixin from 'utils/mixins/clean'
 
   const options = {
-    maxAngle: Number,
-    offsetX: Number,
-    offsetY: Number,
-    overflow: Boolean,
+    anchor: Array,
+    crossOrigin: String,
+    offset: Array,
+    opacity: Number,
     scale: Number,
     rotateWithView: Boolean,
     rotation: Number,
-    textAlign: String,
-    textBaseline: String,
-    padding: Array
+    src: String
   }
   const factoryMixin = factory(options)
 
-  const vueProps = {
-    // 经纬度坐标
-    position: {
-      type: Array,
-      required: true
-    }
-  }
-
-  export const props = mixProps(BaseMixin, StrokeMixin, TextMixin, factoryMixin, {props: vueProps})
+  export const props = mixProps(BaseMixin, StrokeMixin, TextMixin, factoryMixin)
 
   export default {
-    name: 'XdhMapText',
+    name: 'XdhMapMarker',
     mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, factoryMixin, CleanMixin],
     props: props,
+    watch: {
+      radius() {
+        this.update()
+      }
+    },
     methods: {
       createStyle() {
         return parse({
           ...this.baseStyleRender(),
-          text: {
-            ...this.textRender(),
-            backgroundStroke: this.strokeRender(),
+          image: {
+            className: 'Icon',
             ...this.styleFactory()
           }
         })
@@ -55,7 +49,6 @@
       createGeometry() {
         return new Point(this.coordinate)
       }
-
     }
   }
 </script>

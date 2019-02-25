@@ -6,6 +6,7 @@ import Circle from './circle'
 import Line from './line'
 import Placement from './placement'
 import Pointer from './pointer'
+import Marker from './marker'
 import '../theme/index.scss'
 
 const components = [
@@ -16,7 +17,8 @@ const components = [
   Circle,
   Line,
   Placement,
-  Pointer
+  Pointer,
+  Marker
 ]
 
 const install = function (Vue) {

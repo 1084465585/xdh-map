@@ -20,7 +20,7 @@
   export default {
     data() {
       return {
-        arrow: require('../../sources/panE.png'),
+        arrow: require('../../sources/arrows/black.png'),
         coordinates: [
           [120, 30],
           [120, 29],

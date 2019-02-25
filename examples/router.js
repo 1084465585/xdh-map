@@ -40,6 +40,10 @@ const router = new Router({
           {
             path: 'performance',
             component: () => import('./views/performance.vue')
+          },
+          {
+            path: 'marker',
+            component: () => import('./views/marker.vue')
           }
         ]
       }

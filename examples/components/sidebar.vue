@@ -20,6 +20,9 @@
       <dd>
         <router-link to="/line">Line</router-link>
       </dd>
+      <dd>
+        <router-link to="/marker">Marker</router-link>
+      </dd>
       <dt>控件组件</dt>
       <dd>
         <router-link to="/pointer">Pointer</router-link>
