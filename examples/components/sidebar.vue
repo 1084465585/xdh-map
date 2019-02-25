@@ -23,6 +23,12 @@
       <dd>
         <router-link to="/marker">Marker</router-link>
       </dd>
+      <dd>
+        <router-link to="/html">Html</router-link>
+      </dd>
+      <dd>
+        <router-link to="/icon">Icon</router-link>
+      </dd>
       <dt>控件组件</dt>
       <dd>
         <router-link to="/pointer">Pointer</router-link>

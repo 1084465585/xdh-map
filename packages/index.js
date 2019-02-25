@@ -7,6 +7,8 @@ import Line from './line'
 import Placement from './placement'
 import Pointer from './pointer'
 import Marker from './marker'
+import Html from './html'
+import Icon from './icon'
 import '../theme/index.scss'
 
 const components = [
@@ -18,7 +20,9 @@ const components = [
   Line,
   Placement,
   Pointer,
-  Marker
+  Marker,
+  Html,
+  Icon
 ]
 
 const install = function (Vue) {

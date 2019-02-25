@@ -44,6 +44,14 @@ const router = new Router({
           {
             path: 'marker',
             component: () => import('./views/marker.vue')
+          },
+          {
+            path: 'html',
+            component: () => import('./views/html.vue')
+          },
+          {
+            path: 'icon',
+            component: () => import('./views/icon.vue')
           }
         ]
       }
