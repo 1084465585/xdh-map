@@ -56,6 +56,10 @@ const router = new Router({
           {
             path: 'popup',
             component: () => import('./views/popup.vue')
+          },
+          {
+            path: 'heat',
+            component: () => import('./views/heat.vue')
           }
         ]
       }

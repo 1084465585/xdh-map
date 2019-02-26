@@ -10,6 +10,7 @@ import Marker from './marker'
 import Html from './html'
 import Icon from './icon'
 import Popup from './popup'
+import Heat from './heat'
 import '../theme/index.scss'
 
 const components = [
@@ -24,7 +25,8 @@ const components = [
   Marker,
   Html,
   Icon,
-  Popup
+  Popup,
+  Heat
 ]
 
 const install = function (Vue) {
