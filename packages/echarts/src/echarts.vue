@@ -25,7 +25,26 @@
       }
     },
     methods: {
+      // 由于Openlayers与Echarts的click事件有冲突，Echarts触发不了click事件, 需要用mouse事件触发click
+      fixClickEvent() {
+        if (!this.map || !this.chart) return
 
+        this.proxyMapHandleClick = e => {
+          if (this.eventData) {
+            this.$emit('click', this.eventData)
+          }
+        }
+        this.proxyChartMouseOver = e => {
+          this.eventData = e
+        }
+        this.proxyChartMouseOut = e => {
+          this.eventData = null
+        }
+
+        this.map.on('click', this.proxyMapHandleClick)
+        this.chart.on('mouseover', this.proxyChartMouseOver)
+        this.chart.on('mouseout', this.proxyChartMouseOut)
+      },
       postRender() {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
@@ -62,8 +81,10 @@
           zIndex: 999,
           position: 'absolute'
         })
+
         this.container = div
         map.getViewport().appendChild(div)
+
         return this.container
       },
       registerCoordinateSystem() {
@@ -75,6 +96,10 @@
       createChart(el) {
         if (this.chart) return this.chart
         this.chart = this.lib.init(el)
+        this.fixClickEvent()
+        Object.keys(this.$listeners).forEach(key => {
+          this.chart.on(key, this.$listeners[key])
+        })
         return this.chart
       },
       ready(map) {
@@ -89,7 +114,13 @@
     },
     beforeDestroy() {
       clearTimeout(this.timer)
+
       if (this.chart) {
+        this.chart.off('mouseover')
+        this.chart.off('mouseout')
+        Object.keys(this.$listeners).forEach(key => {
+          this.chart.off(key)
+        })
         this.chart.dispose()
       }
       if (this.container) {
@@ -97,6 +128,7 @@
         this.container = null
       }
       if (this.map) {
+        this.map.un('click', this.proxyMapHandleClick)
         this.map.un('postrender', this.postRender)
       }
 

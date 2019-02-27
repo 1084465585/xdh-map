@@ -14,7 +14,7 @@
       <xdh-map-popup :position="[120.4, 30]"
                      :offset="[0,-30]"
                      title="我是标题文字"
-                     :stop-event="true"
+                     :stop-event="false"
                      :closable="false"
                      :close-on-click="false"
                      theme="dark"
