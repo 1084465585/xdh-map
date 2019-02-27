@@ -1,7 +1,7 @@
 <template>
   <div>
     <example>
-      <xdh-map :zoom="4" type="Amap">
+      <xdh-map :zoom="4" type="Baidu">
         <xdh-map-echarts :lib="lib" :options="options"></xdh-map-echarts>
       </xdh-map>
     </example>
