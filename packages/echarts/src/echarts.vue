@@ -20,11 +20,8 @@
       options: Object
     },
     watch: {
-      options: {
-        deep: true,
-        handler() {
-          this.postRender()
-        }
+      options() {
+        this.postRender()
       }
     },
     methods: {
