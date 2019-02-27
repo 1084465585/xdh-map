@@ -37,7 +37,7 @@
           const chart = this.createChart(el)
           chart.setOption(this.options || {})
           this.resize(chart)
-        }, 200)
+        }, 100)
       },
       resize(chart) {
         if (!this.container || !this.map) return
