@@ -21,8 +21,7 @@ export default {
      * 文本变化更新图形样式
      */
     text() {
-      const style = this.getStyle()
-      this.feature && this.feature.setStyle(style)
+      this.setStyle()
     }
   },
   methods: {

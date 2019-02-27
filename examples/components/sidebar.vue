@@ -20,6 +20,30 @@
       <dd>
         <router-link to="/line">Line</router-link>
       </dd>
+      <dd>
+        <router-link to="/marker">Marker</router-link>
+      </dd>
+      <dd>
+        <router-link to="/html">Html</router-link>
+      </dd>
+      <dd>
+        <router-link to="/icon">Icon</router-link>
+      </dd>
+      <dd>
+        <router-link to="/popup">Popup</router-link>
+      </dd>
+      <dd>
+        <router-link to="/heat">Heat</router-link>
+      </dd>
+      <dt>控件组件</dt>
+      <dd>
+        <router-link to="/pointer">Pointer</router-link>
+      </dd>
+      <dt>动效组件</dt>
+      <dt>性能测试</dt>
+      <dd>
+        <router-link to="/performance">Performance</router-link>
+      </dd>
     </dl>
   </div>
 </template>
@@ -50,7 +74,7 @@
     line-height: 1.8em;
     dt {
       margin-top: 10px;
-      font-size: 18px;
+      font-size: 16px;
       color: #666;
     }
     dd {

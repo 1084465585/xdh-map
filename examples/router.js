@@ -32,6 +32,34 @@ const router = new Router({
           {
             path: 'line',
             component: () => import('./views/line.vue')
+          },
+          {
+            path: 'pointer',
+            component: () => import('./views/pointer.vue')
+          },
+          {
+            path: 'performance',
+            component: () => import('./views/performance.vue')
+          },
+          {
+            path: 'marker',
+            component: () => import('./views/marker.vue')
+          },
+          {
+            path: 'html',
+            component: () => import('./views/html.vue')
+          },
+          {
+            path: 'icon',
+            component: () => import('./views/icon.vue')
+          },
+          {
+            path: 'popup',
+            component: () => import('./views/popup.vue')
+          },
+          {
+            path: 'heat',
+            component: () => import('./views/heat.vue')
           }
         ]
       }

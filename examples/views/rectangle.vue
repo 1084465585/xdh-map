@@ -8,8 +8,7 @@
                            :height="1"
                            text="文字文字"
                            color="#fff"
-                           font="20px"
-        ></xdh-map-rectangle>
+                           font="20px"></xdh-map-rectangle>
       </xdh-map>
     </example>
   </div>

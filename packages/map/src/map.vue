@@ -180,6 +180,7 @@
         const tileLayer = layers.find(layer => layer.type === 'TILE')
         if (tileLayer) {
           this.map.removeLayer(tileLayer)
+          tileLayer.disposeInternal()
         }
         this.map.addLayer(createLayer(type))
       },
@@ -227,6 +228,9 @@
       }
     },
     created() {
+      // 标记是地图组件
+      this.isMap = true
+
       /**
        * 图形绑定的事件集合，存储格式：
        * { click: [{type, feature, listener, uid}, ...], movestart: [..]}

@@ -4,6 +4,13 @@ import Rectangle from './rectangle'
 import Polygon from './polygon'
 import Circle from './circle'
 import Line from './line'
+import Placement from './placement'
+import Pointer from './pointer'
+import Marker from './marker'
+import Html from './html'
+import Icon from './icon'
+import Popup from './popup'
+import Heat from './heat'
 import '../theme/index.scss'
 
 const components = [
@@ -12,7 +19,14 @@ const components = [
   Rectangle,
   Polygon,
   Circle,
-  Line
+  Line,
+  Placement,
+  Pointer,
+  Marker,
+  Html,
+  Icon,
+  Popup,
+  Heat
 ]
 
 const install = function (Vue) {
