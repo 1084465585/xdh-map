@@ -40,7 +40,6 @@
         this.proxyChartMouseOut = e => {
           this.eventData = null
         }
-
         this.map.on('click', this.proxyMapHandleClick)
         this.chart.on('mouseover', this.proxyChartMouseOver)
         this.chart.on('mouseout', this.proxyChartMouseOut)
