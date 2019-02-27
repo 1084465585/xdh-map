@@ -28,12 +28,16 @@
       }
     },
     methods: {
+
       postRender() {
-        this.registerCoordinateSystem()
-        const el = this.createContainer()
-        const chart = this.createChart(el)
-        chart.setOption(this.options || {})
-        this.resize(chart)
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          this.registerCoordinateSystem()
+          const el = this.createContainer()
+          const chart = this.createChart(el)
+          chart.setOption(this.options || {})
+          this.resize(chart)
+        }, 200)
       },
       resize(chart) {
         if (!this.container || !this.map) return
@@ -87,6 +91,10 @@
 
     },
     beforeDestroy() {
+      clearTimeout(this.timer)
+      if (this.chart) {
+        this.chart.dispose()
+      }
       if (this.container) {
         this.container.parentNode.removeChild(this.container)
         this.container = null
@@ -94,6 +102,7 @@
       if (this.map) {
         this.map.un('postrender', this.postRender)
       }
+
     }
   }
 </script>

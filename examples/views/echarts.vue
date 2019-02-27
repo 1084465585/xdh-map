@@ -269,7 +269,7 @@
         },
         itemStyle: {
           normal: {
-            color: '#0bc7f3'
+            color: '#33A875'
           }
         }
       },
@@ -297,7 +297,7 @@
         },
         itemStyle: {
           normal: {
-            color: '#0bc7f3',
+            color: '#33A875',
             shadowBlur: 10,
             shadowColor: '#333'
           }
