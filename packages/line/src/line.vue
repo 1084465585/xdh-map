@@ -15,7 +15,7 @@
 
   const vueProps = {
     // 坐标数组
-    coordinates: {
+    routes: {
       type: Array,
       default() {
         return []
@@ -48,7 +48,7 @@
     mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, CleanMixin],
     props: props,
     watch: {
-      coordinates() {
+      routes() {
         this.update()
       }
     },
@@ -70,9 +70,9 @@
         })
       },
       lastSegment() {
-        const length = this.coordinates.length
+        const length = this.routes.length
         if (length >= 2) {
-          return this.arrowStyle(this.coordinates[length - 2], this.coordinates[length - 1])
+          return this.arrowStyle(this.routes[length - 2], this.routes[length - 1])
         }
       },
       createStyle() {
@@ -91,7 +91,7 @@
         return styles
       },
       createGeometry() {
-        return new LineString(this.coordinates)
+        return new LineString(this.routes)
       }
     }
   }

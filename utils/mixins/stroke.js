@@ -5,8 +5,14 @@ const options = {
     type: String,
     default: 'transparent'
   },
-  lineCap: String,
-  lineJoin: String,
+  lineCap: {
+    type: String,
+    default: 'round'
+  },
+  lineJoin: {
+    type: String,
+    default: 'round'
+  },
   lineDash: Array,
   lineDashOffset: Number,
   miterLimit: Number,

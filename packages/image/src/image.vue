@@ -28,7 +28,7 @@
   export const props = mixProps(BaseMixin, StrokeMixin, TextMixin, factoryMixin)
 
   export default {
-    name: 'XdhMapMarker',
+    name: 'XdhMapImage',
     mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, factoryMixin, CleanMixin],
     props: props,
     watch: {

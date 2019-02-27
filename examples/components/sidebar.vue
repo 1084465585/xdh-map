@@ -22,7 +22,7 @@
         <router-link to="/line">Line</router-link>
       </dd>
       <dd>
-        <router-link to="/marker">Marker</router-link>
+        <router-link to="/image">Image</router-link>
       </dd>
       <dd>
         <router-link to="/html">Html</router-link>
@@ -44,6 +44,9 @@
         <router-link to="/pointer">Pointer</router-link>
       </dd>
       <dt>动效组件</dt>
+      <dd>
+        <router-link to="/track">Track</router-link>
+      </dd>
       <dt>性能测试</dt>
       <dd>
         <router-link to="/performance">Performance</router-link>

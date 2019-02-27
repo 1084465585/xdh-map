@@ -2,7 +2,7 @@
   <div>
     <example>
       <xdh-map>
-        <xdh-map-marker v-bind="options"></xdh-map-marker>
+        <xdh-map-image v-bind="options"></xdh-map-image>
       </xdh-map>
     </example>
   </div>
