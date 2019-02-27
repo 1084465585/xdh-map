@@ -1,5 +1,6 @@
 <template>
   <div class="sidebar">
+    <h3>新德汇地图应用类库</h3>
     <dl class="list">
       <dt>
         <router-link to="/">Map</router-link>
@@ -48,6 +49,7 @@
         <router-link to="/performance">Performance</router-link>
       </dd>
     </dl>
+    <div class="copyright">Powered by XDH FE Team.</div>
   </div>
 </template>
 
@@ -69,6 +71,12 @@
     /deep/ .router-link-active {
       color: red;
     }
+    h3 {
+      font-size: 18px;
+      text-align: center;
+      margin: 10px 0 0 0;
+      padding: 0;
+    }
   }
 
   .list {
@@ -85,6 +93,12 @@
       padding: 0;
       text-indent: 1em;
     }
+  }
 
+  .copyright {
+    text-align: right;
+    font-size: 12px;
+    color: #999;
+    padding: 10px;
   }
 </style>
