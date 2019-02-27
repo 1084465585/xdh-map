@@ -11,6 +11,7 @@ import Html from './html'
 import Icon from './icon'
 import Popup from './popup'
 import Heat from './heat'
+import Echarts from './echarts'
 import '../theme/index.scss'
 
 const components = [
@@ -26,7 +27,8 @@ const components = [
   Html,
   Icon,
   Popup,
-  Heat
+  Heat,
+  Echarts
 ]
 
 const install = function (Vue) {

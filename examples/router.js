@@ -60,6 +60,10 @@ const router = new Router({
           {
             path: 'heat',
             component: () => import('./views/heat.vue')
+          },
+          {
+            path: 'echarts',
+            component: () => import('./views/echarts.vue')
           }
         ]
       }
