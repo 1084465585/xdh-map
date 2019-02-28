@@ -38,6 +38,14 @@ const router = new Router({
             component: () => import('./views/pointer.vue')
           },
           {
+            path: 'overview',
+            component: () => import('./views/overview.vue')
+          },
+          {
+            path: 'zoom',
+            component: () => import('./views/zoom.vue')
+          },
+          {
             path: 'performance',
             component: () => import('./views/performance.vue')
           },

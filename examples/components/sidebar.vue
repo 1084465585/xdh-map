@@ -39,6 +39,12 @@
       <dd>
         <router-link to="/pointer">Pointer</router-link>
       </dd>
+      <dd>
+        <router-link to="/overview">Overview</router-link>
+      </dd>
+      <dd>
+        <router-link to="/zoom">Zoom</router-link>
+      </dd>
       <dt>动效组件</dt>
       <dt>性能测试</dt>
       <dd>

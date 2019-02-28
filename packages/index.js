@@ -6,6 +6,8 @@ import Circle from './circle'
 import Line from './line'
 import Placement from './placement'
 import Pointer from './pointer'
+import Overview from './overview'
+import Zoom from './zoom'
 import Marker from './marker'
 import Html from './html'
 import Icon from './icon'
@@ -22,6 +24,8 @@ const components = [
   Line,
   Placement,
   Pointer,
+  Overview,
+  Zoom,
   Marker,
   Html,
   Icon,
