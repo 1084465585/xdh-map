@@ -1,5 +1,4 @@
 <template>
-  <div>
     <example>
       <xdh-map :zoom="12">
         <xdh-map-text v-for="(item,index) in textArray"
@@ -8,7 +7,6 @@
                       @click="handleClick"></xdh-map-text>
       </xdh-map>
     </example>
-  </div>
 </template>
 
 <script>

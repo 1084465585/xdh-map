@@ -1,5 +1,4 @@
 <template>
-  <div>
     <example>
       <xdh-map>
         <xdh-map-html :position="position">
@@ -7,7 +6,6 @@
         </xdh-map-html>
       </xdh-map>
     </example>
-  </div>
 </template>
 
 <script>

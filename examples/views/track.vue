@@ -1,5 +1,4 @@
 <template>
-  <div>
     <example>
       <xdh-map :center="center">
         <xdh-map-track :routes="line1" :src="car" :steps="50"></xdh-map-track>
@@ -30,7 +29,6 @@
                         :radius="0.01"></xdh-map-circle>
       </xdh-map>
     </example>
-  </div>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+
     <example>
       <xdh-map :zoom="8">
         <xdh-map-line ref="line"
@@ -10,7 +10,7 @@
                       :stroke-width="2"></xdh-map-line>
       </xdh-map>
     </example>
-  </div>
+
 </template>
 
 <script>

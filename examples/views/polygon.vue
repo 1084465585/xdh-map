@@ -1,5 +1,4 @@
 <template>
-  <div>
     <example>
       <xdh-map :zoom="8">
         <xdh-map-polygon :coordinates="coordinates"
@@ -10,7 +9,6 @@
 
       </xdh-map>
     </example>
-  </div>
 </template>
 
 <script>

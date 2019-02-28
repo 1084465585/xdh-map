@@ -1,5 +1,4 @@
 <template>
-  <div>
     <example>
       <xdh-map>
         <xdh-map-icon icon="iconfont icon-location" :position="[120, 30]" @click="handleClick"></xdh-map-icon>
@@ -7,7 +6,6 @@
         <xdh-map-icon icon="iconfont icon-policeman" :position="[120.1, 30]"></xdh-map-icon>
       </xdh-map>
     </example>
-  </div>
 </template>
 
 <script>

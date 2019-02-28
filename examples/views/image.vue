@@ -1,11 +1,9 @@
 <template>
-  <div>
     <example>
       <xdh-map>
         <xdh-map-image v-bind="options"></xdh-map-image>
       </xdh-map>
     </example>
-  </div>
 </template>
 
 <script>
