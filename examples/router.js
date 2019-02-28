@@ -42,8 +42,8 @@ const router = new Router({
             component: () => import('./views/performance.vue')
           },
           {
-            path: 'marker',
-            component: () => import('./views/marker.vue')
+            path: 'image',
+            component: () => import('./views/image.vue')
           },
           {
             path: 'html',
@@ -60,6 +60,14 @@ const router = new Router({
           {
             path: 'heat',
             component: () => import('./views/heat.vue')
+          },
+          {
+            path: 'echarts',
+            component: () => import('./views/echarts.vue')
+          },
+          {
+            path: 'track',
+            component: () => import('./views/track.vue')
           }
         ]
       }

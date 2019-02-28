@@ -1,11 +1,9 @@
 <template>
-  <div>
     <example>
       <xdh-map :zoom="9">
         <xdh-map-heat :data="data" :radius="10"></xdh-map-heat>
       </xdh-map>
     </example>
-  </div>
 </template>
 
 <script>

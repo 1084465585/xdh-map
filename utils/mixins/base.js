@@ -8,7 +8,10 @@ export default {
     // 层级
     zIndex: Number,
     // 填充颜色
-    fill: String
+    fill: String,
+    
+    // 鼠标经过形状
+    cursor: String
   },
   watch: {
     position: {

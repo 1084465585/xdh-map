@@ -1,29 +1,35 @@
-# xdh-map
+# 新德汇地图应用开发类库
 
-## Project setup
-```
-npm install
-```
+基于Openlayers封装的Vue组件，支持轨迹动画和接入ECharts。
 
-### Compiles and hot-reloads for development
+
+## 安装
 ```
-npm run serve
+npm install xdh-map --save
 ```
 
-### Compiles and minifies for production
+### 全量引入
 ```
-npm run build
+import XdhMap from 'xdh-map'
+import Vue from 'vue'
+Vue.use(XdhMap)
+
 ```
 
-### Run your tests
+### 按需引入
 ```
-npm run test
+import {XdhMap, XdhMapCircl} from 'xdh-map'
+
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+### 使用示例
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+```
+<xdh-map>
+    <xdh-map-circle :position="[120, 30]"
+                    :radius="0.1"
+                    fill="blue"
+                    stroke-color="red"
+                    :stroke-width="5"></xdh-map-circle>
+</xdh-map>
+```

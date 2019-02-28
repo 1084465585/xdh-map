@@ -1,5 +1,4 @@
 <template>
-  <div>
     <example>
       <xdh-map>
         <xdh-map-circle :position="[120, 30]"
@@ -9,8 +8,6 @@
                         :stroke-width="5"></xdh-map-circle>
       </xdh-map>
     </example>
-
-  </div>
 </template>
 
 <script>

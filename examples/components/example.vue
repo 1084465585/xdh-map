@@ -13,6 +13,6 @@
     padding: 10px;
     background: #fefefefe;
     border: 1px dotted #ccc;
-    height: 600px;
+    height: 100%
   }
 </style>

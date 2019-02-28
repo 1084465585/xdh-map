@@ -1,19 +1,18 @@
 <template>
-  <div>
-    <example>
-      <xdh-map>
-        <xdh-map-text :text="text"
-                      :position="position"
-                      font="20px"
-                      color="blue"
-                      stroke-color="red"
-                      :stroke-width="5"
-                      background="#ccc"
-                      :padding="[5, 10, 5, 10]"
-                      @click="handleClick"></xdh-map-text>
-      </xdh-map>
-    </example>
-  </div>
+  <example>
+    <xdh-map>
+      <xdh-map-text :text="text"
+                    :position="position"
+                    font="20px"
+                    color="blue"
+                    stroke-color="red"
+                    :stroke-width="5"
+                    background="#ccc"
+                    :padding="[5, 10, 5, 10]"
+                    cursor="pointer"
+                    @click="handleClick"></xdh-map-text>
+    </xdh-map>
+  </example>
 </template>
 
 <script>
