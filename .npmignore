@@ -3,8 +3,17 @@ dist/
 public/
 tests/
 node_modules/
+examples/
+theme/
+packages/
+utils/
 
 # 忽略指定文件
 vue.config.js
 babel.config.js
 *.map
+.npmignore
+.editorconfig
+.eslintignore
+.gitignore
+lib/demo.html

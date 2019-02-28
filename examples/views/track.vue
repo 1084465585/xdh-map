@@ -9,6 +9,7 @@
 
         <xdh-map-track
           :routes="line2"
+          :loop="false"
           :src="car"></xdh-map-track>
         <xdh-map-line :routes="line2"
                       stroke-color="red"

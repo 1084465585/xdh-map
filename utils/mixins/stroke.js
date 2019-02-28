@@ -1,6 +1,7 @@
 import {prefix, mix} from '../util';
 
 const options = {
+  // 边框颜色
   color: {
     type: String,
     default: 'transparent'
