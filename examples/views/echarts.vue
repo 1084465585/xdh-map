@@ -1,6 +1,6 @@
 <template>
     <example>
-      <xdh-map :zoom="4" type="Baidu">
+      <xdh-map :min-zoom="4" :zoom="5" type="Baidu">
         <xdh-map-echarts :lib="lib" :options="options" @click="handleClick"></xdh-map-echarts>
       </xdh-map>
     </example>
