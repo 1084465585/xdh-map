@@ -1,4 +1,5 @@
 # 忽略目录
+.idea/
 dist/
 public/
 tests/
