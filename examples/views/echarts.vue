@@ -1,12 +1,9 @@
 <template>
-  <div>
     <example>
       <xdh-map :zoom="4" type="Baidu">
         <xdh-map-echarts :lib="lib" :options="options" @click="handleClick"></xdh-map-echarts>
       </xdh-map>
     </example>
-  </div>
-
 </template>
 
 <script>
