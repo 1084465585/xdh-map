@@ -115,6 +115,7 @@
             const geometry = new Point(route)
             this.feature.setGeometry(geometry)
             this.feature.setStyle(style)
+            this.feature._vm = this
           }
           this.$emit('move', this.stepRoutes, this.progress, rotation)
           requestAnimationFrame(this.move)

@@ -1,5 +1,5 @@
 <template>
-  <xdh-map-html :position="position">
+  <xdh-map-html v-bind="$props">
     <i :class="icon" v-on="$listeners"></i>
   </xdh-map-html>
 </template>
@@ -13,7 +13,7 @@
       XdhMapHtml
     },
     props: {
-      position: Array,
+      ...XdhMapHtml.props,
       icon: String
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="xdh-map" ref="map">
+  <div class="xdh-map" ref="map" :style="styles">
     <slot></slot>
   </div>
 </template>
@@ -66,6 +66,19 @@
         type: Function,
         default() {
           return Promise.resolve({})
+        }
+      }
+    },
+    data() {
+      return {
+        // 鼠标形状
+        cursor: null
+      }
+    },
+    computed: {
+      styles() {
+        return {
+          cursor: this.cursor
         }
       }
     },
@@ -225,6 +238,18 @@
         view.animate({
           center: loc
         })
+      },
+      /**
+       * 设置鼠标形状
+       * @param e
+       */
+      setCursor(e) {
+        const feature = this.getFeatureAtPixel(e.pixel)
+        if (feature && feature._vm && feature._vm.cursor) {
+          this.cursor = feature._vm.cursor
+        } else {
+          this.cursor = null
+        }
       }
     },
     created() {
@@ -273,14 +298,21 @@
       Object.keys(this.$listeners).forEach(key => {
         this.map.on(key, this.$listeners[key])
       })
+
+      // 设置子图形的鼠标形状
+      this.map.on('pointermove', this.setCursor)
     },
     beforeDestroy() {
       // 销毁地图事件
-      Object.keys(this.$listeners).forEach(key => {
-        this.map.un(key, this.$listeners[key])
-      })
-      // 销毁地图
-      this.map && this.map.disposeInternal()
+      if (this.map) {
+        Object.keys(this.$listeners).forEach(key => {
+          this.map.un(key, this.$listeners[key])
+        })
+        this.map.un('pointermove', this.setCursor)
+        // 销毁地图
+        this.map.disposeInternal()
+      }
+
     }
   }
 </script>
