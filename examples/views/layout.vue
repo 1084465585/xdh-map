@@ -28,9 +28,11 @@
 
   .content {
     padding-left: 200px;
+    height: 100%;
   }
 
   .inner {
     padding: 20px;
+    height: calc(100% - 60px);
   }
 </style>

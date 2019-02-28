@@ -9,7 +9,7 @@
                      width="200px">
         <div>内容文本，内容文本，内容文本，内容文本</div>
       </xdh-map-popup>
-      <xdh-map-marker v-bind="options" @click="showPopup"></xdh-map-marker>
+      <xdh-map-image v-bind="options" @click="showPopup"></xdh-map-image>
 
       <xdh-map-popup :position="[120.4, 30]"
                      :offset="[0,-30]"
@@ -21,7 +21,7 @@
                      width="200px">
         <div>内容文本，内容文本，内容文本，内容文本</div>
       </xdh-map-popup>
-      <xdh-map-marker :position="[120.4, 30]" :src="options.src"></xdh-map-marker>
+      <xdh-map-image :position="[120.4, 30]" :src="options.src"></xdh-map-image>
     </xdh-map>
   </example>
 </template>

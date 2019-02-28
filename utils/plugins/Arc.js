@@ -224,8 +224,7 @@ GreatCircle.prototype.Arc = function (npoints, options) {
           poNewLS = [];
           poNewLS.push([firstPass[k - 1][0] > dfLeftBorderX ? -180 : 180, dfY]);
           poMulti.push(poNewLS);
-        }
-        else {
+        } else {
           poNewLS = [];
           poMulti.push(poNewLS);
         }
