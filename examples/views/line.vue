@@ -8,15 +8,12 @@
                       :arrow-each="true"
                       stroke-color="#000"
                       :stroke-width="2"></xdh-map-line>
-
-
       </xdh-map>
     </example>
   </div>
 </template>
 
 <script>
-
   export default {
     data() {
       return {
