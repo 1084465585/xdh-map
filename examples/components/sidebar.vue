@@ -53,6 +53,9 @@
         <router-link to="/zoom">Zoom</router-link>
       </dd>
       <dd>
+        <router-link to="/scale">Scale</router-link>
+      </dd>
+      <dd>
         <router-link to="/type">Type</router-link>
       </dd>
       <dt>动效组件</dt>
