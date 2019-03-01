@@ -16,6 +16,7 @@ import Heat from './heat'
 import Echarts from './echarts'
 import Track from './track'
 import Type from './type'
+import Draw from './draw'
 
 import '../theme/index.scss'
 
@@ -37,7 +38,8 @@ const components = [
   Heat,
   Echarts,
   Track,
-  Type
+  Type,
+  Draw
 ]
 
 const install = function (Vue) {
@@ -69,6 +71,7 @@ export const XdhMapHeat = Heat
 export const XdhMapEcharts = Echarts
 export const XdhMapTrack = Track
 export const XdhMapType = Type
+export const XdhMapDraw = Draw
 
 export default {
   version: '1.0.0',
@@ -90,7 +93,8 @@ export default {
   Heat,
   Echarts,
   Track,
-  Type
+  Type,
+  Draw
 }
 
 
