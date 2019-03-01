@@ -46,6 +46,10 @@ const router = new Router({
             component: () => import('./views/zoom.vue')
           },
           {
+            path: 'scale',
+            component: () => import('./views/scale.vue')
+          },
+          {
             path: 'performance',
             component: () => import('./views/performance.vue')
           },

@@ -1,0 +1,9 @@
+.xdh-map-scale{
+  padding: 10px;
+  &__target{
+    position: relative;
+    .ol-scale-line-inner{
+      text-align:center;
+    }
+  }
+}

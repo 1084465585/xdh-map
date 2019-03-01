@@ -9,6 +9,7 @@ import Pointer from './pointer'
 import Image from './image'
 import Overview from './overview'
 import Zoom from './zoom'
+import Scale from './scale'
 import Html from './html'
 import Icon from './icon'
 import Popup from './popup'
@@ -32,6 +33,7 @@ const components = [
   Image,
   Overview,
   Zoom,
+  Scale,
   Html,
   Icon,
   Popup,
@@ -63,6 +65,7 @@ export const XdhMapPlacement = Placement
 export const XdhMapPointer = Pointer
 export const XdhMapOverview = Overview
 export const XdhMapZoom = Zoom
+export const XdhMapScale = Scale
 export const XdhMapImage = Image
 export const XdhMapHtml = Html
 export const XdhMapIcon = Icon
@@ -86,6 +89,7 @@ export default {
   Pointer,
   Overview,
   Zoom,
+  Scale,
   Image,
   Html,
   Icon,
