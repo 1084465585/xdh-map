@@ -196,6 +196,7 @@
           tileLayer.disposeInternal()
         }
         this.map.addLayer(createLayer(type))
+        this.$emit('changeType', type)
       },
       /**
        * 重置地图尺寸，当容器的尺寸变化后需要执行resize

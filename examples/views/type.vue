@@ -1,5 +1,9 @@
 <template>
-  <div></div>
+  <example>
+    <xdh-map>
+      <xdh-map-type placement="right-bottom"></xdh-map-type>
+    </xdh-map>
+  </example>
 </template>
 
 <script>
