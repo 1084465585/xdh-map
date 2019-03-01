@@ -34,6 +34,10 @@ const router = new Router({
             component: () => import('./views/line.vue')
           },
           {
+            path: 'placement',
+            component: () => import('./views/placement.vue')
+          },
+          {
             path: 'pointer',
             component: () => import('./views/pointer.vue')
           },

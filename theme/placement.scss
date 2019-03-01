@@ -2,6 +2,18 @@
 
 .xdh-map-placement {
   position: absolute;
+  border-radius: $--border-radius;
+  &.is-light {
+    background: $--placement-light-bg;
+    box-shadow: $--shadow-base;
+    color: $--placement-light-color;
+  }
+  &.is-dark {
+    background: $--placement-dark-bg;
+    box-shadow: $--shadow-base;
+    color: $--placement-dark-color;
+  }
+
   &.left-top {
     left: 0;
     top: 0;

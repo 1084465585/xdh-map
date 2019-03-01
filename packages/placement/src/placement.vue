@@ -1,6 +1,6 @@
 <template>
   <div class="xdh-map-placement"
-       :class="placement"
+       :class="classes"
        :style="styles">
     <slot></slot>
   </div>
@@ -9,8 +9,9 @@
 <script>
 
   export default {
-    name: 'placement',
+    name: 'XdhMapPlacement',
     props: {
+      // 停泊位置
       placement: {
         type: String,
         default: 'left-bottom',
@@ -22,14 +23,24 @@
           ].includes(val)
         }
       },
+      // 层级
       zIndex: {
         type: Number,
         default: 1
       },
+      // 外边距
       margin: {
         type: Array,
         default() {
           return [0, 0, 0, 0]
+        }
+      },
+      // 主题
+      theme: {
+        type: String,
+        default: '',
+        validator() {
+          return ['default', 'light', 'dark']
         }
       }
     },
@@ -39,6 +50,9 @@
           zIndex: this.zIndex,
           margin: this.margin.map(n => `${n}px`).join(' ')
         }
+      },
+      classes() {
+        return [`is-${this.theme}`, this.placement]
       }
     }
   }
