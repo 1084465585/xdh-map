@@ -80,6 +80,10 @@ const router = new Router({
           {
             path: 'type',
             component: () => import('./views/type.vue')
+          },
+          {
+            path: 'draw',
+            component: () => import('./views/draw.vue')
           }
         ]
       }
