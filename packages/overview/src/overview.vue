@@ -63,10 +63,10 @@
     },
     methods: {
       ready(map, vm) {
-        let layers = map.getLayers()
+        // let layers = map.getLayers()
         this.overview = new OverviewMap({
           target: this.$refs.overview,
-          layers: layers,
+          // layers: layers,
           view: new View({
             projection: 'EPSG:4326'
           })
@@ -74,14 +74,6 @@
         this.map = map
         this.map.addControl(this.overview)
         this.isClosed = this.defaultClosed
-        // vm.$on('changeType', (e) => {
-        //   console.log(map.getLayers())
-        //   // this.overview.set('layers', map.getLayers())
-        // })
-        // console.log(vm.$on())
-        // vm.$parent.on('changeType', (e) => {
-        //   console.log(e)
-        // })
       }
     },
     created() {
