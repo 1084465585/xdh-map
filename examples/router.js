@@ -76,6 +76,10 @@ const router = new Router({
           {
             path: 'track',
             component: () => import('./views/track.vue')
+          },
+          {
+            path: 'type',
+            component: () => import('./views/type.vue')
           }
         ]
       }
