@@ -18,10 +18,10 @@
   import {mixProps, getParent, mapReady} from 'utils/util'
 
   const vueProps = {
-    simple: {
-      type: Boolean,
-      default: true
-    }
+    // simple: {
+    //   type: Boolean,
+    //   default: true
+    // }
   }
   const props = mixProps({props: vueProps}, XdhMapPlacement)
 
@@ -33,10 +33,11 @@
     },
     props: {
       simple: {
-      type: Boolean,
-      default: true
-    }
-    },props,
+        type: Boolean,
+        default: true
+      },
+      ...props
+    },
     data() {
       return {
         map: null,

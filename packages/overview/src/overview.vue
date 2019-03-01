@@ -39,7 +39,9 @@
     },
     data() {
       return {
-        isClosed: false
+        isClosed: false,
+        map: null,
+        overview: null
       }
     },
     computed: {
@@ -62,15 +64,24 @@
     methods: {
       ready(map, vm) {
         let layers = map.getLayers()
-        const Overview = new OverviewMap({
+        this.overview = new OverviewMap({
           target: this.$refs.overview,
           layers: layers,
           view: new View({
             projection: 'EPSG:4326'
           })
         })
-        map.addControl(Overview)
+        this.map = map
+        this.map.addControl(this.overview)
         this.isClosed = this.defaultClosed
+        // vm.$on('changeType', (e) => {
+        //   console.log(map.getLayers())
+        //   // this.overview.set('layers', map.getLayers())
+        // })
+        // console.log(vm.$on())
+        // vm.$parent.on('changeType', (e) => {
+        //   console.log(e)
+        // })
       }
     },
     created() {
@@ -82,7 +93,7 @@
       mapReady.call(this, this.ready)
     },
     beforeDestroy() {
-       
+      this.map.removeControl(this.overview)
     }
   }
 </script>
