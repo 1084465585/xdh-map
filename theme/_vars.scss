@@ -1,3 +1,11 @@
+$--shadow-base: 0 2px 2px rgba(0, 0, 0, .2);
+$--border-radius: 3px;
+
+$--placement-light-color: #5f6477;
+$--placement-light-bg: rgba(255, 255, 255, .9);
+$--placement-dark-color: #ddd;
+$--placement-dark-bg: rgba(0, 0, 0, .9);
+
 $--pointer-color: #666;
 $--pointer-bg: rgba(255, 255, 255, 0.8);
 $--pointer-lock-color: #fff;
@@ -9,7 +17,6 @@ $--popup-title-bg: #ddd;
 $--popup-bg-dark: rgba(0, 0, 0, 0.8);
 $--popup-color-dark: #eee;
 $--popup-title-bg-dark: rgba(0, 0, 0, 0.9);
-
 
 $--scale-btn-color: #9A9A9A;
 $--scale-btn-bg: #F9F9F9;
