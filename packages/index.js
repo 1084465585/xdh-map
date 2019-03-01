@@ -9,7 +9,6 @@ import Pointer from './pointer'
 import Image from './image'
 import Overview from './overview'
 import Zoom from './zoom'
-// import Marker from './marker'
 import Html from './html'
 import Icon from './icon'
 import Popup from './popup'
@@ -30,7 +29,6 @@ const components = [
   Image,
   Overview,
   Zoom,
-  // Marker,
   Html,
   Icon,
   Popup,
