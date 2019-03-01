@@ -1,7 +1,7 @@
 <template>
-  <xdh-map-placement class="xdh-map-pointer" v-bind="$props">
-    <div class="xdh-map-zoom"   ref="zoomWrap"  >
-      <div class="btn-wrap" v-if="simple">
+  <xdh-map-placement class="xdh-map-zoom" v-bind="$props">
+    <div class="xdh-map-zoom__wrap"   ref="zoomWrap"  >
+      <div class="xdh-map-zoom__wrap-simple" v-if="simple">
         <div class="btn plus" @click="zoomIn">+</div>
         <div class="btn substract" @click="zoomOut">-</div>
       </div>
@@ -14,9 +14,6 @@
 
 <script>
   import VerticalScale from './scale.vue'
-  // import {OverviewMap} from 'ol/control.js'
-  // import View from 'ol/View'
-  // import {DragRotateAndZoom} from 'ol/interaction.js';
   import XdhMapPlacement from '../../placement'
   import {mixProps, getParent, mapReady} from 'utils/util'
 
@@ -34,7 +31,12 @@
       XdhMapPlacement,
       VerticalScale
     },
-    props: props,
+    props: {
+      simple: {
+      type: Boolean,
+      default: true
+    }
+    },props,
     data() {
       return {
         map: null,
@@ -103,26 +105,5 @@
 </script>
 
 <style lang="scss" scope >
-@import "../../../theme/_vars.scss";
-.xdh-map-zoom{
-  padding: 8px;
-  .btn-wrap{
-    .btn{
-      width: 20px;
-      line-height: 20px;
-      text-align:center;
-      margin: 10px 0;
-      background: $--scale-btn-bg;
-      color: $--scale-btn-color;
-      box-shadow: 0 0 0px 1px $--scale-highlight;
-      cursor: pointer;
-      &:hover{
-        box-shadow: 0 0 1px 1px $--scale-highlight;
-      }
-    }
-  }
-  
-}
-
 </style>
 

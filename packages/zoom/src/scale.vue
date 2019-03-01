@@ -1,21 +1,17 @@
 <template>
 <div class="vertical-scale">
-  <div class="scale-btn" @click="upBtnClick">+</div>
-  <div class="scale-wrap">
+  <div class="vertical-scale__btn" @click="upBtnClick">+</div>
+  <div class="vertical-scale__scale">
 
     <div class="scale" ref="scale">
       <div class="scale-ctrl" ref="ctrl" @mousedown="scaleMouseDown"></div>
     </div>
-    <!-- <div class="scale-ctrl"></div> -->
-
   </div>
-  <!-- <div class="range-scale"></div> -->
-  <div class="scale-btn" @click="downBtnClick">-</div>
+  <div class="vertical-scale__btn" @click="downBtnClick">-</div>
 </div>
 </template>
 
 <script>
-
   export default {
     name: 'verticalScale',
     components: {
@@ -35,7 +31,7 @@
         rangeHeight: 0,
 
         startY: 0,
-        startTop: 0, // Math.ceil(this.precent / 100 * this.rangeHeight),
+        startTop: 0,
         
         offsetY: 0
       }
@@ -113,113 +109,5 @@
 </script>
 
 <style lang="scss" scope >
-@import "../../../theme/_vars.scss";
-.vertical-scale{
-  width: 20px;
-  height: 260px;
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  .scale-btn{
-    flex: 0 0 16px;
-    line-height: 16px;
-    width: 16px;
-    text-align:center;
-    font-size: 16px;
-    font-weight: 800;
-    border-radius: 3px;
-    color: $--scale-btn-color;
-    background: $--scale-btn-bg;
-    box-shadow: 0 0 0px 1px $--scale-highlight;
-    cursor: pointer;
-    &:hover{
-      box-shadow: 0 0 1px 1px $--scale-highlight;
-    }
-  }
-  .scale-wrap{
-    flex: 1;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    margin: 5px auto;
-    width: 16px;
-    overflow: hidden;
-    // box-shadow: inset 0 0 1px 0px $--scale-highlight;
-    :before{
-      content: '';
-      position: absolute;
-      display: block;
-      width: 100%;
-      height: 6px;
-      bottom: -5px;
-      left: 0%;
-      background: $--scale-btn-bg;
-    }
-    
-    .scale{
-      flex: 0 0 calc(100% - 16px);
-      position: relative;
-      width: 60%;
-      height: calc(100% - 16px);
-      border-radius: 2px;
-      background: no-repeat;
-      background-color: $--scale-btn-bg;
-      background-image: repeating-linear-gradient($--scale-btn-color 0, $--scale-btn-color 1px, transparent 0, transparent 3px),
-                        repeating-linear-gradient($--scale-btn-color 0, $--scale-btn-color 1px, transparent 0, transparent 15px);
-      background-size: 3px 100%, 5px 100%;
-      background-position: center top;
-      box-shadow: 0 0 1px 1px $--scale-btn-color; 
-      .scale-ctrl{
-        opacity: 1;
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        left: 50%;
-        top: 0%;
-        border-radius: 50%;
-        margin-left: -8px;
-        transform-origin: center center;
-        transform: translateY(-8px);
-        background: $--scale-btn-bg;
-        box-shadow: inset 0 0 1px 1px $--scale-highlight;
-
-        &:after{
-          content: '';
-          position: absolute;
-          display: block;
-          width: 80%;
-          height: 1000px;
-          left: 10%;
-          bottom: 16px;
-          transform-origin: center bottom;
-          background: rgba(255,255,255,0.8);
-        }
-        &:before{
-          content: '';
-          position: absolute;
-          display: block;
-          width: 4px;
-          height: 4px;
-          left: 50%;
-          top: 50%;
-          margin-left: -2px;
-          margin-top: -2px;
-          border-radius: 50%;
-          background: skyblue;
-        }
-      }
-      .scale-ctrl:hover{
-        transform: scale(1.2), translateY(-8px);
-        box-shadow: inset 0 0 1px 2px #8CB0CE;
-      }
-      .scale-ctrl:hover:after{
-        transform: scale(0.9);
-      }
-    }
-    
-  }
-}
 </style>
 
