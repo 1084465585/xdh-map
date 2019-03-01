@@ -1,0 +1,78 @@
+@import './_vars.scss';
+.xdh-map-overview{
+  transition: all 0.3s;
+  overflow: hidden;
+  &.is-show{
+    box-shadow: 0 0 1px 1px $--scale-highlight;
+  }
+  &__btn{
+    position: absolute;
+    line-height: 30px;
+    width: 30px;
+    color: white;
+    text-align:center;
+    border-radius: 3px;
+    background: $--scale-highlight;
+    cursor: pointer;
+    &.left-top{
+      left: 0;
+      top: 0;
+      transform: rotate(180deg);
+    }
+    &.left-bottom{
+      left: 0;
+      bottom: 0;
+      transform: rotate(180deg);
+    }
+    &.right-top{
+      right: 0;
+      top: 0;
+    }
+    &.right-bottom{
+      right: 0;
+      bottom: 0;
+    }
+  }
+
+  &__wrap{
+    position: absolute;
+    
+    z-index: -1;
+    &.is-closed{
+      opacity: 0.2;
+    }
+    &.left-top {
+      left: 0px;
+      top: 0px;
+    }
+    &.right-top {
+      right: 0px;
+      top: 0px;
+    } 
+    &.left-bottom {
+      left: 0px;
+      bottom: 0px;
+    }
+    &.right-bottom {
+      right: 0px;
+      bottom: 0px;
+    }
+    .ol-overviewmap{
+      width: 100%;
+      height: 100%;
+      border-radius: 3px;
+      background: white;
+    }
+    .ol-overviewmap-map{
+      width: 100%;
+      height: 100%;
+    }
+    .ol-selectable{
+      border: 1px solid green;
+    }
+
+    button[title="Overview map"]{
+      display:none;
+    }
+  }
+}

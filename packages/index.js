@@ -59,6 +59,8 @@ export const XdhMapCircle = Circle
 export const XdhMapLine = Line
 export const XdhMapPlacement = Placement
 export const XdhMapPointer = Pointer
+export const XdhMapOverview = Overview
+export const XdhMapZoom = Zoom
 export const XdhMapImage = Image
 export const XdhMapHtml = Html
 export const XdhMapIcon = Icon
@@ -79,6 +81,8 @@ export default {
   Line,
   Placement,
   Pointer,
+  Overview,
+  Zoom,
   Image,
   Html,
   Icon,

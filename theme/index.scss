@@ -2,6 +2,9 @@
 @import "pointer";
 @import "popup";
 @import "type";
+@import "overview";
+@import "./zoom/scale";
+@import "./zoom/zoom";
 
 .hidden {
   display: none;
