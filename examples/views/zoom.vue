@@ -1,11 +1,13 @@
 <template>
 
   <example>
-    <range-set></range-set>
+    <range-set v-model="precent"  :steps="20"></range-set>
+    <p>{{precent}}</p>
+    <button @click="add">+</button>
     <xdh-map>
       <xdh-map-zoom placement="left-top" :simple="false"></xdh-map-zoom>
     </xdh-map>
-    <div style="width: 100px; height: 100px; background: red" draggable="true"></div>
+    
   </example>
 
 </template>
@@ -15,15 +17,21 @@
   export default {
     data() {
       return {
-        precent: 30
+        precent: 0
       }
     },
     components: {
       RangeSet
     },
     methods: {
-      changeHandle(e) {
-        console.log(e)
+      add() {
+        this.precent += 5
+        if (this.precent >= 100) {
+          this.precent = 100
+        }
+      },
+      dragHandle(e) {
+        console.log(e.clientY)
       }
     }
   }
