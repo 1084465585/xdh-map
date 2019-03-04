@@ -1,15 +1,13 @@
 <template>
 <div class="range-set" :style="{'height': `${height}px`}">
-  <div class="range-set__btn" @click="btnClickHandle(-10)"></div>
-  <div class="range-set__track" @click="trackClick" >
+  <div class="range-set__btn" @click="btnClickHandle(-10)">+</div>
+  <div class="range-set__track" @click="trackClick">
 
   </div>
-  <div class="range-set__btn"  @click="btnClickHandle(10)"></div>
+  <div class="range-set__btn"  @click="btnClickHandle(10)">-</div>
   <div class="drag-wrap" ref="dragWrap">
-    <!-- <div class="drag" ></div> -->
-    <div class="ctrl" ref="dragCtrl"  >
-    </div>
-    <div class="drag" ref="drag" draggable="true" @dragstart="startHandle" @drag="dragHandle">cc</div>
+    <div class="ctrl" ref="dragCtrl"  >-</div>
+    <div class="drag" ref="drag" draggable="true" @dragstart="startHandle" @drag="dragHandle"></div>
   </div>
 </div>
 </template>
@@ -73,9 +71,27 @@
       },
       btnClickHandle(dir) {
         this.setTop(this.currentTop + dir)
+        this.$emit('change', this.percent)
       },
-      trackClick() {
-        console.log('test')
+      trackClick(e) {
+        let height = e.clientY - e.target.getBoundingClientRect().top
+        this.setTop(height)
+        this.$emit('change', this.percent)
+      },
+      _dragoverHandle(e) {
+        if (typeof e.preventDefault === 'function') {
+          e.preventDefault();
+        } else {
+          e.returnValue = false;
+        }
+      },
+      _dropHandle(e) {
+        if (typeof e.preventDefault === 'function') {
+          e.preventDefault();
+        } else {
+          e.returnValue = false;
+        }
+        this.$emit('change', this.percent)
       }
     },
     created() {
@@ -84,93 +100,25 @@
     mounted() {
       // 设置最大拖动范围
       this.maxRange = this.$refs.dragWrap && this.$refs.dragCtrl ? this.$refs.dragWrap.offsetHeight - this.$refs.dragCtrl.offsetHeight : 0
-      
-      //
+ 
       let top = Math.round(this.maxRange * this.value / 100)
       this.setTop(top)
-
-      document.body.addEventListener('dragover', (evt) => {
-        if (typeof evt.preventDefault === 'function') {
-            evt.preventDefault();
-        } else {
-            evt.returnValue = false;
-        }
-      })
+      
+      this.dragoverHandleProxy = this._dragoverHandle
+      this.dropHandleProxy = this._dropHandle
+      document.body.addEventListener('dragover', this.dragoverHandleProxy)
+      document.body.addEventListener('drop', this.dropHandleProxy)
       
     },
     beforeDestroy() {
+      document.body.removeEventListener('dragover', this.dragoverHandleProxy)
+      document.body.removeEventListener('drop', this.dropHandleProxy)
     }
   }
 </script>
 
 <style lang="scss" scope >
-$--range-bg: #FAFCFF;
-$--range-color: #CCCCCA;
-.range-set{
-  position: relative;
-  display: flex;
-  width: max-content;
-  flex-flow: column;
-  align-items: center;
-  // border: 1px solid red;
-  &__btn{
-    flex: 0 0 26px;
-    width: 26px;
-    line-height: 26px;
-    text-align: center;
-    font-weight: 800;
-    color: $--range-color;
-    background: $--range-bg;
-    box-shadow: 0 0 1px 1px $--range-color;
-    z-index: 2;
-  }
-  &__track{
-    flex: 1;
-    width: 10px;
-    box-shadow: 0 0 1px 0px $--range-color;
-    background: no-repeat;
-    background-color: $--range-bg;
-    background-image: repeating-linear-gradient($--range-color 0, $--range-color 1px, transparent 0, transparent 3px),
-                      repeating-linear-gradient($--range-color 0, $--range-color 1px, transparent 0, transparent 15px);
-    background-size: 3px 100%, 5px 100%;
-    background-position: center top;
-  }
-  .drag-wrap{
-    position: absolute;
-    width: 1px;
-    left: 0;
-    top: 28px;
-    bottom: 28px;
-    background: red;
-    .ctrl{
-      position: absolute;
-      left: 2px;
-      top: 0px;
-      width: 26px;
-      height: 18px;
-      line-height: 18px;
-      font-weight: 800;
-      text-align:center;
-      color: $--range-color;
-      background: red; // $--range-bg;
-      box-shadow: inset 0 0 1px 1px $--range-color;
-      
-      
-    }
-    .drag{
-      position: absolute;
-      left: 2px;
-      top: 0px;
-      width: 26px;
-      height: 18px;
-      background: rgba(0,0,0,0);
-      opacity: 0;
-      cursor:pointer;
-       
-    }
 
-  }
-}
 </style>
 
 
