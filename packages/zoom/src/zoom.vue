@@ -1,27 +1,19 @@
 <template>
   <xdh-map-placement class="xdh-map-zoom" v-bind="$props">
     <div class="xdh-map-zoom__wrap"   ref="zoomWrap"  >
-      <div class="xdh-map-zoom__wrap-simple" v-if="simple">
-        <div class="btn plus" @click="zoomIn">+</div>
-        <div class="btn substract" @click="zoomOut">-</div>
-      </div>
-      <div class="range-wrap" ref="rangeWrap" v-if="!simple" >
-        <vertical-scale v-model="zoomPrecent" @change="scaleChangeHandle"></vertical-scale> 
+      <div class="range-wrap" ref="rangeWrap"  >
+        <range-set v-model="zoomPrecent" @change="scaleChangeHandle"></range-set>
       </div>
     </div>
   </xdh-map-placement>
 </template>
 
 <script>
-  import VerticalScale from './scale.vue'
+  import RangeSet from './range-set.vue'
   import XdhMapPlacement from '../../placement'
   import {mixProps, getParent, mapReady} from 'utils/util'
 
   const vueProps = {
-    // simple: {
-    //   type: Boolean,
-    //   default: true
-    // }
   }
   const props = mixProps({props: vueProps}, XdhMapPlacement)
 
@@ -29,13 +21,9 @@
     name: 'XdhMapZoom',
     components: {
       XdhMapPlacement,
-      VerticalScale
+      RangeSet
     },
     props: {
-      simple: {
-        type: Boolean,
-        default: true
-      },
       ...props
     },
     data() {
@@ -54,12 +42,6 @@
       
     },
     methods: {
-      zoomIn() {
-        this.parent.zoomIn()
-      },
-      zoomOut() {
-        this.parent.zoomOut()
-      },
       zoomToPrecent(zoom) {
         this.nowZoom = zoom || this.map.getView().getZoom()
         this.minZoom = this.map.getView().getMinZoom() // .minZoom
@@ -75,19 +57,19 @@
         return zoomPrecent
       },
       scaleChangeHandle(precent) {
-        let zoom = Math.round((precent / 100) * (this.maxZoom - this.minZoom)) + 1
+        let zoom = Math.round(((100 - precent) / 100) * (this.maxZoom - this.minZoom)) + 1
+        if (zoom === this.nowZoom) return
         this.parent.zoomTo(zoom)
       },
       ready(map, vm) {
         this.map = map
 
         this.zoomPrecent = this.zoomToPrecent()
-
         this.map.getView().on('change', (e) => {
           let changeZoom = e.target.getZoom()
           if (this.nowZoom === changeZoom) return
           this.nowZoom = changeZoom
-          this.zoomPrecent = 100 - this.zoomToPrecent(this.nowZoom)
+          this.zoomPrecent = this.zoomToPrecent(this.nowZoom)
         })
       }
     },
