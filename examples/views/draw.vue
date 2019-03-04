@@ -16,6 +16,8 @@
 </template>
 
 <script>
+  import {parseStyle} from '../../packages'
+
   export default {
     methods: {
       drawLine() {
@@ -38,8 +40,20 @@
         this.$refs.polygon.finish()
       },
       drawend(e) {
-        console.log(e)
-
+        const feature = e.feature
+        const style = parseStyle({
+          className: 'Style',
+          fill: {
+            className: 'Fill',
+            color: 'rgba(0,0,0,.3)'
+          },
+          stroke: {
+            className: 'Stroke',
+            color: 'red',
+            width: 5
+          }
+        })
+        feature.setStyle(style)
       }
     }
   }

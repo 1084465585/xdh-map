@@ -76,8 +76,8 @@
           style: this.createStyle(),
           ...this.$props
         })
-
         this.map.addInteraction(this.drawer)
+        this.drawer.on('drawstart', this.handleDrawStart);
         this.drawer.on('drawend', this.handleDraw);
       },
       modify() {
@@ -91,11 +91,18 @@
       },
       finish() {
         if (this.drawer) {
+          this.drawer.un('drawstart', this.handleDrawStart);
           this.drawer.un('drawend', this.handleDraw);
           this.drawer.un('modifyend', this.handleModify);
           this.map.removeInteraction(this.drawer)
           this.drawer = null
         }
+      },
+      handleDrawStart(e) {
+        e.feature.on('change', this.handleChange)
+      },
+      handleChange(e) {
+        this.$emit('change', e)
       },
       handleModify(e) {
         this.$emit('modifyend', e)
@@ -107,6 +114,7 @@
       clear() {
         if (this.parent) {
           this.features.forEach(feature => {
+            feature.un('change', this.handleChange)
             this.parent.removeFeature(feature)
           })
         }
