@@ -143,6 +143,18 @@
           }
         })
       },
+      createVectorLayer(feature) {
+        if (this.vectorLayer) {
+          return this.vectorLayer
+        }
+        let vectorSource = new VectorSource()
+        feature && vectorSource.addFeature(feature)
+        this.vectorLayer = new VectorLayer({
+          source: vectorSource
+        })
+        this.map.addLayer(this.vectorLayer)
+        return this.vectorLayer
+      },
       /**
        * 在地图上画图形
        * @param {FeatureClass} feature 图形实例
@@ -153,14 +165,7 @@
           const source = this.vectorLayer.getSource()
           source.addFeature(feature)
         } else {
-          let vectorSource = new VectorSource({
-            features: [feature]
-          })
-
-          this.vectorLayer = new VectorLayer({
-            source: vectorSource
-          })
-          this.map.addLayer(this.vectorLayer)
+          this.createVectorLayer(feature)
         }
       },
       /**

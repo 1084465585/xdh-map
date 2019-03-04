@@ -3,8 +3,7 @@
 </template>
 
 <script>
-  import VectorSource from 'ol/source/Vector'
-  import VectorLayer from 'ol/layer/Vector'
+  import Collection from 'ol/Collection'
   import {getParent, mapReady} from 'utils/util'
   import {parse} from 'utils/style'
   import {Draw, Modify} from 'ol/interaction.js';
@@ -67,58 +66,61 @@
         return this.styleJson ? parse(this.styleJson) : null
       },
       draw() {
-        if (!this.map) return
+        if (!this.map || !this.parent) return
 
-        if (!this.source) {
-          this.source = new VectorSource({wrapX: false});
-        }
-        if (!this.layer) {
-          this.layer = new VectorLayer({
-            source: this.source
-          });
-          this.map.addLayer(this.layer);
-        }
+        const layer = this.parent.createVectorLayer()
+        const source = layer.getSource()
+
         this.drawer = new Draw({
-          source: this.source,
+          source: source,
           style: this.createStyle(),
           ...this.$props
-        });
+        })
 
-        this.map.addInteraction(this.drawer);
-        this.drawer.once('drawend', e => {
-          this.$emit('drawend', e)
-          this.finish()
-        });
+        this.map.addInteraction(this.drawer)
+        this.drawer.on('drawend', this.handleDraw);
       },
       modify() {
         this.drawer = new Modify({
-          source: this.source,
+          features: new Collection(this.features),
           style: this.createStyle(),
           wrapX: this.wrapX
         });
-        this.map.addInteraction(this.drawer);
+        this.drawer.on('modifyend', this.handleModify);
+        this.map.addInteraction(this.drawer)
       },
       finish() {
         if (this.drawer) {
-          this.map.removeInteraction(this.drawer);
+          this.drawer.un('drawend', this.handleDraw);
+          this.drawer.un('modifyend', this.handleModify);
+          this.map.removeInteraction(this.drawer)
           this.drawer = null
         }
       },
+      handleModify(e) {
+        this.$emit('modifyend', e)
+      },
+      handleDraw(e) {
+        this.features.push(e.feature)
+        this.$emit('drawend', e)
+      },
       clear() {
-        if (this.layer && this.map) {
-          this.map.removeLayer(this.layer)
-          this.layer = null
+        if (this.parent) {
+          this.features.forEach(feature => {
+            this.parent.removeFeature(feature)
+          })
         }
       }
     },
     created() {
+      this.features = []
       this.parent = getParent.call(this)
       mapReady.call(this, this.ready)
     },
     beforeDestroy() {
       if (this.map) {
         this.finish()
-        this.layer && this.map.removeLayer(this.layer);
+        this.clear()
       }
     }
   }

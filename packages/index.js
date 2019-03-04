@@ -1,3 +1,4 @@
+import {parse} from '../utils/style'
 import Map from './map'
 import Text from './text'
 import Rectangle from './rectangle'
@@ -75,10 +76,12 @@ export const XdhMapEcharts = Echarts
 export const XdhMapTrack = Track
 export const XdhMapType = Type
 export const XdhMapDraw = Draw
+export const parseStyle = parse
 
 export default {
   version: '1.0.0',
   install,
+  parseStyle,
   Map,
   Text,
   Rectangle,

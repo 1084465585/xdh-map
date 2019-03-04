@@ -104,9 +104,11 @@
     padding: 10px 20px;
     margin: 0;
     line-height: 1.8em;
+    font-size: 14px;
+    height: calc(100% - 90px);
+    overflow: auto;
     dt {
       margin-top: 10px;
-      font-size: 16px;
       color: #666;
     }
     dd {
