@@ -92,6 +92,10 @@ const router = new Router({
           {
             path: 'draw',
             component: () => import('./views/draw.vue')
+          },
+          {
+            path: 'scatter',
+            component: () => import('./views/scatter.vue')
           }
         ]
       }

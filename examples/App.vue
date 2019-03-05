@@ -15,7 +15,6 @@
 
   button, select {
     height: 30px;
-    margin-right: 10px;
-    margin-bottom: 10px;
+    margin: 5px;
   }
 </style>

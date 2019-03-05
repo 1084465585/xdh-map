@@ -1,7 +1,7 @@
 <template>
   <example>
     <xdh-map>
-      <xdh-map-placement placement="right-top" :margin="[10]">
+      <xdh-map-placement placement="right-top" :margin="[10]" theme="light">
         <button @click="drawLine">画线</button>
         <button @click="drawCircle">画圆</button>
         <button @click="drawPolygon">多边形</button>

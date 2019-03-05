@@ -1,0 +1,35 @@
+@keyframes scatter {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.xdh-map-scatter {
+  width: 50px;
+  height: 50px;
+  .scatter-effect {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background: rgb(255, 0, 0);
+    opacity: 0.9;
+    transform: scale(0);
+    animation: scatter 2s;
+    animation-iteration-count: infinite;
+  }
+  &__mid.scatter-effect {
+    animation-delay: 1s;
+  }
+  &__inner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background: rgb(255, 0, 0);
+  }
+}
