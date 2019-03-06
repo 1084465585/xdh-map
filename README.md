@@ -12,13 +12,15 @@ npm install xdh-map --save
 ```
 import XdhMap from 'xdh-map'
 import Vue from 'vue'
+import 'xdh-map/lib/xdhmap.css'
 Vue.use(XdhMap)
 
 ```
 
 ### 按需引入
 ```
-import {XdhMap, XdhMapCircl} from 'xdh-map'
+import 'xdh-map/lib/xdhmap.css'
+import {XdhMap, XdhMapCircle} from 'xdh-map'
 
 ```
 

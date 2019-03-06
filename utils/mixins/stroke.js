@@ -1,5 +1,17 @@
 import {prefix, mix} from '../util';
 
+/**
+ *
+ * @property {number} [strokeWidth] 边框厚度
+ * @property {string} [strokeColor] 边框颜色
+ * @property {string} [strokeLineCap] 虚线样式
+ * @property {string} [strokeLineJoin] 虚线样式
+ * @property {number[]} [strokeLineDash] 虚线样式
+ * @property {number} [strokeLineDashOffset]
+ * @property {number} [strokeMiterLimit]
+ *
+ */
+
 const options = {
   // 边框颜色
   color: {

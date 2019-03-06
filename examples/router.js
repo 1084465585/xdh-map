@@ -11,6 +11,10 @@ const router = new Router({
         children: [
           {
             path: '',
+            component: () => import('./views/docs.vue')
+          },
+          {
+            path: '/map',
             component: () => import('./views/index.vue')
           },
           {

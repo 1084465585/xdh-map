@@ -5,6 +5,23 @@
 </template>
 
 <script>
+
+  /**
+   *  XdhMap 组件
+   *  @module xdh-map
+   *  @description 基于ol/Map的封装，支持ol/Map所提供的所有事件，相关事件参考openlayers文档，可以通过this.map 访问ol/Map实例
+   *  @example
+   *
+   *  <xdh-map :center="[120, 30]"></xdh-map>
+   *
+   *  import {XdhMap} from 'xdh-map'
+   *  export default {
+   *    components: {
+   *      XdhMap
+   *    }
+   *  }
+   */
+
   import Map from 'ol/Map'
   import View from 'ol/View'
   import VectorLayer from 'ol/layer/Vector'
@@ -29,10 +46,28 @@
     propertychange (module:ol/Object.ObjectEvent) - Triggered when a property is changed.
     rendercomplete (module:ol/render/Event~RenderEvent) - Triggered when rendering is complete, i.e. all sources and tiles have finished loading for the current viewport, and all tiles are faded in.
     singleclick    (module:ol/MapBrowserEvent~MapBrowserEvent) - A true single click with no dragging and no double click. Note that this event is delayed by 250 ms to ensure that it is not a double click.
-
   */
+
+  /**
+   * Slots 插槽
+   * @member slots
+   * @property {String} [default] 默认插槽，覆盖物组件
+   */
+
   export default {
     name: 'XdhMap',
+
+    /**
+     * Props 参数
+     * @member props
+     * @property {Number} [minZoom=1] 最小缩放层级
+     * @property {Number} [maxZoom=20] 最大缩放层级
+     * @property {Number} [zoom=10] 初始化缩放层级
+     * @property {Number[]} [center] 初始化中心经纬度
+     * @property {String} [type=OSM] 初始化图层瓦片地图类型, 默认可选值：OSM、Baidu、Google、Amap、SuperMap、Founder
+     * @property {Function} [layerConfig] 图层瓦片服务配置，必须返回Promise
+     */
+
     props: {
       // 最小缩放
       minZoom: {
@@ -117,7 +152,8 @@
       },
       /**
        * 给子组件的图形绑定事件
-       * @param {VueComponent} 子组件实例
+       * @method bindEvents
+       * @param {VueComponent} vm 子组件实例
        */
       bindEvents(vm) {
         if (!this.map) return
@@ -128,7 +164,8 @@
       },
       /**
        * 给子组件的图形销毁事件
-       * @param {VueComponent} 子组件实例
+       * @method unbindEvents
+       * @param {VueComponent} vm 子组件实例
        */
       unbindEvents(vm) {
         if (!this.map) return
@@ -143,6 +180,12 @@
           }
         })
       },
+      /**
+       * 创建矢量图层，只会创建一个图层，已创建即复用
+       * @method createVectorLayer
+       * @param {ol/Featrue} [feature] 图形实例, 可选，如传图形，创建图层并且把图形加入到图层中
+       * @return {ol/layer/Vector} vectorLayer 图层实例
+       */
       createVectorLayer(feature) {
         if (this.vectorLayer) {
           return this.vectorLayer
@@ -156,8 +199,9 @@
         return this.vectorLayer
       },
       /**
-       * 在地图上画图形
-       * @param {FeatureClass} feature 图形实例
+       * 在地图上添加图形, 图形加入到矢量图层
+       * @method addFeature
+       * @param {ol/Feature} feature 图形实例
        */
       addFeature(feature) {
         // 共享矢量图层，把所有图形就加入同一个图层
@@ -170,7 +214,8 @@
       },
       /**
        * 删除图形
-       * @param {FeatureClass} feature 图形实例
+       * @method removeFeature
+       * @param {ol/Feature} feature 图形实例
        */
       removeFeature(feature) {
         if (!this.vectorLayer) return
@@ -179,7 +224,8 @@
       },
       /**
        * 根据地图上的像素位置获取图形对象
-       * @param  {Array} pixel 位置像素 [x,y]
+       * @method getFeatureAtPixel
+       * @param  {Number[]} pixel 位置像素 [x,y]
        * @return {module:ol/Feature|module:ol/render/Feature|*}
        */
       getFeatureAtPixel(pixel) {
@@ -189,6 +235,7 @@
       },
       /**
        * 切换地图类型
+       * @method changeType
        * @param {string} type 地图类型，如： Baidu / Amap / OSM
        */
       changeType(type) {
@@ -201,16 +248,23 @@
           tileLayer.disposeInternal()
         }
         this.map.addLayer(createLayer(type))
+        /**
+         * 地图类型切换时触发
+         * @event changeType
+         * @param {String} type
+         */
         this.$emit('changeType', type)
       },
       /**
        * 重置地图尺寸，当容器的尺寸变化后需要执行resize
+       * @method resize
        */
       resize() {
         this.map.updateSize()
       },
       /**
        * 设置地图缩放等级
+       * @method zoomTo
        * @param {Number} level 等级数值
        */
       zoomTo(level) {
@@ -222,6 +276,7 @@
 
       /**
        * 逐步放大
+       * @method zoomIn
        */
       zoomIn() {
         const view = this.map.getView()
@@ -230,6 +285,7 @@
 
       /**
        * 逐步缩小
+       *  @method zoomOut
        */
       zoomOut() {
         const view = this.map.getView()
@@ -237,7 +293,8 @@
       },
       /**
        * 移动到指定经纬度居中
-       * @param {Array} loc 经纬度数组
+       * @method moveTo
+       * @param {Number[]} loc 经纬度数组
        */
       moveTo(loc) {
         const view = this.map.getView()
@@ -247,7 +304,8 @@
       },
       /**
        * 设置鼠标形状
-       * @param e
+       * @method setCursor
+       * @param {Event} e 事件对象
        */
       setCursor(e) {
         const feature = this.getFeatureAtPixel(e.pixel)
@@ -295,8 +353,10 @@
       })
 
       /**
-       * @event ready
        * 地图初始化完成
+       * @event ready
+       * @param {ol/Map} map ol地图实例
+       * @param {VueComponent} mv Vue组件实例
        */
       this.$emit('ready', this.map, this)
 

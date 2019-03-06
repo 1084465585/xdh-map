@@ -2,6 +2,12 @@
  * 文本公共属性
  */
 export default {
+  /**
+   * @property {string} [text] 文本内容
+   * @property {string} [color] 文本颜色
+   * @property {string} [font] 字体大小，如 20px
+   * @property {string} [background] 字体背景颜色
+   */
   props: {
     text: String,
     color: String,

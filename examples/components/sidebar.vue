@@ -3,7 +3,10 @@
     <h3>新德汇地图应用类库</h3>
     <dl class="list">
       <dt>
-        <router-link to="/">Map</router-link>
+        <router-link to="/">API文档</router-link>
+      </dt>
+      <dt>
+        <router-link to="/map">Map</router-link>
       </dt>
       <dt>覆盖物组件</dt>
       <dd>
