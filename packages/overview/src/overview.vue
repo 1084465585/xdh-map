@@ -1,8 +1,10 @@
 <template>
-  <xdh-map-placement class="xdh-map-overview" :class="isClosed ? '' : 'is-show'"
-  v-bind="$props" :style="placementStyle">
-    <div class="xdh-map-overview__btn" :class="placement"  @click="isClosed = !isClosed">{{isClosed ? '«' : '»'}}</div>
-    <div ref="overview" :class="mapClass" :style="overviewStyle">
+  <xdh-map-placement :class="classes" v-bind="$props">
+
+    <div ref="overview" class="xdh-map-overview__map" :style="overviewStyle"></div>
+
+    <div class="xdh-map-overview__trigger" @click="handleClick">
+      <i class="iconfont" :class="iconClass"></i>
     </div>
   </xdh-map-placement>
 </template>
@@ -14,83 +16,89 @@
   import {mixProps, getParent, mapReady} from 'utils/util'
 
   const vueProps = {
+    theme: {
+      type: String,
+      default: 'light'
+    },
+    width: {
+      type: Number,
+      default: 200
+    },
+    height: {
+      type: Number,
+      default: 200
+    }
   }
-  const props = mixProps({props: vueProps}, XdhMapPlacement)
+  const props = mixProps(XdhMapPlacement, {props: vueProps})
 
   export default {
     name: 'XdhMapOverview',
     components: {
       XdhMapPlacement
     },
-    props: {
-      width: {
-        type: String,
-        default: '500px'
-      },
-      height: {
-        type: String,
-        default: '300px'
-      },
-      defaultClosed: {
-        type: Boolean,
-        default: true
-      },
-      ...props
-    },
+    props: props,
     data() {
       return {
-        isClosed: false,
+        expand: false,
         map: null,
         overview: null
       }
     },
     computed: {
+      classes() {
+        return {
+          'xdh-map-overview': true,
+          expand: this.expand
+        }
+      },
       overviewStyle() {
         return {
-          'width': this.width,
-          'height': this.height
+          width: `${this.width}px`,
+          height: `${this.height}px`
         }
       },
-      placementStyle() {
-        return {
-          'width': this.isClosed ? '31px' : this.width, 
-          'height': this.isClosed ? '31px' : this.height
+      iconClass() {
+        if (this.placement.includes('bottom')) {
+          return this.expand ? 'icon-down' : 'icon-up'
         }
-      },
-      mapClass() {
-        return `xdh-map-overview__wrap ${this.isClosed ? 'is-closed' : ''} ${this.placement}`
+        return this.expand ? 'icon-up' : 'icon-down'
       }
     },
     methods: {
-      ready(map, vm) {
-        // let layers = map.getLayers()
+      renderOverview() {
+        if (this.overview) return
         this.overview = new OverviewMap({
           target: this.$refs.overview,
-          // layers: layers,
           view: new View({
             projection: 'EPSG:4326'
           })
         })
-        this.map = map
         this.map.addControl(this.overview)
-        this.isClosed = this.defaultClosed
+      },
+      handleClick() {
+        this.expand = !this.expand
+        this.$nextTick(() => {
+          this.renderOverview()
+        })
+      },
+      ready(map, vm) {
+        this.map = map
       }
     },
     created() {
       // 获取地图组件实例
       this.parent = getParent.call(this)
-    },
-    mounted() {
-      
       mapReady.call(this, this.ready)
     },
     beforeDestroy() {
-      this.map.removeControl(this.overview)
+      if (this.map && this.overview) {
+        this.map.removeControl(this.overview)
+      }
     }
   }
 </script>
 
-<style lang="scss" scope >
+<style lang="scss" scope>
 
 
 </style>

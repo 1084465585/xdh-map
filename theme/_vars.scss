@@ -1,3 +1,4 @@
+$--primary-color: #0086b3;
 $--shadow-base: 0 2px 2px rgba(0, 0, 0, .2);
 $--border-radius: 3px;
 
@@ -23,5 +24,9 @@ $--scale-btn-bg: #F9F9F9;
 $--scale-highlight: #8CB0CE;
 
 $--type-color: #666;
-$--type-active-color: #0086b3;
+$--type-active-color: $--primary-color;
 $--type-active-text-color: #fff;
+
+$--overview-selectable-color: $--primary-color;
+$--overview-trigger-color-light: rgba(255, 255, 255, .7);
+$--overview-trigger-color-dark: rgba(0, 0, 0, .7);

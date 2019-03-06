@@ -2,10 +2,22 @@
   <div>
     <example>
       <xdh-map>
-        <xdh-map-overview placement="right-bottom" width="150px" height="300px" :default-closed="true"></xdh-map-overview>
-        <xdh-map-overview placement="left-bottom" :default-closed="true" width="150px" height="150px" ></xdh-map-overview>
-        <xdh-map-overview placement="left-top" :default-closed="true" width="180px" height="100px" ></xdh-map-overview>
-        <xdh-map-overview placement="right-top" :default-closed="true" width="200px" height="100px" ></xdh-map-overview>
+        <xdh-map-overview placement="left-bottom"
+                          :margin="[10]"
+                          theme="light"></xdh-map-overview>
+
+        <xdh-map-overview placement="right-bottom"
+                          :margin="[10]"
+                          theme="dark"></xdh-map-overview>
+
+        <xdh-map-overview placement="right-top"
+                          :margin="[10]"
+                          theme="dark"></xdh-map-overview>
+
+        <xdh-map-overview placement="left-top"
+                          :margin="[10]"
+                          theme="light"></xdh-map-overview>
+
       </xdh-map>
     </example>
   </div>

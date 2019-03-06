@@ -1,78 +1,71 @@
 @import './_vars.scss';
-.xdh-map-overview{
+
+.xdh-map-overview {
+  box-shadow: $--shadow-base;
   transition: all 0.3s;
-  overflow: hidden;
-  &.is-show{
-    box-shadow: 0 0 1px 1px $--scale-highlight;
+  .ol-overviewmap, .ol-overviewmap-map {
+    width: 100%;
+    height: 100%;
   }
-  &__btn{
-    position: absolute;
-    line-height: 30px;
-    width: 30px;
-    color: white;
-    text-align:center;
-    border-radius: 3px;
-    background: $--scale-highlight;
+  .ol-selectable {
+    border: 2px solid $--overview-selectable-color;
+  }
+  button {
+    display: none;
+  }
+
+
+  &__trigger {
+    z-index: 2;
+    width: 24px;
+    height: 24px;
+    border-radius: $--border-radius;
     cursor: pointer;
-    &.left-top{
-      left: 0;
-      top: 0;
-      transform: rotate(180deg);
+    line-height: 26px;
+    overflow: hidden;
+    :hover {
+      opacity: 0.5;
     }
-    &.left-bottom{
-      left: 0;
-      bottom: 0;
-      transform: rotate(180deg);
-    }
-    &.right-top{
-      right: 0;
-      top: 0;
-    }
-    &.right-bottom{
-      right: 0;
-      bottom: 0;
+    i {
+      font-size: 30px;
+      text-align: center;
+      transform: translateX(-4px);
+      display: inline-block;
     }
   }
 
-  &__wrap{
-    position: absolute;
-    
-    z-index: -1;
-    &.is-closed{
-      opacity: 0.2;
-    }
-    &.left-top {
-      left: 0px;
-      top: 0px;
-    }
-    &.right-top {
-      right: 0px;
-      top: 0px;
-    } 
-    &.left-bottom {
-      left: 0px;
-      bottom: 0px;
-    }
-    &.right-bottom {
-      right: 0px;
-      bottom: 0px;
-    }
-    .ol-overviewmap{
-      width: 100%;
-      height: 100%;
-      border-radius: 3px;
-      background: white;
-    }
-    .ol-overviewmap-map{
-      width: 100%;
-      height: 100%;
-    }
-    .ol-selectable{
-      border: 1px solid green;
-    }
+  &__map {
+    padding: 5px;
+    display: none;
+  }
 
-    button[title="Overview map"]{
-      display:none;
+  &.expand {
+    .xdh-map-overview__map {
+      display: block;
+    }
+    .xdh-map-overview__trigger {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      background: $--overview-trigger-color-light;
+    }
+    &.is-dark {
+      .xdh-map-overview__trigger {
+        background: $--overview-trigger-color-dark;
+      }
+    }
+    &.left-bottom .xdh-map-overview__trigger {
+      left: 10px;
+      bottom: 10px;
+    }
+    &.right-top .xdh-map-overview__trigger {
+      right: 10px;
+      top: 10px;
+    }
+    &.left-top .xdh-map-overview__trigger {
+      left: 10px;
+      top: 10px;
     }
   }
+
 }

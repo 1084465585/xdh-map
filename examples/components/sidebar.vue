@@ -58,15 +58,19 @@
       <dd>
         <router-link to="/type">Type</router-link>
       </dd>
-      <dd>
-        <router-link to="/scatter">Scatter</router-link>
-      </dd>
+
       <dt>动效组件</dt>
       <dd>
         <router-link to="/track">Track</router-link>
       </dd>
       <dd>
         <router-link to="/draw">Draw</router-link>
+      </dd>
+      <dd>
+        <router-link to="/scatter">Scatter</router-link>
+      </dd>
+      <dd>
+        <router-link to="/flight">Flight</router-link>
       </dd>
       <dt>性能测试</dt>
       <dd>
