@@ -1,7 +1,7 @@
 <template>
   <example>
     <xdh-map>
-      <xdh-map-scale units="imperial" color="red"></xdh-map-scale>
+      <xdh-map-scale units="imperial"></xdh-map-scale>
     </xdh-map>
   </example>
 </template>

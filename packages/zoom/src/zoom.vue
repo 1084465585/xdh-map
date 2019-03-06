@@ -37,13 +37,6 @@
     created() {
       // 获取地图组件实例
       this.parent = getParent.call(this)
-    },
-    beforeDestroy() {
-
     }
   }
 </script>
-
-<style lang="scss" scope>
-</style>
-

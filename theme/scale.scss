@@ -1,9 +1,13 @@
-.xdh-map-scale{
-  padding: 10px;
-  &__target{
-    position: relative;
-    .ol-scale-line-inner{
-      text-align:center;
-    }
+@import "vars";
+
+.xdh-map-scale {
+  border-radius: 0;
+  border: 2px solid #000;
+  border-top: none;
+  height: 4px;
+  overflow: visible;
+  text-align: center;
+  .ol-scale-line {
+    transform: translateY(-18px);
   }
 }
