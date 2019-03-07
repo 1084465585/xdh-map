@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: packages/html/src/html.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: packages/html/src/html.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;div class="xdh-map-html">
+    &lt;slot>&lt;/slot>
+  &lt;/div>
+&lt;/template>
+
+&lt;script>
+  /**
+   * HTML覆盖物组件
+   * @module xdh-map-html
+   */
+  import {mapReady, getParent} from 'utils/util'
+  import Overlay from 'ol/Overlay'
+
+  /**
+   * 插槽
+   * @member slots
+   * @property {string} [default] 默认插槽，定义 html 内容
+   */
+
+  export default {
+    name: 'XdhMapHtml',
+    /**
+     * 参数属性
+     * @member props
+     * @property {string} [positioning] 经纬度对齐位置，默认 center-center
+     * @property {number[]} position 经纬度
+     * @property {number[]} [offset] 位置偏移
+     * @property {boolean} [stopEvent] 是否阻止时间冒泡，默认 true
+     * @property {boolean} [insertFirst]
+     * @property {string} [className]
+     */
+    props: {
+      positioning: {
+        type: String,
+        default: 'center-center',
+        validator(val) {
+          return ['bottom-left',
+            'bottom-center',
+            'bottom-right',
+            'center-left',
+            'center-center',
+            'center-right',
+            'top-left',
+            'top-center',
+            'top-right'].includes(val)
+        }
+      },
+      // 显示位置
+      position: Array,
+      // 位置偏移
+      offset: Array,
+      // 是否阻止时间冒泡，默认 true
+      stopEvent: {
+        type: Boolean,
+        default: true
+      },
+      insertFirst: Boolean,
+      // CSS class name
+      className: String
+    },
+    watch: {
+      position() {
+        this.show()
+      }
+    },
+    methods: {
+      addOverlay(map) {
+        const options = this.$props
+        options.element = this.$el
+        this.overlay = new Overlay(options)
+        map.addOverlay(this.overlay)
+      },
+      show(position) {
+        this.overlay &amp;&amp; this.overlay.setPosition(position || this.position)
+      },
+      hide() {
+        this.overlay &amp;&amp; this.overlay.setPosition(null)
+      }
+    },
+    created() {
+      this.parent = getParent.call(this)
+      mapReady.call(this, this.addOverlay)
+    },
+    beforeDestroy() {
+      if (this.overlay &amp;&amp; this.parent) {
+        this.parent.map.removeOverlay(this.overlay)
+      }
+    }
+  }
+&lt;/script>
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-xdh-map.html">xdh-map</a></li><li><a href="module-xdh-map-circle.html">xdh-map-circle</a></li><li><a href="module-xdh-map-draw.html">xdh-map-draw</a></li><li><a href="module-xdh-map-echarts.html">xdh-map-echarts</a></li><li><a href="module-xdh-map-heat.html">xdh-map-heat</a></li><li><a href="module-xdh-map-html.html">xdh-map-html</a></li><li><a href="module-xdh-map-icon.html">xdh-map-icon</a></li><li><a href="module-xdh-map-image.html">xdh-map-image</a></li><li><a href="module-xdh-map-line.html">xdh-map-line</a></li><li><a href="module-xdh-map-overview.html">xdh-map-overview</a></li><li><a href="module-xdh-map-placement.html">xdh-map-placement</a></li><li><a href="module-xdh-map-pointer.html">xdh-map-pointer</a></li><li><a href="module-xdh-map-polygon.html">xdh-map-polygon</a></li><li><a href="module-xdh-map-popup.html">xdh-map-popup</a></li><li><a href="module-xdh-map-rectangle.html">xdh-map-rectangle</a></li><li><a href="module-xdh-map-scatter.html">xdh-map-scatter</a></li><li><a href="module-xdh-map-text.html">xdh-map-text</a></li><li><a href="module-xdh-map-track.html">xdh-map-track</a></li><li><a href="module-xdh-map-type.html">xdh-map-type</a></li><li><a href="module-xdh-map-zoom.html">xdh-map-zoom</a></li></ul><h3>Classes</h3><ul><li><a href="ol.source.TileSuperMapRest.html">TileSuperMapRest</a></li></ul><h3>Events</h3><ul><li><a href="module-xdh-map-type.html#~event:change">change</a></li><li><a href="module-xdh-map.html#~event:changeType">changeType</a></li><li><a href="module-xdh-map-pointer.html#~event:copy">copy</a></li><li><a href="module-xdh-map-draw.html#~event:drawend">drawend</a></li><li><a href="module-xdh-map-draw.html#~event:modifyend">modifyend</a></li><li><a href="module-xdh-map-track.html#~event:move">move</a></li><li><a href="module-xdh-map.html#~event:ready">ready</a></li><li><a href="module-xdh-map-track.html#~event:start">start</a></li><li><a href="module-xdh-map-track.html#~event:stop">stop</a></li></ul><h3>Global</h3><ul><li><a href="global.html#capitalize">capitalize</a></li><li><a href="global.html#createLayer">createLayer</a></li><li><a href="global.html#featureStyleRender">featureStyleRender</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getParent">getParent</a></li><li><a href="global.html#keyMap">keyMap</a></li><li><a href="global.html#LAYERS">LAYERS</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#mixProps">mixProps</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#prefix">prefix</a></li><li><a href="global.html#props">props</a></li><li><a href="global.html#set">set</a></li><li><a href="global.html#StyleMap">StyleMap</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 07 2019 15:28:50 GMT+0800 (China Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

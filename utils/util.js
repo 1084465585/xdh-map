@@ -1,4 +1,5 @@
 import {parse} from './style'
+import * as sphere from 'ol/sphere'
 
 const BASE_TYPES = [Array, String, Boolean, Object, Function]
 
@@ -121,16 +122,8 @@ export function mapReady(callback) {
  * 计算两经纬度坐标点距离，
  * @param {Array} coor1 标准经纬度坐标数组,如：[113.38585096783513, 22.96213834599851]；
  * @param {Array} coor2 标准经纬度坐标数组,如：[113.38585096783513, 22.96213834599851]；
- * @return {Number} 返回距离，单位为km；
+ * @return {Number} 返回距离，单位为米；
  */
 export function getDistance(coor1, coor2) {
-  let radLat1 = coor1[0] * Math.PI / 180.0;
-  let radLat2 = coor2[0] * Math.PI / 180.0;
-  let a = radLat1 - radLat2;
-  let b = coor1[1] * Math.PI / 180.0 - coor1[1] * Math.PI / 180.0;
-  let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
-    Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
-  s = s * 6378.137;// EARTH_RADIUS;
-  s = Math.round(s * 10000) / 10000;
-  return s;
+  return sphere.getDistance(coor1, coor2)
 }

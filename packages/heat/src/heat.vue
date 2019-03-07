@@ -3,6 +3,12 @@
 </template>
 
 <script>
+
+  /**
+   * 热力图覆盖物组件
+   * @module xdh-map-heat
+   */
+
   import Feature from 'ol/Feature'
   import Point from 'ol/geom/Point'
   import Vector from 'ol/source/Vector'
@@ -10,6 +16,23 @@
   import CleanMixin from 'utils/mixins/clean'
   import factory from 'utils/mixins/factory'
   import {getParent, mapReady} from 'utils/util'
+
+  /**
+   * 参数选项
+   * @member props
+   * @property {number} [opacity=1] 透明度
+   * @property {boolean} [visible=true] 是否可见
+   * @property {number} [zIndex] 层级,图层渲染的z-index。在渲染时，将按照Z-index然后按位置对层进行排序
+   * @property {number} [minResolution]  此图层可见的最小分辨率（包括）
+   * @property {number} [maxResolution] 此图层可见的最小分辨率（包括）
+   * @property {string[]} [gradient] 热图的颜色渐变，指定为CSS颜色字符串数组
+   * @property {number}  [radius=8] 半径大小（以像素为单位）
+   * @property {number} [blur=15] 模糊大小（以像素为单位）
+   * @property {number} [shadow=250] 阴影大小，以像素为单
+   * @property {string|Function} [weight=weight] 用于权重的要素属性或从要素返回权重的函数。重量值的范围应为0到1（外部的值将被限制在该范围内）
+   * @property {object[]} data 数据对象数组，对象属性包含：lon（经度）、lat（维度）、weight（权重）
+   * @property {object} [prop] 数据对象字段映射
+   */
 
   const options = {
     // 不透明度（0,1）

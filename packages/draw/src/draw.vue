@@ -3,18 +3,35 @@
 </template>
 
 <script>
+  /**
+   * 画图组件
+   * @module xdh-map-draw
+   */
   import Collection from 'ol/Collection'
   import {getParent, mapReady} from 'utils/util'
   import {parse} from 'utils/style'
   import {Draw, Modify} from 'ol/interaction.js';
   import CleanMixin from 'utils/mixins/clean'
 
+  /**
+   * 参数属性
+   * @member props
+   * @property {string} type 画图类型，可选值：'Point', 'LineString','LinearRing', 'Polygon', 'MultiPoint', 'MultiLineString','MultiPolygon','GeometryCollection', 'Circle'
+   * @property {number} [dragVertexDelay=500] Delay in milliseconds after pointerdown before the current vertex can be dragged to its exact position.
+   * @property {number} [snapTolerance=12] Pixel distance for snapping to the drawing finish.
+   * @property {boolean} [stopClick]
+   * @property {number} [maxPoints]
+   * @property {number} [minPoints]
+   * @property {object} [styleJson] Style描述JSON
+   * @property {boolean} [freehand]
+   * @property {boolean} [wrapX]
+   */
+
   const vueProps = {
     type: {
       type: String,
       default: 'LineString'
     },
-
     validator(val) {
       return ['Point', 'LineString',
         'LinearRing', 'Polygon',
@@ -65,6 +82,10 @@
       createStyle() {
         return this.styleJson ? parse(this.styleJson) : null
       },
+      /**
+       * 开始画图
+       * @method draw
+       */
       draw() {
         if (!this.map || !this.parent) return
 
@@ -80,6 +101,10 @@
         this.drawer.on('drawstart', this.handleDrawStart);
         this.drawer.on('drawend', this.handleDraw);
       },
+      /**
+       * 编辑图形模式
+       * @method modify
+       */
       modify() {
         this.drawer = new Modify({
           features: new Collection(this.features),
@@ -89,6 +114,10 @@
         this.drawer.on('modifyend', this.handleModify);
         this.map.addInteraction(this.drawer)
       },
+      /**
+       * 完成画图
+       * @method finish
+       */
       finish() {
         if (this.drawer) {
           this.drawer.un('drawstart', this.handleDrawStart);
@@ -102,15 +131,34 @@
         e.feature.on('change', this.handleChange)
       },
       handleChange(e) {
+        /**
+         * 图形发生变化时触发
+         * @event change
+         * @param {object} e 事件对象
+         */
         this.$emit('change', e)
       },
       handleModify(e) {
+        /**
+         * 修改图形结束时触发
+         * @event modifyend
+         * @param {object} e 事件对象
+         */
         this.$emit('modifyend', e)
       },
       handleDraw(e) {
         this.features.push(e.feature)
+        /**
+         * 画图结束时触发
+         * @event drawend
+         * @param {object} e 事件对象
+         */
         this.$emit('drawend', e)
       },
+      /**
+       * 清除已画的图形
+       * @method clear
+       */
       clear() {
         if (this.parent) {
           this.features.forEach(feature => {

@@ -7,6 +7,10 @@
 </template>
 
 <script>
+  /**
+   * 水波涟漪动画组件
+   * @module xdh-map-scatter
+   */
   import XdhMapHtml from '../../html'
   import {getParent} from 'utils/util'
 
@@ -15,6 +19,15 @@
     components: {
       XdhMapHtml
     },
+    /**
+     * 参数属性
+     * @member props
+     * @property {number[]} position 经纬度
+     * @property {number[]} [offset] 位置偏移
+     * @property {boolean} [stopEvent] 是否阻止时间冒泡，默认 true
+     * @property {boolean} [insertFirst]
+     * @property {string} [color=red] 颜色
+     */
     props: {
       ...XdhMapHtml.props,
       color: {

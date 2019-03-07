@@ -3,6 +3,10 @@
 </template>
 
 <script>
+  /**
+   * 轨迹动画组件
+   * @module xdh-map-track
+   */
   import Point from 'ol/geom/Point'
   import Feature from 'ol/Feature'
   import {parse} from 'utils/style'
@@ -13,6 +17,15 @@
   export default {
     name: 'XdhMapTrack',
     mixins: [CleanMixin],
+    /**
+     * 参数属性
+     * @member props
+     * @property {array[]} routes 线坐标数组
+     * @property {string} src 图标图片资源
+     * @property {number} [steps=200] 两点之间移动次数，值越大，速度越慢
+     * @property {boolean} [loop=true] 是否循环动画
+     * @property {boolean} [auto=true] 是否自动播放动画
+     */
     props: {
       // 线坐标数组
       routes: {
@@ -78,6 +91,13 @@
        */
       start() {
         this.pause = false
+        /**
+         * 开始动画时触发
+         * @event start
+         * @param {array[]} stepRoutes 动画步骤
+         * @param {number} progress 当前进度
+         * @param {number} rotation 旋转角度
+         */
         this.$emit('start', this.stepRoutes, this.progress, 0)
         this.move()
       },
@@ -86,6 +106,13 @@
        */
       stop() {
         this.pause = true
+        /**
+         * 停止动画时触发
+         * @event stop
+         * @param {array[]} stepRoutes 动画步骤
+         * @param {number} progress 当前进度
+         * @param {number} rotation 旋转角度
+         */
         this.$emit('stop', this.stepRoutes, this.progress, 0)
       },
       /**
@@ -117,6 +144,13 @@
             this.feature.setStyle(style)
             this.feature._vm = this
           }
+          /**
+           * 动画执行时触发
+           * @event move
+           * @param {array[]} stepRoutes 动画步骤
+           * @param {number} progress 当前进度
+           * @param {number} rotation 旋转角度
+           */
           this.$emit('move', this.stepRoutes, this.progress, rotation)
           requestAnimationFrame(this.move)
         }

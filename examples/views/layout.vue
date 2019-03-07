@@ -27,7 +27,7 @@
   }
 
   .content {
-    padding-left: 200px;
+    padding-left: 220px;
     height: 100%;
   }
 

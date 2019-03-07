@@ -3,6 +3,12 @@
 </template>
 
 <script>
+
+  /**
+   * ECharts图表覆盖物组件
+   * @module xdh-map-echarts
+   */
+
   import {getParent, mapReady} from 'utils/util'
   import CleanMixin from 'utils/mixins/clean'
   import createCoordSystem from 'utils/plugins/CoordSystem'
@@ -10,6 +16,12 @@
   export default {
     name: 'XdhMapEcharts',
     mixins: [CleanMixin],
+    /**
+     * 参数属性
+     * @member props
+     * @property {object} lib ECharts类库
+     * @property {object} options ECharts实例化参数选项，涉及到 coordinateSystem 需要设置为 ol
+     */
     props: {
       // ECharts类库
       lib: {

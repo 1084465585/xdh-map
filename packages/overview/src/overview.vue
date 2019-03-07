@@ -1,8 +1,6 @@
 <template>
   <xdh-map-placement :class="classes" v-bind="$props">
-
     <div ref="overview" class="xdh-map-overview__map" :style="overviewStyle"></div>
-
     <div class="xdh-map-overview__trigger" @click="handleClick">
       <i class="iconfont" :class="iconClass"></i>
     </div>
@@ -10,11 +8,25 @@
 </template>
 
 <script>
+  /**
+   * 鹰眼控件
+   * @module xdh-map-overview
+   */
   import {OverviewMap} from 'ol/control.js'
   import View from 'ol/View'
   import XdhMapPlacement from '../../placement'
   import {mixProps, getParent, mapReady} from 'utils/util'
 
+  /**
+   * 参数属性
+   * @member props
+   * @property {number} [width=200] 宽度
+   * @property {number} [height=200] 高度
+   * @property {string} [placement] 停泊位置，可选值'left-top', 'center-top', 'right-top'，'left-center', 'center-center', 'right-center''left-bottom', 'center-bottom', 'right-bottom'
+   * @property {number} [zIndex=1] 层级
+   * @property {number[]} [margin] 外边距
+   * @property {string[]} [theme] 主题 可选值 'default', 'light', 'dark'
+   */
   const vueProps = {
     theme: {
       type: String,
@@ -97,9 +109,4 @@
     }
   }
 </script>
-
-<style lang="scss" scope>
-
-
-</style>
 

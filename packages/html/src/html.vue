@@ -5,11 +5,31 @@
 </template>
 
 <script>
+  /**
+   * HTML覆盖物组件
+   * @module xdh-map-html
+   */
   import {mapReady, getParent} from 'utils/util'
   import Overlay from 'ol/Overlay'
 
+  /**
+   * 插槽
+   * @member slots
+   * @property {string} [default] 默认插槽，定义 html 内容
+   */
+
   export default {
     name: 'XdhMapHtml',
+    /**
+     * 参数属性
+     * @member props
+     * @property {string} [positioning] 经纬度对齐位置，默认 center-center
+     * @property {number[]} position 经纬度
+     * @property {number[]} [offset] 位置偏移
+     * @property {boolean} [stopEvent] 是否阻止时间冒泡，默认 true
+     * @property {boolean} [insertFirst]
+     * @property {string} [className]
+     */
     props: {
       positioning: {
         type: String,

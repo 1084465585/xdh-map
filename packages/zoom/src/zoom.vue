@@ -7,6 +7,10 @@
 </template>
 
 <script>
+  /**
+   * 缩放控件
+   * @module xdh-map-zoom
+   */
   import XdhMapPlacement from '../../placement'
   import {getParent} from 'utils/util'
 
@@ -15,6 +19,14 @@
     components: {
       XdhMapPlacement
     },
+    /**
+     * 参数属性
+     * @member props
+     * @property {string} [placement] 停泊位置，可选值'left-top', 'center-top', 'right-top'，'left-center', 'center-center', 'right-center''left-bottom', 'center-bottom', 'right-bottom'
+     * @property {number} [zIndex=1] 层级
+     * @property {number[]} [margin] 外边距
+     * @property {string[]} [theme] 主题 可选值 'default', 'light', 'dark'
+     */
     props: {
       ...XdhMapPlacement.props,
       theme: {

@@ -11,6 +11,11 @@
 </template>
 
 <script>
+  /**
+   * 地图图层类型切换控件
+   * @module xdh-map-type
+   */
+
   import XdhMapPlacement from 'packages/placement'
   import {get as getLayers} from 'utils/setting'
   import {getParent} from 'utils/util'
@@ -20,6 +25,15 @@
     components: {
       XdhMapPlacement
     },
+    /**
+     * 参数属性
+     * @member props
+     * @property {string} [placement] 停泊位置，可选值'left-top', 'center-top', 'right-top'，'left-center', 'center-center', 'right-center''left-bottom', 'center-bottom', 'right-bottom'
+     * @property {number} [zIndex=1] 层级
+     * @property {number[]} [margin] 外边距
+     * @property {string[]} [theme] 主题 可选值 'default', 'light', 'dark'
+     * @property {string[]} types 显示的图层类型，支持 'Baidu', 'Amap', 'OSM','SuperMap', 'Google', 'Founder'
+     */
     props: {
       ...XdhMapPlacement.props,
       types: {
@@ -50,6 +64,11 @@
         if ((this.selected || {}).name !== item.name) {
           this.selected = item
           this.parent.changeType(item.name)
+          /**
+           * 图层切换时触发
+           * @event change
+           * @param {Object} layer 图层对象
+           */
           this.$emit('change', item)
         }
       },

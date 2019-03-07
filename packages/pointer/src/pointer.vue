@@ -10,10 +10,25 @@
 </template>
 
 <script>
+
+  /**
+   * 经纬度提取控件
+   * @module xdh-map-pointer
+   */
+
   import Clipboard from 'clipboard'
   import XdhMapPlacement from '../../placement'
   import {mixProps, getParent, mapReady} from 'utils/util'
 
+  /**
+   * 参数属性
+   * @member props
+   * @property {number} [precision=6] 精度，保留几位小数
+   * @property {string} [placement] 停泊位置，可选值'left-top', 'center-top', 'right-top'，'left-center', 'center-center', 'right-center''left-bottom', 'center-bottom', 'right-bottom'
+   * @property {number} [zIndex=1] 层级
+   * @property {number[]} [margin] 外边距
+   * @property {string[]} [theme] 主题 可选值 'default', 'light', 'dark'
+   */
   const vueProps = {
     // 精度，保留几位小数
     precision: {
@@ -54,6 +69,11 @@
         this.update(e)
       },
       copy() {
+        /**
+         * 复制时触发
+         * @event copy
+         * @param {number[]} coordinate 经纬度
+         */
         this.$emit('copy', this.coordinate)
         this.lock = false
       }

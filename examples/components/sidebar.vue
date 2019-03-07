@@ -91,7 +91,7 @@
 <style lang="scss" scoped>
   .sidebar {
     float: left;
-    width: 200px;
+    width: 220px;
     background: lightgray;
     height: 100%;
     overflow: hidden;

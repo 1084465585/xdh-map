@@ -3,6 +3,9 @@
 </template>
 
 <script>
+  /**
+   * 比例尺控件
+   */
   import {ScaleLine} from 'ol/control.js'
   import XdhMapPlacement from '../../placement'
   import {getParent, mapReady} from 'utils/util'
@@ -13,6 +16,16 @@
     components: {
       XdhMapPlacement
     },
+    /**
+     * 参数属性
+     * @member props
+     * @property {string} [placement] 停泊位置，可选值'left-top', 'center-top', 'right-top'，'left-center', 'center-center', 'right-center''left-bottom', 'center-bottom', 'right-bottom'
+     * @property {number} [zIndex=1] 层级
+     * @property {number[]} [margin] 外边距
+     * @property {string[]} [theme] 主题 可选值 'default', 'light', 'dark'
+     * @property {string} [units=metric] 单位
+     * @property {number[]} [margin] 外边距
+     */
     props: {
       ...XdhMapPlacement.props,
       units: {
