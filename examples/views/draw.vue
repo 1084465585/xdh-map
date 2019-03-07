@@ -7,6 +7,7 @@
         <button @click="drawPolygon">多边形</button>
         <button @click="modify">修改</button>
         <button @click="finish">完成</button>
+        <button @click="clear">清除</button>
       </xdh-map-placement>
       <xdh-map-draw ref="line" @drawend="drawend"></xdh-map-draw>
       <xdh-map-draw ref="circle" type="Circle" @drawend="drawend"></xdh-map-draw>
@@ -38,6 +39,11 @@
         this.$refs.line.finish()
         this.$refs.circle.finish()
         this.$refs.polygon.finish()
+      },
+      clear() {
+        this.$refs.line.clear()
+        this.$refs.circle.clear()
+        this.$refs.polygon.clear()
       },
       drawend(e) {
         const feature = e.feature
