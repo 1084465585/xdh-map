@@ -165,6 +165,7 @@
             feature.un('change', this.handleChange)
             this.parent.removeFeature(feature)
           })
+          this.features = []
         }
       }
     },
