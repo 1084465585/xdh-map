@@ -80,6 +80,8 @@
     },
     created() {
       this.parent = getParent.call(this)
+    },
+    mounted() {
       mapReady.call(this, this.addOverlay)
     },
     beforeDestroy() {
