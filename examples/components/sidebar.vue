@@ -75,6 +75,9 @@
       <dd>
         <router-link to="/flight">Flight</router-link>
       </dd>
+      <dd>
+        <router-link to="/measure">Measure</router-link>
+      </dd>
       <dt>性能测试</dt>
       <dd>
         <router-link to="/performance">Performance</router-link>

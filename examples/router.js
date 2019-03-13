@@ -104,6 +104,10 @@ const router = new Router({
           {
             path: 'flight',
             component: () => import('./views/flight.vue')
+          },
+          {
+            path: 'measure',
+            component: () => import('./views/measure.vue')
           }
         ]
       }

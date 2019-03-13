@@ -20,6 +20,7 @@ import Track from './track'
 import Type from './type'
 import Draw from './draw'
 import Scatter from './scatter'
+import Measure from './measure'
 
 import '../theme/index.scss'
 
@@ -44,7 +45,8 @@ const components = [
   Track,
   Type,
   Draw,
-  Scatter
+  Scatter,
+  Measure
 ]
 
 const install = function (Vue) {
@@ -79,6 +81,7 @@ export const XdhMapTrack = Track
 export const XdhMapType = Type
 export const XdhMapDraw = Draw
 export const XdhMapScatter = Scatter
+export const XdhMapMeasure = Measure
 export const parseStyle = parse
 
 export default {
@@ -105,7 +108,8 @@ export default {
   Track,
   Type,
   Draw,
-  Scatter
+  Scatter,
+  Measure
 }
 
 
