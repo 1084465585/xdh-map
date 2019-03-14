@@ -1,71 +1,24 @@
 <template>
   <div class="xdh-map-measure">
     <xdh-map-draw ref="draw" :type="drawType" @drawend="drawEnd" @change="changeHandle"></xdh-map-draw>
-    <xdh-map-html :position="tipsPos" :offset="[5, 5]">
+    <xdh-map-html ref="tips" :position="tipsPos" :offset="[5, 5]">
       <div class="xdh-map-measure__tooltips" v-show="isStart && tipsShow">
         <div class="help">点击开始测量</div>
-        <div class="range" v-show="drawing" v-html="currentOutput"></div>
+        <div class="range" :class="type" v-show="drawing" v-html="currentOutput"></div>
       </div>
     </xdh-map-html>
      
     <xdh-map-html  v-for="(item, index) in marks" :key="index" :position="item.pos" :offset="[0, -30]" ref="marks">
-      <div class="xdh-map-measure__mark" v-if="item" v-html="item.output"></div>
+      <div class="xdh-map-measure__mark" :style="markStyle" v-if="item" >
+        <span v-html="item.output"></span>
+        <em :style="{'border-top': `10px solid ${stroke}`}"></em>
+      </div>
     </xdh-map-html>
 
   </div>
 </template>
 <style lang="scss" scoped>
-.xdh-map-measure{
-  &__tooltips{
-    position: relative;
-    width:5px;
-    height: 5px;
-    background:blue;
-    &>div{
-      display:inline-block;
-      position: absolute;
-      width: max-content;
-      padding: 0 3px;
-      
-      font-size: 12px;
-      color: white;
-      border-radius: 3px;
-      background: rgba(0,0,0,0.6);
-    }
-    .help{
-      // height: 30px;
-      line-height: 24px;
-      left: 10px;
-      top: -3px;
-    }
-    .range{
-      height: 30px;
-      top: -40px;
-      left: 0;
-      transform:translateX(-50%);
-    }
-  } 
-  &__mark {
-    position: relative;
-    line-height: 24px;
-    border-radius: 3px;
-    padding: 0 5px;
-    color: white;
-    background: orange;
-    &:before{
-      content: '';
-      position: absolute;
-      display: block;
-      width: 0;height: 0;
-      border-top: 10px solid orange;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      bottom: -10px;
-      left: 50%;
-      margin-left: -10px;
-    }
-  }
-}
+
 </style>
 <script>
   /**
@@ -80,7 +33,7 @@
   /**
    * 参数属性
    * @member props
-   * @property {string} type 画图类型，可选值：'LineString', 'Polygon', 
+   * @property {string} type 画图类型，可选值：'direction'(距离), 'area'（范围） 
    */
 
   const vueProps = {
@@ -103,19 +56,31 @@
           return ['direction', 'area'].includes(val)
         }
       },
+      fill: {
+        type: String,
+        default: 'rgba(0,0,0,.3)'
+      },
+      stroke: {
+        type: String,
+        default: 'orange'
+      },
+      color: {
+        type: String,
+        default: 'white'
+      },
       ...vueProps
     },
     data() {
       return {
-        test: [119.972076416015621, 30.254974365234375],
+        
         isStart: false, // 可以测量状态
-        drawing: false, // 是否测量当中
+        drawing: false, // 是否绘画测量当中
         tipsShow: false, // 鼠标提示显示
         tipsPos: [40, 40], // 鼠标提示的位置
-        currentOutput: '',
-        currentMarkPos: [0, 0],
+        currentOutput: '', // 当前测距
+        currentMarkPos: [0, 0], // 当前测距位置（距离标签定位）
 
-        marks: []
+        marks: [] // 测距结果数组
       }
     },
     computed: {
@@ -125,25 +90,50 @@
         } else {
           return 'LineString'
         }
+      },
+      markStyle() {
+        return {
+          'background': this.stroke,
+          'color': this.color
+        }
+      }
+    },
+    watch: {
+      drawType(val) {
+        if (this.isStart) {
+          this.$refs.draw.finish()
+          this.$nextTick(() => {
+            this.$refs.draw.draw()
+          })
+        }
       }
     },
     methods: {
       ready(map) {
         this.map = map
-        this.map.on('pointermove', (e) => {
-          this.tipsPos = e.coordinate
-        })
-        this.map.getViewport().addEventListener('mouseover', (e) => {
-          this.tipsShow = true
-        })
-        this.map.getViewport().addEventListener('mouseleave', (e) => {
-          this.tipsShow = false
-        })
+        this.map.on('pointermove', this._setTipsPos)
+        this._toggleTipsShowOpen = this._toggleTipsShow.bind(this, true)
+        this._toggleTipsShowClose = this._toggleTipsShow.bind(this, false)
+        this.map.getViewport().addEventListener('mouseover', this._toggleTipsShowOpen)
+        this.map.getViewport().addEventListener('mouseleave', this._toggleTipsShowClose)
+      },
+      _setTipsPos(e) { // 说明标签跟随鼠标移动
+        this.tipsPos = e.coordinate
+      },
+      _toggleTipsShow(flag) { // 说明标签显示隐藏（鼠标在视口范围内）
+        this.tipsShow = flag
       },
 
-      start() {
+      start() { // 开启测量功能
+        if (this.isStart) return
         this.isStart = true
         this.$refs.draw.draw()
+      },
+
+      stop() { // 关闭测量功能
+        if (!this.isStart) return
+        this.isStart = false
+        this.$refs.draw.finish()
       },
       
       drawEnd(e) {
@@ -156,28 +146,23 @@
           currentMark.pos = feature.getGeometry().getInteriorPoint().getCoordinates()
         }
         this.marks.push(currentMark)
-        // console.log('marks', this.marks)
-        // this.$nextTick(() => {
-        //   this.$refs.marks[this.marks.length - 1].show(currentMark.pos)
-          
-        // })
-        
-        this.drawing = false
-        this.currentOutput = ''
 
         const style = parse({
           className: 'Style',
           fill: {
             className: 'Fill',
-            color: 'rgba(0,0,0,.3)'
+            color: this.fill // 'rgba(0,0,0,.3)'
           },
           stroke: {
             className: 'Stroke',
-            color: 'orange',
+            color: this.stroke, // 'orange',
             width: 3
           }
         })
         feature.setStyle(style)
+
+        this.drawing = false
+        this.currentOutput = ''
       },
 
       changeHandle(e) {
@@ -187,6 +172,7 @@
         this.currentOutput = this._calcOutPut(geom)
       },
 
+      // 换算测量结果
       _calcOutPut(feature) {
         let sourceProj = this.map.getView().getProjection() // 地图投影模式
         let output
@@ -217,9 +203,18 @@
       mapReady.call(this, this.ready)
     },
     mounted() {
-      
     },
     beforeDestroy() {
+      this.map.un('pointermove', this._setTipsPos)
+      this.map.getViewport().removeEventListener('mouseover', this._toggleTipsShowOpen)
+      this.map.getViewport().removeEventListener('mouseleave', this._toggleTipsShowColse)
+      if (this.map) {
+        this.map.removeOverlay(this.$refs.tips.overlay)
+        this.marks = []
+        this.$refs.draw.finish()
+        this.$refs.draw.clear()
+      }
+      
     }
   }
 </script>
