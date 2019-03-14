@@ -128,6 +128,12 @@
         }
       },
       handleDrawStart(e) {
+        /**
+         * 画图开始时触发
+         * @event drawstart
+         * @param {object} e 事件对象
+         */
+        this.$emit('drawstart', e)
         e.feature.on('change', this.handleChange)
       },
       handleChange(e) {

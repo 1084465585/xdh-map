@@ -9,9 +9,9 @@
         <button @click="finish">完成</button>
         <button @click="clear">清除</button>
       </xdh-map-placement>
-      <xdh-map-draw ref="line" @drawend="drawend"></xdh-map-draw>
-      <xdh-map-draw ref="circle" type="Circle" @drawend="drawend"></xdh-map-draw>
-      <xdh-map-draw ref="polygon" type="Polygon" @drawend="drawend"></xdh-map-draw>
+      <xdh-map-draw ref="line" @drawend="drawend" @drawstart="drawstart"></xdh-map-draw>
+      <xdh-map-draw ref="circle" type="Circle" @drawend="drawend" @drawstart="drawstart"></xdh-map-draw>
+      <xdh-map-draw ref="polygon" type="Polygon" @drawend="drawend" @drawstart="drawstart"></xdh-map-draw>
     </xdh-map>
   </example>
 </template>
@@ -60,6 +60,10 @@
           }
         })
         feature.setStyle(style)
+        console.log('drawend', e)
+      },
+      drawstart(e) {
+        console.log('drawstart', e)
       }
     }
   }
