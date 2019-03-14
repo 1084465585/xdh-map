@@ -57,6 +57,8 @@
     created() {
       // 获取地图组件实例
       this.parent = getParent.call(this)
+    },
+    mounted() {
       mapReady.call(this, this.ready)
     },
     beforeDestroy() {

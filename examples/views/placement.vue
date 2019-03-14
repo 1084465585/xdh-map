@@ -4,7 +4,7 @@
       <xdh-map-placement>
         默认样式容器
       </xdh-map-placement>
-      <xdh-map-placement placement="left-top" :margin="[10, 10]" theme="light">
+      <xdh-map-placement placement="left-top" :margin="[10, 10]" theme="light" v-if="active">
         <div style="padding: 10px">浅色容器</div>
       </xdh-map-placement>
 
@@ -41,7 +41,18 @@
 </template>
 
 <script>
-  export default {}
+  export default {
+    data() {
+      return {
+        active: false
+      }
+    },
+    mounted() {
+      setTimeout(() => {
+        this.active = true
+      }, 100)
+    }
+  }
 </script>
 
 <style scoped>

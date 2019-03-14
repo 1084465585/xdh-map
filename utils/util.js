@@ -60,7 +60,7 @@ export function mix(mv, name, options) {
 }
 
 /**
- * 图形生成style
+ * 图形生成style, 依赖baseStyleRender、strokeRender、textRender
  * @return {*}
  */
 export function featureStyleRender() {

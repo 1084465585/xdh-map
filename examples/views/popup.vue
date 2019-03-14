@@ -18,6 +18,7 @@
                      :closable="false"
                      :close-on-click="false"
                      theme="dark"
+                     v-if="active"
                      width="200px">
         <div>内容文本，内容文本，内容文本，内容文本</div>
       </xdh-map-popup>
@@ -30,6 +31,7 @@
   export default {
     data() {
       return {
+        active: false,
         options: {
           position: [120, 30],
           src: require('../../sources/markers/location_blue.png')
@@ -40,6 +42,11 @@
       showPopup() {
         this.$refs.popup.show()
       }
+    },
+    mounted() {
+      setTimeout(() => {
+        this.active = true
+      }, 200)
     }
   }
 </script>
