@@ -1,3 +1,9 @@
+/**
+ * ECharts 地理位置坐标系
+ * @param map
+ * @return {*}
+ */
+
 export default function (map) {
   
   const CoordSystem = function CoordSystem() {

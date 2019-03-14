@@ -1,3 +1,8 @@
+/**
+ * mapbox 插件
+ * ex: https://docs.mapbox.com/mapbox.js/example/v1.0.0/arcjs/
+ */
+
 const D2R = Math.PI / 180;
 const R2D = 180 / Math.PI;
 
