@@ -111,6 +111,7 @@
           style: this.createStyle(),
           wrapX: this.wrapX
         });
+        this.drawer.on('modifystart', this.handleModifyStart);
         this.drawer.on('modifyend', this.handleModify);
         this.map.addInteraction(this.drawer)
       },
@@ -122,6 +123,7 @@
         if (this.drawer) {
           this.drawer.un('drawstart', this.handleDrawStart);
           this.drawer.un('drawend', this.handleDraw);
+          this.drawer.un('modifystart', this.handleModifyStart);
           this.drawer.un('modifyend', this.handleModify);
           this.map.removeInteraction(this.drawer)
           this.drawer = null
@@ -151,6 +153,14 @@
          * @param {object} e 事件对象
          */
         this.$emit('modifyend', e)
+      },
+      handleModifyStart(e) {
+        /**
+         * 修改图形开始时触发
+         * @event modifystart
+         * @param {object} e 事件对象
+         */
+        this.$emit('modifystart', e)
       },
       handleDraw(e) {
         this.features.push(e.feature)
