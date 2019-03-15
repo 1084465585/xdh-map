@@ -23,7 +23,7 @@
     .range{
       left: 0;
       transform:translateX(-50%);
-      &.direction{
+      &.length{
         top: -34px;
         line-height: 24px;
       }
@@ -43,6 +43,7 @@
     padding: 0 5px;
     line-height: 24px;
     font-size: 12px;
+    box-shadow: 0 0 0 1px white;
     sup{
       line-height: 1;
       font-size: 10px;
@@ -56,6 +57,20 @@
       bottom: -10px;
       left: 50%;
       margin-left: -4px;
+    }
+    .close{
+      box-sizing: border-box;
+      position: absolute;
+      display: block;
+      top: -10px;
+      right: -8px;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      text-align: center;
+      border-radius: 50%;
+      transform: scale(0.8);
+      cursor: pointer;
     }
   }
 }
