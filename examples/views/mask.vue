@@ -1,7 +1,7 @@
 <template>
   <example>
     <xdh-map>
-      <xdh-map-mask></xdh-map-mask>
+      <xdh-map-mask :opacity="0.6"></xdh-map-mask>
     </xdh-map>
   </example>
 </template>
