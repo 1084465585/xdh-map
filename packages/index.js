@@ -21,6 +21,7 @@ import Type from './type'
 import Draw from './draw'
 import Scatter from './scatter'
 import Measure from './measure'
+import Tooltips from './tooltips'
 import Mask from './mask'
 
 import '../theme/index.scss'
@@ -47,6 +48,8 @@ const components = [
   Type,
   Draw,
   Scatter,
+  Measure,
+  Tooltips
   Measure,
   Mask
 ]
@@ -84,6 +87,7 @@ export const XdhMapType = Type
 export const XdhMapDraw = Draw
 export const XdhMapScatter = Scatter
 export const XdhMapMeasure = Measure
+export const XdhMapTooltips = Tooltips
 export const XdhMapMask = Mask
 export const parseStyle = parse
 
@@ -112,6 +116,8 @@ export default {
   Type,
   Draw,
   Scatter,
+  Measure,
+  Tooltips
   Measure,
   Mask
 }

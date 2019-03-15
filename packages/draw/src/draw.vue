@@ -177,7 +177,7 @@
        */
       clear() {
         if (this.parent) {
-          this.features.forEach(feature => {
+          this.features.forEach((feature, index) => {
             this.remove(feature)
           })
         }
@@ -190,7 +190,7 @@
       remove(feature) {
         feature.un('change', this.handleChange)
         this.parent.removeFeature(feature)
-        this.features.filter(f => f !== feature)
+        this.features = this.features.filter((f) => { return f !== feature })
       }
     },
     created() {
