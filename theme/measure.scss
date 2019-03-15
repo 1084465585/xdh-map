@@ -5,6 +5,9 @@
     position: relative;
     width:5px;
     height: 5px;
+    border-radius: 50%;
+    background:rgba(0,0,0,0.6);
+    
     &>div{
       display:inline-block;
       position: absolute;
@@ -36,41 +39,32 @@
         }
       }
     }
-  } 
-  &__mark {
+  }
+  &__close {
     position: relative;
-    border-radius: 3px;
-    padding: 0 5px;
-    line-height: 24px;
-    font-size: 12px;
-    box-shadow: 0 0 0 1px white;
-    sup{
-      line-height: 1;
-      font-size: 10px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    border-radius: $--border-radius;
+    text-align: center;
+    &.light{
+      background: $--measure-close-bg-light;
+      color: $--measure-close-color-light;
     }
-    em{
-      position: absolute;
-      display: block;
-      width: 0;height: 0;
-      border-left: 8px solid transparent;
-      border-right: 8px solid transparent;
-      bottom: -10px;
-      left: 50%;
-      margin-left: -4px;
+    &.dark{
+      background: $--measure-close-bg-dark;
+      color: $--measure-close-color-dark;
     }
-    .close{
-      box-sizing: border-box;
-      position: absolute;
-      display: block;
-      top: -10px;
-      right: -8px;
-      width: 16px;
-      height: 16px;
-      line-height: 16px;
-      text-align: center;
-      border-radius: 50%;
-      transform: scale(0.8);
-      cursor: pointer;
+  }
+  &__output {
+    font-size: 12px; 
+    line-height: 1.2;
+    span{
+      white-space:nowrap;
+      sup{
+        line-height: 1;
+        font-size: 8px;
+      }
     }
   }
 }

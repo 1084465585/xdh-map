@@ -21,7 +21,7 @@ import Type from './type'
 import Draw from './draw'
 import Scatter from './scatter'
 import Measure from './measure'
-
+import Tooltips from './tooltips'
 import '../theme/index.scss'
 
 const components = [
@@ -46,7 +46,8 @@ const components = [
   Type,
   Draw,
   Scatter,
-  Measure
+  Measure,
+  Tooltips
 ]
 
 const install = function (Vue) {
@@ -82,6 +83,8 @@ export const XdhMapType = Type
 export const XdhMapDraw = Draw
 export const XdhMapScatter = Scatter
 export const XdhMapMeasure = Measure
+export const XdhMapTooltips = Tooltips
+
 export const parseStyle = parse
 
 export default {
@@ -109,7 +112,8 @@ export default {
   Type,
   Draw,
   Scatter,
-  Measure
+  Measure,
+  Tooltips
 }
 
 

@@ -9,17 +9,40 @@
         </select>
       </xdh-map-placement>
       <xdh-map-measure ref="measure" :type="type" ></xdh-map-measure>
-    </xdh-map><!-- :cust-style="{'stroke': 'green'}" -->
+    </xdh-map>
   </example>
 </template>
 
 <script>
-   
-
   export default {
     data() {
       return {
-        type: 'length'
+        type: 'length',
+        styleJson: {
+          className: 'Style',
+          fill: {
+            className: 'Fill',
+            color: 'rgba(255, 255, 255, 0.2)'
+          },
+          stroke: {
+            className: 'Stroke',
+            color: 'rgba(0, 0, 0, 0.5)',
+            lineDash: [10, 10],
+            width: 2
+          },
+          image: {
+            className: 'CircleStyle',
+            radius: 5,
+            stroke: {
+              className: 'Stroke',
+              color: 'rgba(0, 0, 0, 0.7)'
+            },
+            fill: {
+              className: 'Fill',
+              color: 'rgba(255, 255, 255, 0.2)'
+            }
+          }
+        }
       }
     },
     methods: {
