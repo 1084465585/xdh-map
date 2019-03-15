@@ -49,8 +49,7 @@ const components = [
   Draw,
   Scatter,
   Measure,
-  Tooltips
-  Measure,
+  Tooltips,
   Mask
 ]
 
@@ -117,8 +116,7 @@ export default {
   Draw,
   Scatter,
   Measure,
-  Tooltips
-  Measure,
+  Tooltips,
   Mask
 }
 
