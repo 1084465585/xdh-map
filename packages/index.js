@@ -21,6 +21,7 @@ import Type from './type'
 import Draw from './draw'
 import Scatter from './scatter'
 import Measure from './measure'
+import Mask from './mask'
 
 import '../theme/index.scss'
 
@@ -46,7 +47,8 @@ const components = [
   Type,
   Draw,
   Scatter,
-  Measure
+  Measure,
+  Mask
 ]
 
 const install = function (Vue) {
@@ -82,10 +84,11 @@ export const XdhMapType = Type
 export const XdhMapDraw = Draw
 export const XdhMapScatter = Scatter
 export const XdhMapMeasure = Measure
+export const XdhMapMask = Mask
 export const parseStyle = parse
 
 export default {
-  version: '1.0.0',
+  version: '1.0.3',
   install,
   parseStyle,
   Map,
@@ -109,7 +112,8 @@ export default {
   Type,
   Draw,
   Scatter,
-  Measure
+  Measure,
+  Mask
 }
 
 

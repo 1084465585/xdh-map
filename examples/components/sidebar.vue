@@ -42,6 +42,9 @@
       <dd>
         <router-link to="/echarts">ECharts</router-link>
       </dd>
+      <dd>
+        <router-link to="/mask">Mask</router-link>
+      </dd>
       <dt>控件组件</dt>
       <dd>
         <router-link to="/placement">Placement</router-link>
