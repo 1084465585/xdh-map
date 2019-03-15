@@ -112,6 +112,10 @@ const router = new Router({
           {
             path: 'measure',
             component: () => import('./views/measure.vue')
+          },
+          {
+            path: 'mask',
+            component: () => import('./views/mask.vue')
           }
         ]
       }
