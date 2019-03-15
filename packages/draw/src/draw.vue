@@ -182,6 +182,11 @@
           })
         }
       },
+      /**
+       * 删除已画的图形
+       * @method remove
+       * @param {ol/Feature} feature 图形实例
+       */
       remove(feature) {
         feature.un('change', this.handleChange)
         this.parent.removeFeature(feature)

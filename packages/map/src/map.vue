@@ -124,13 +124,10 @@
        */
       _eventHandler(e) {
         const feat = this.getFeatureAtPixel(e.pixel)
-        if (feat) {
-          const array = this._featureEvents[e.type] || []
-          const item = array.find(item => item.feature === feat)
-          if (item) {
-            item.listener(e, item.feature)
-          }
-        }
+        if (!feat) return
+        const array = this._featureEvents[e.type] || []
+        const item = array.find(item => item.feature === feat)
+        item && item.listener(e, item.feature)
       },
       /**
        * 绑定图形事件
@@ -156,7 +153,7 @@
        * @param {VueComponent} vm 子组件实例
        */
       bindEvents(vm) {
-        if (!this.map) return
+        if (!this.map || !vm.feature) return
         const listeners = vm.$listeners
         Object.keys(listeners).forEach(key => {
           this._bind(key, vm.feature, listeners[key], vm._uid)
