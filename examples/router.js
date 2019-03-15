@@ -74,6 +74,10 @@ const router = new Router({
             component: () => import('./views/icon.vue')
           },
           {
+            path: 'tooltip',
+            component: () => import('./views/tooltip.vue')
+          },
+          {
             path: 'popup',
             component: () => import('./views/popup.vue')
           },

@@ -1,5 +1,5 @@
 @import './_vars.scss';
-.xdh-map-tooltips{  
+.xdh-map-tooltip{  
   position: relative;
   width: 1px;
   height: 1px;
@@ -7,6 +7,7 @@
     position: absolute;
     padding: 5px;
     border-radius: $--border-radius;
+    white-space:nowrap;
     transition: all 0.5s;
     &:before{
       content: '';

@@ -34,6 +34,9 @@
         <router-link to="/icon">Icon</router-link>
       </dd>
       <dd>
+        <router-link to="/tooltip">Tooltip</router-link>
+      </dd>
+      <dd>
         <router-link to="/popup">Popup</router-link>
       </dd>
       <dd>

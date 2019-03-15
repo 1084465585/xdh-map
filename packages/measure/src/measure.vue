@@ -16,11 +16,11 @@
         </div>
       </xdh-map-html>
 
-      <xdh-map-tooltips :key="`mark_${index}`" :position="item.pos" :offset="[0, -3]" direction="top" >
+      <xdh-map-tooltip :key="`mark_${index}`" :position="item.pos" :offset="[0, -3]" direction="top" >
         <div class="xdh-map-measure__output">
           <span v-html="item.output"></span>
         </div>
-      </xdh-map-tooltips>
+      </xdh-map-tooltip>
     </template>
      
   </div>
@@ -36,7 +36,7 @@
   import {getParent, mapReady} from 'utils/util'
   import XdhMapDraw from '../../draw'
   import XdhMapHtml from '../../html'
-  import XdhMapTooltips from '../../tooltips'
+  import XdhMapTooltip from '../../tooltip'
   import {getLength, getArea} from 'ol/sphere.js'
   import {parse} from 'utils/style'
   /**
@@ -120,7 +120,7 @@
     components: {
       XdhMapDraw,
       XdhMapHtml,
-      XdhMapTooltips
+      XdhMapTooltip
     },
     mixins: [],
     props: {
