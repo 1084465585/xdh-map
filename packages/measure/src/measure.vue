@@ -3,7 +3,7 @@
     <xdh-map-draw ref="draw" :type="drawType" @drawend="drawEnd" @change="changeHandle"></xdh-map-draw>
     <xdh-map-html ref="tips" :position="tipsPos" :offset="[5, 5]">
       <div class="xdh-map-measure__tooltips" v-show="isStart && tipsShow">
-        <div class="help">点击开始测量</div>
+        <div class="help">{{helpMsg}}</div>
         <div class="range" :class="type" v-show="drawing" v-html="currentOutput"></div>
       </div>
     </xdh-map-html>
@@ -11,7 +11,8 @@
     <xdh-map-html  v-for="(item, index) in marks" :key="index" :position="item.pos" :offset="[0, -30]" ref="marks">
       <div class="xdh-map-measure__mark" :style="markStyle" v-if="item" >
         <span v-html="item.output"></span>
-        <em :style="{'border-top': `10px solid ${stroke}`}"></em>
+        <em :style="{'border-top': `10px solid ${styles.stroke}`}"></em>
+        <div class="close" @click="removeMark(index)" :style="closeStyle"> <i class="iconfont icon-close"></i></div>
       </div>
     </xdh-map-html>
 
@@ -33,7 +34,13 @@
   /**
    * 参数属性
    * @member props
-   * @property {string} type 画图类型，可选值：'direction'(距离), 'area'（范围） 
+   * @property {string} type 画图类型，可选值：'length'(距离), 'area'（范围）
+   * @property {object} custStyle 自定义样式
+   * @property {string} custStyle.fill area测量范围填充颜色
+   * @property {string} custStyle.stroke area/length测量线描边色 与 提示tooltip 背景色
+   * @property {string} custStyle.color tooltips 提示文字颜色
+   * @property {string} pendingMsg 悬停状态下提示语
+   * @property {string} drawMsg 测绘状态下提示语
    */
 
   const vueProps = {
@@ -51,22 +58,21 @@
     props: {
       type: {
         type: String,
-        default: 'direction', // area
+        default: 'length', // area
         validator(val) {
-          return ['direction', 'area'].includes(val)
+          return ['length', 'area'].includes(val)
         }
       },
-      fill: {
-        type: String,
-        default: 'rgba(0,0,0,.3)'
+      custStyle: {
+        type: Object
       },
-      stroke: {
+      pendingMsg: {
         type: String,
-        default: 'orange'
+        default: '点击开始测量'
       },
-      color: {
+      drawMsg: {
         type: String,
-        default: 'white'
+        default: '双击结束测量'
       },
       ...vueProps
     },
@@ -79,7 +85,12 @@
         tipsPos: [40, 40], // 鼠标提示的位置
         currentOutput: '', // 当前测距
         currentMarkPos: [0, 0], // 当前测距位置（距离标签定位）
-
+        styles: {
+          fill: 'rgba(0,0,0,.3)',
+          stroke: 'rgba(255,165,0,0.8)',
+          color: 'white',
+          ...this.custStyle
+        },
         marks: [] // 测距结果数组
       }
     },
@@ -93,9 +104,19 @@
       },
       markStyle() {
         return {
-          'background': this.stroke,
-          'color': this.color
+          'background': this.styles.stroke,
+          'color': this.styles.color
         }
+      },
+      closeStyle() {
+        return {
+          'color': this.styles.color,
+          'box-shadow': `0 0 0 1px ${this.styles.color}`,
+          'background': this.styles.stroke
+        }
+      },
+      helpMsg() {
+        return this.drawing ? this.drawMsg : this.pendingMsg
       }
     },
     watch: {
@@ -129,7 +150,7 @@
         this.isStart = true
         this.$refs.draw.draw()
       },
-
+      
       stop() { // 关闭测量功能
         if (!this.isStart) return
         this.isStart = false
@@ -140,27 +161,27 @@
         const feature = e.feature
         let currentMark = {}
         currentMark.output = this.currentOutput
-        if (this.type === 'direction') {
+        if (this.type === 'length') {
           currentMark.pos = feature.getGeometry().getLastCoordinate()
         } else {
           currentMark.pos = feature.getGeometry().getInteriorPoint().getCoordinates()
         }
         this.marks.push(currentMark)
-
         const style = parse({
           className: 'Style',
           fill: {
             className: 'Fill',
-            color: this.fill // 'rgba(0,0,0,.3)'
+            color: this.styles.fill
           },
           stroke: {
             className: 'Stroke',
-            color: this.stroke, // 'orange',
+            color: this.styles.stroke,
             width: 3
           }
         })
         feature.setStyle(style)
-
+        // currentMark.feature = feature
+        
         this.drawing = false
         this.currentOutput = ''
       },
@@ -176,7 +197,7 @@
       _calcOutPut(feature) {
         let sourceProj = this.map.getView().getProjection() // 地图投影模式
         let output
-        if (this.type === 'direction') {
+        if (this.type === 'length') {
           let length = getLength(feature, {projection: sourceProj})
           if (length > 100) {
             output = (Math.round(length / 1000 * 100) / 100) +
@@ -194,11 +215,16 @@
           }
         }
         return output
+      },
+
+      removeMark(index) {
+        // this.parent.removeFeature(this.marks[index].feature)
+        this.$refs.draw.remove(index)
+        this.marks.splice(index, 1)
       }
        
     },
     created() {
-      this.features = []
       this.parent = getParent.call(this)
       mapReady.call(this, this.ready)
     },
@@ -208,11 +234,9 @@
       this.map.un('pointermove', this._setTipsPos)
       this.map.getViewport().removeEventListener('mouseover', this._toggleTipsShowOpen)
       this.map.getViewport().removeEventListener('mouseleave', this._toggleTipsShowColse)
-      if (this.map) {
+      if (this.map && this.marks.length) {
         this.map.removeOverlay(this.$refs.tips.overlay)
         this.marks = []
-        this.$refs.draw.finish()
-        this.$refs.draw.clear()
       }
       
     }

@@ -183,6 +183,11 @@
           })
           this.features = []
         }
+      },
+      remove(index) {
+        this.features[index].un('change', this.handleChange)
+        this.parent.removeFeature(this.features[index])
+        this.features.splice(index, 1)
       }
     },
     created() {
