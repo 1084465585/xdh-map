@@ -178,16 +178,14 @@
       clear() {
         if (this.parent) {
           this.features.forEach(feature => {
-            feature.un('change', this.handleChange)
-            this.parent.removeFeature(feature)
+            this.remove(feature)
           })
-          this.features = []
         }
       },
-      remove(index) {
-        this.features[index].un('change', this.handleChange)
-        this.parent.removeFeature(this.features[index])
-        this.features.splice(index, 1)
+      remove(feature) {
+        feature.un('change', this.handleChange)
+        this.parent.removeFeature(feature)
+        this.features.filter(f => f !== feature)
       }
     },
     created() {
