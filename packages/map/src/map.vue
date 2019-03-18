@@ -118,6 +118,22 @@
       }
     },
     methods: {
+      _mouseHandler(feature) {
+        // 鼠标移出
+        if (this.featureAtPixel && !feature) {
+          this.$emit('mouseleave', this.featureAtPixel)
+        }
+        // 鼠标移入
+        if (!this.featureAtPixel && feature) {
+          this.$emit('mouseenter', feature)
+        }
+
+        if (this.featureAtPixel && feature && this.featureAtPixel !== feature) {
+          this.$emit('mouseleave', this.featureAtPixel)
+          this.$emit('mouseenter', feature)
+        }
+        this.featureAtPixel = feature
+      },
       /**
        * 图形事件处理句柄
        * @private
@@ -155,9 +171,11 @@
       bindEvents(vm) {
         if (!this.map || !vm.feature) return
         const listeners = vm.$listeners
-        Object.keys(listeners).forEach(key => {
-          this._bind(key, vm.feature, listeners[key], vm._uid)
-        })
+        Object.keys(listeners)
+          .filter(key => !['mouseenter', 'mouseleave'].includes(key))
+          .forEach(key => {
+            this._bind(key, vm.feature, listeners[key], vm._uid)
+          })
       },
       /**
        * 给子组件的图形销毁事件
@@ -314,11 +332,13 @@
         } else {
           this.cursor = null
         }
+        this._mouseHandler(feature)
       }
     },
     created() {
       // 标记是地图组件
       this.isMap = true
+      this.featureAtPixel = null
 
       /**
        * 图形绑定的事件集合，存储格式：

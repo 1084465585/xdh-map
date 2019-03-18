@@ -1,12 +1,12 @@
 <template>
-    <example>
-      <xdh-map :zoom="12">
-        <xdh-map-text v-for="(item,index) in textArray"
-                      :key="index"
-                      v-bind="item"
-                      @click="handleClick"></xdh-map-text>
-      </xdh-map>
-    </example>
+  <example>
+    <xdh-map :zoom="12" @mouseenter="handleEnter" @mouseleave="handleLeave">
+      <xdh-map-text v-for="(item,index) in textArray"
+                    :key="index"
+                    v-bind="item"
+                    @click="handleClick"></xdh-map-text>
+    </xdh-map>
+  </example>
 </template>
 
 <script>
@@ -35,6 +35,12 @@
       },
       handleClick(e, feature) {
         console.log(feature)
+      },
+      handleEnter(feature) {
+        console.log('mouseenter', feature._vm.text)
+      },
+      handleLeave(feature) {
+        console.log('mouseleave', feature._vm.text)
       }
     },
     created() {
