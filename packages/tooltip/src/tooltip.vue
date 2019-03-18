@@ -1,6 +1,6 @@
 <template>
   <xdh-map-popup ref="popup" class="xdh-map-tooltip" v-bind="$props" :closable="false" :closeOnClick="false">
-    <div class="wrap">
+    <div class="xdh-map-tooltip__wrap">
       <div class="xdh-map-tooltip__content">
         <slot name="content"></slot>
       </div>
@@ -54,7 +54,7 @@
         type: Number,
         default: 0
       },
-      value: {
+      show: {
         type: Boolean,
         default: true
       }
@@ -62,44 +62,30 @@
     },
     data() {
       return {
-        isShow: this.value,
+        // isShow: this.value,
         timer: null
       }
     },
     computed: {
     },
     watch: {
-      value(val) {
-        this.isShow = val
+      show(val) {
         if (val && this.autoClose) {
           this.toAutoClose()
         }
-      },
-      isShow(val) {
-        this.$emit('input', val)
       }
     },
     methods: {
-      // show(position) {
-      //   this.$refs.html.show(position || this.position)
-      // },
-      // hide() {
-      //   this.$refs.html.hide()
-      // },
-      // setHide() {
-      //   this.isShow = false 
-        
-      // },
       toAutoClose() {
         if (this.timer) { clearTimeout(this.timer) }
         this.timer = setTimeout(() => {
           this.$refs.popup.hide()
-          this.isShow = false
+          this.$emit('update:show', false)
         }, this.autoClose)
       }, 
       ready(map) {
         this.map = map
-        if (this.autoClose && this.isShow) {
+        if (this.autoClose && this.show) {
           this.toAutoClose()
         }
       }

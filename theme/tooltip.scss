@@ -1,11 +1,10 @@
 @import './_vars.scss';
 .xdh-map-tooltip{  
   position: relative;
-  
   min-width: auto;
-  .wrap{
+  &__wrap{
     display: flex;
-    align-items: align-items;
+    align-items: center;
     flex-flow: row nowrap;
   }
   &__content{

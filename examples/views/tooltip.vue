@@ -7,13 +7,13 @@
       </xdh-map-tooltip>
 
       <xdh-map-icon key="icon_b" :stop-event="true"  icon="iconfont icon-locus" :position="[120, 30.1]" @click="a = true"></xdh-map-icon>
-      <xdh-map-tooltip key="b" v-show="a"  :position="[120, 30.1]" :offset="[0, -15]"  :tool="true"  >
+      <xdh-map-tooltip key="b" v-show="a"  :position="[120, 30.1]" :offset="[0, -15]"  :tool="true" theme="dark" >
         <div slot="content">请点下右icon</div>
          <i slot="tool" class="iconfont icon-close" style="font-size: 14px;" @click="a = false"></i>
       </xdh-map-tooltip>
       
       <xdh-map-icon key="icon_c" icon="iconfont icon-policeman" :position="[120.1, 30]" @click="b = true"></xdh-map-icon>
-      <xdh-map-tooltip key="c" v-show="b"  :position="[120.1, 30]" :offset="[0, -15]" v-model="b"  :auto-close="1000">
+      <xdh-map-tooltip key="c" :position="[120.1, 30]" :offset="[0, -15]" :show.sync="b" v-show="b" :auto-close="1000" >
         <div slot="content">这里是icon</div>
       </xdh-map-tooltip>
        
@@ -27,7 +27,7 @@
     data() {
       return {
         a: false,
-        b: false
+        b: true
       }
     },
     methods: {
