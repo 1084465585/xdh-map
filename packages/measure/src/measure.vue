@@ -1,25 +1,19 @@
 <template>
   <div class="xdh-map-measure">
-    <!--   -->
     <xdh-map-draw ref="draw" :style-json="drawStyle" :type="drawType" @drawend="drawEnd" @change="changeHandle"></xdh-map-draw>
     <xdh-map-html style="pointer-events: none;" ref="tips" :position="tipsPos" :offset="[0, -4]">
-      <div class="xdh-map-measure__tooltips" v-show="isStart && tipsShow">
+      <div class="xdh-map-measure__tooltips" :class="theme" v-show="isStart && tipsShow">
         <div class="help">{{helpMsg}}</div>
         <div class="range" :class="type" v-show="drawing" v-html="currentOutput"></div>
       </div>
     </xdh-map-html>
 
     <template v-for="(item, index) in marks">
-      <xdh-map-html  :key="`close_${index}`" :position="item.pos" :offset="[10, 10]" >
-        <div class="xdh-map-measure__close dark" v-if="item" @click="removeMark(index)">
-          <i class="iconfont icon-close"></i>  
+      <xdh-map-tooltip :key="`mark_${index}`" :position="item.pos" :offset="[0, -12]" :theme="theme" :tool="true">
+        <div slot="content" class="xdh-map-measure__content"  >
+           <span v-html="item.output"></span>
         </div>
-      </xdh-map-html>
-
-      <xdh-map-tooltip :key="`mark_${index}`" :position="item.pos" :offset="[0, -3]" direction="top" >
-        <div class="xdh-map-measure__output">
-          <span v-html="item.output"></span>
-        </div>
+        <i slot="tool" class="xdh-map-measure__close iconfont icon-close" @click="removeMark(index)"></i>
       </xdh-map-tooltip>
     </template>
      
@@ -76,7 +70,7 @@
       width: 2
     },
     image: {
-      className: 'CircleStyle',
+      className: 'Circle',
       radius: 5,
       stroke: {
         className: 'Stroke',
@@ -85,7 +79,7 @@
       },
       fill: {
         className: 'Fill',
-        color: 'rgba(255, 255, 255, 1)'
+        color: 'rgba(255, 255, 255, 0.3)'
       }
     }
   }
@@ -124,6 +118,10 @@
     },
     mixins: [],
     props: {
+      theme: {
+        type: String,
+        default: 'light'
+      },
       type: {
         type: String,
         default: 'length', // area

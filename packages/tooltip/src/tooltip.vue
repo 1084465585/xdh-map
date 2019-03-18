@@ -1,11 +1,14 @@
 <template>
-  <xdh-map-html v-bind="$props" ref="html">
-    <div class="xdh-map-tooltip">
-      <div :class="classes">
-        <slot></slot>
-      </div> 
-    </div> 
-  </xdh-map-html>
+  <xdh-map-popup ref="popup" class="xdh-map-tooltip" v-bind="$props" :closable="false" :closeOnClick="false">
+    <div class="wrap">
+      <div class="xdh-map-tooltip__content">
+        <slot name="content"></slot>
+      </div>
+      <div v-if="tool" class="xdh-map-tooltip__tool">
+        <slot name="tool"></slot>
+      </div>
+    </div>
+  </xdh-map-popup>
 </template>
 
 <script>
@@ -14,7 +17,7 @@
    * @module xdh-map-popup
    */
 
-  import XdhMapHtml from '../../html'
+  import XdhMapPopup from '../../popup'
   import {getParent, mapReady} from 'utils/util'
 
   /**
@@ -26,7 +29,7 @@
   export default {
     name: 'XdhMapTooltip',
     components: {
-      XdhMapHtml
+      XdhMapPopup
     },
     /**
      * 参数属性
@@ -35,74 +38,69 @@
      *
      */
     props: {
-      ...XdhMapHtml.props,
-      direction: {
-        type: String,
-        default: 'top',
-        validator() {
-          return ['top', 'bottom', 'left', 'right']
-        }
-      }, 
-      theme: {
-        type: String,
-        default: 'dark',
-        validator() {
-          return ['dark', 'light']
-        }
-      },
-      
-      closeOnClick: {
+      ...XdhMapPopup.props,
+      // direction: {
+      //   type: String,
+      //   default: 'top',
+      //   validator() {
+      //     return ['top', 'bottom', 'left', 'right']
+      //   }
+      // },
+      tool: {
         type: Boolean,
-        default: true
+        default: false
+      },
+      autoClose: {
+        type: Number,
+        default: 0
       },
       value: {
         type: Boolean,
         default: true
       }
+  
     },
     data() {
       return {
-        isShow: this.value
+        isShow: this.value,
+        timer: null
       }
     },
     computed: {
-      classes() {
-        return ['xdh-map-tooltip__tag', `is-${this.theme}`, this.direction]
-      }
     },
     watch: {
       value(val) {
-        if (val === false) {
-          this.$nextTick(() => { this.hide() })
-        } else {
-          this.show(this.position)
-        }
         this.isShow = val
-        
+        if (val && this.autoClose) {
+          this.toAutoClose()
+        }
       },
       isShow(val) {
         this.$emit('input', val)
       }
     },
     methods: {
-      show(position) {
-        this.$refs.html.show(position || this.position)
-      },
-      hide() {
-        this.$refs.html.hide()
-      },
-      setHide() {
-        this.isShow = false 
+      // show(position) {
+      //   this.$refs.html.show(position || this.position)
+      // },
+      // hide() {
+      //   this.$refs.html.hide()
+      // },
+      // setHide() {
+      //   this.isShow = false 
         
-      },
-       
+      // },
+      toAutoClose() {
+        if (this.timer) { clearTimeout(this.timer) }
+        this.timer = setTimeout(() => {
+          this.$refs.popup.hide()
+          this.isShow = false
+        }, this.autoClose)
+      }, 
       ready(map) {
         this.map = map
-        if (!this.isShow) {
-          this.hide()
-        }
-        if (this.closeOnClick) {
-          map.on('click', this.setHide)
+        if (this.autoClose && this.isShow) {
+          this.toAutoClose()
         }
       }
     },
@@ -111,8 +109,8 @@
       mapReady.call(this, this.ready)
     },
     beforeDestroy() {
-      if (this.closeOnClick) {
-        this.parent.map.un('click', this.setHide)
+      if (this.timer) {
+        clearTimeout(this.timer)
       }
     }
   }
