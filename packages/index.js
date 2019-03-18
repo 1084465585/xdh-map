@@ -90,7 +90,7 @@ export const XdhMapMask = Mask
 export const parseStyle = parse
 
 export default {
-  version: '1.0.3',
+  version: '1.1.1',
   install,
   parseStyle,
   Map,
