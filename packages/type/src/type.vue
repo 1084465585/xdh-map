@@ -32,14 +32,14 @@
      * @property {number} [zIndex=1] 层级
      * @property {number[]} [margin] 外边距
      * @property {string[]} [theme] 主题 可选值 'default', 'light', 'dark'
-     * @property {string[]} types 显示的图层类型，支持 'Baidu', 'Amap', 'OSM','SuperMap', 'Google', 'Founder'
+     * @property {string[]} types 显示的图层类型，支持 'Baidu', 'Amap', 'OSM','SuperMap', 'Google', 'Founder'，'TDT'
      */
     props: {
       ...XdhMapPlacement.props,
       types: {
         type: Array,
         default() {
-          return ['Baidu', 'Amap', 'OSM']
+          return ['Baidu', 'Amap', 'TDT']
         }
       }
     },

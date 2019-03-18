@@ -1,6 +1,6 @@
 <template>
   <example>
-    <xdh-map>
+    <xdh-map type="TDT">
       <xdh-map-text :text="text"
                     :position="position"
                     font="20px"

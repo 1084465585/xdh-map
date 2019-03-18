@@ -64,7 +64,7 @@
      * @property {Number} [maxZoom=20] 最大缩放层级
      * @property {Number} [zoom=10] 初始化缩放层级
      * @property {Number[]} [center] 初始化中心经纬度
-     * @property {String} [type=OSM] 初始化图层瓦片地图类型, 默认可选值：OSM、Baidu、Google、Amap、SuperMap、Founder
+     * @property {String} [type=OSM] 初始化图层瓦片地图类型, 默认可选值：OSM、Baidu、Google、Amap、SuperMap、Founder、TDT
      * @property {Function} [layerConfig] 图层瓦片服务配置，必须返回Promise
      */
 
@@ -94,7 +94,7 @@
       // 初始化图层瓦片地图类型
       type: {
         type: String,
-        default: 'OSM'
+        default: 'TDT'
       },
       // 图层瓦片服务配置，必须返回Promise
       layerConfig: {
@@ -244,7 +244,10 @@
           this.map.removeLayer(tileLayer)
           tileLayer.disposeInternal()
         }
-        this.map.addLayer(createLayer(type))
+        const newLayers = [].concat(createLayer(type))
+        newLayers.forEach(layer => {
+          this.map.addLayer(layer)
+        })
         /**
          * 地图类型切换时触发
          * @event changeType
@@ -333,7 +336,7 @@
       })
     },
     mounted() {
-      const layer = createLayer(this.type)
+      const layers = [].concat(createLayer(this.type))
       const view = new View({
         projection: 'EPSG:4326',
         center: this.center,
@@ -342,7 +345,7 @@
         minZoom: this.minZoom
       })
       this.map = new Map({
-        layers: [layer],
+        layers: layers,
         target: this.$refs.map,
         view: view,
         // 删除默认的控件

@@ -4,6 +4,7 @@
       <option value="Baidu">Baidu</option>
       <option value="Amap">Amap</option>
       <option value="OSM">OSM</option>
+      <option value="TDT">TDT</option>
       <option value="Google">Google</option>
       <option value="SuperMap">SuperMap</option>
       <option value="Founder">Founder</option>

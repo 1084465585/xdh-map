@@ -2,6 +2,7 @@
  * 地图图层配置，支持OSM、百度、离线谷歌、高德、超图、方正PGIS
  * @type {{OSM: {title: string, server: null, preview: string}, Baidu: {title: string, server: string, preview: string}, Amap: {title: string, server: string, preview: string}, SupperMap: {title: string, server: string, preview: string}, Google: {title: string, server: string, preview: string}, Founder: {title: string, server: string, preview: string}}}
  */
+
 const LAYERS = {
   OSM: {
     title: 'OSM',
@@ -16,6 +17,18 @@ const LAYERS = {
   Amap: {
     title: '高德',
     server: 'http://webrd03.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}&lang=zh_cn',
+    preview: require('../sources/types/Amap.png')
+  },
+  TDT: {
+    title: '天地图',
+    // vec_w: 矢量底图
+    // cva_w: 矢量注记
+    // img_w: 卫星影像底图
+    // cia_w: 影像注记
+    // ter_w: 地形底图
+    // cta_w: 地形注记
+    // ibo_w: 境界（省级以上）
+    server: ['vec_w', 'cva_w', 'ibo_w'],
     preview: require('../sources/types/Amap.png')
   },
   SuperMap: {

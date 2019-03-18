@@ -78,6 +78,26 @@ function createFounderLayer(config) {
   })
 }
 
+/**
+ * 天地图
+ * @param {string} t
+ *
+ * vec_w: 矢量底图
+ * cva_w: 矢量注记
+ * img_w: 卫星影像底图
+ * cia_w: 影像注记
+ * ter_w: 地形底图
+ * cta_w: 地形注记
+ * ibo_w: 境界（省级以上）
+ */
+function createTdtLayer(t = 'vec_c') {
+  return new TileLayer({
+    source: new XYZ({
+      url: 'http://t{0-7}.tianditu.com/DataServer?T=' + t + '&x={x}&y={y}&l={z}&tk=464554f64aa4f4e90e0321c17a57a331'
+    })
+  })
+}
+
 
 /**
  * 创建地图图层
@@ -97,6 +117,7 @@ function createFounderLayer(config) {
  *       })
  */
 export function createLayer(key = 'OSM') {
+  
   if (!validate(key)) return null
   
   const config = getConfig(key)
@@ -129,6 +150,9 @@ export function createLayer(key = 'OSM') {
       break
     case 'Founder':
       layer = createFounderLayer(config)
+      break
+    case 'TDT':
+      layer = (config.server || []).map(type => createTdtLayer(type))
       break
   }
   return layer
