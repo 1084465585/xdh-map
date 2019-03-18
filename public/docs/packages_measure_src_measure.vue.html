@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: packages/measure/src/measure.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: packages/measure/src/measure.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;div class="xdh-map-measure">
+    &lt;!--   -->
+    &lt;xdh-map-draw ref="draw" :style-json="drawStyle" :type="drawType" @drawend="drawEnd" @change="changeHandle">&lt;/xdh-map-draw>
+    &lt;xdh-map-html style="pointer-events: none;" ref="tips" :position="tipsPos" :offset="[0, -4]">
+      &lt;div class="xdh-map-measure__tooltips" v-show="isStart &amp;&amp; tipsShow">
+        &lt;div class="help">{{helpMsg}}&lt;/div>
+        &lt;div class="range" :class="type" v-show="drawing" v-html="currentOutput">&lt;/div>
+      &lt;/div>
+    &lt;/xdh-map-html>
+
+    &lt;template v-for="(item, index) in marks">
+      &lt;xdh-map-html  :key="`close_${index}`" :position="item.pos" :offset="[10, 10]" >
+        &lt;div class="xdh-map-measure__close dark" v-if="item" @click="removeMark(index)">
+          &lt;i class="iconfont icon-close">&lt;/i>  
+        &lt;/div>
+      &lt;/xdh-map-html>
+
+      &lt;xdh-map-tooltip :key="`mark_${index}`" :position="item.pos" :offset="[0, -3]" direction="top" >
+        &lt;div class="xdh-map-measure__output">
+          &lt;span v-html="item.output">&lt;/span>
+        &lt;/div>
+      &lt;/xdh-map-tooltip>
+    &lt;/template>
+     
+  &lt;/div>
+&lt;/template>
+&lt;style lang="scss" scoped>
+
+&lt;/style>
+&lt;script>
+  /**
+   * 测量距离组件
+   * @module xdh-map-measure
+   */
+  import {getParent, mapReady} from 'utils/util'
+  import XdhMapDraw from '../../draw'
+  import XdhMapHtml from '../../html'
+  import XdhMapTooltip from '../../tooltip'
+  import {getLength, getArea} from 'ol/sphere.js'
+  import {parse} from 'utils/style'
+  /**
+   * 参数属性
+   * @member props
+   * @property {string} type 画图类型，可选值：'length'(距离), 'area'（范围）
+   * @property {string} pendingMsg 悬停状态下提示语
+   * @property {string} drawMsg 测绘状态下提示语
+   */
+
+  // const vueProps = {}
+  // 默认标记样式
+  const DEFAULT_MARK_STYLE = {
+    className: 'Style',
+    fill: {
+      className: 'Fill',
+      color: 'rgba(0,0,0,.3)'
+    },
+    stroke: {
+      className: 'Stroke',
+      color: 'rgba(255,165,0,0.8)',
+      width: 3
+    }
+  }
+
+  // 默认绘图样式
+  const DEFAULT_DRAW_STYLE = {
+    className: 'Style',
+    fill: {
+      className: 'Fill',
+      color: 'rgba(255, 255, 255, 0.2)'
+    },
+    stroke: {
+      className: 'Stroke',
+      color: 'rgba(0, 0, 0, 0.5)',
+      lineDash: [10, 10],
+      width: 2
+    },
+    image: {
+      className: 'CircleStyle',
+      radius: 5,
+      stroke: {
+        className: 'Stroke',
+        color: 'rgba(0, 0, 0, 1)',
+        width: 2
+      },
+      fill: {
+        className: 'Fill',
+        color: 'rgba(255, 255, 255, 1)'
+      }
+    }
+  }
+
+  // 换算测量结果
+  const _calcOutPut = function(feature) {
+    let sourceProj = this.map.getView().getProjection() // 地图投影模式
+    let output
+    if (this.type === 'length') {
+      let length = getLength(feature, {projection: sourceProj})
+      if (length > 100) {
+        output = (Math.round(length / 1000 * 100) / 100) +
+          ' ' + 'km'
+      } else {
+        output = (Math.round(length * 100) / 100) +
+          ' ' + 'm'
+      }
+    } else {
+      let area = getArea(feature, {projection: sourceProj})
+      if(area > 10000) {
+        output = (Math.round(area / 1000000 * 100) / 100) + ' ' + 'km&lt;sup>2&lt;sup>';
+      }else{
+        output = (Math.round(area * 100) / 100) + ' ' + 'm&lt;sup>2&lt;sup>';
+      }
+    }
+    return output
+  }
+
+
+  export default {
+    name: 'XdhMapMeasure',
+    components: {
+      XdhMapDraw,
+      XdhMapHtml,
+      XdhMapTooltip
+    },
+    mixins: [],
+    props: {
+      type: {
+        type: String,
+        default: 'length', // area
+        validator(val) {
+          return ['length', 'area'].includes(val)
+        }
+      },
+      drawStyle: {
+        type: Object,
+        default: () => {
+          return DEFAULT_DRAW_STYLE
+        }
+      },
+      markStyle: {
+        type: Object,
+        default: () => {
+          return DEFAULT_MARK_STYLE
+        }
+      },
+      pendingMsg: {
+        type: String,
+        default: '点击开始测量'
+      },
+      drawMsg: {
+        type: String,
+        default: '双击结束测量'
+      }
+    },
+    data() {
+      return {
+        isStart: false, // 可以测量状态
+        drawing: false, // 是否绘画测量当中
+        tipsShow: false, // 鼠标提示显示
+        tipsPos: [40, 40], // 鼠标提示的位置
+        currentOutput: '', // 当前测距
+        currentMarkPos: [0, 0], // 当前测距位置（距离标签定位）
+        
+        marks: [] // 测距结果数组
+      }
+    },
+    computed: {
+      drawType() {
+        if (this.type === 'area') {
+          return 'Polygon' 
+        } else {
+          return 'LineString'
+        }
+      },
+      helpMsg() {
+        return this.drawing ? this.drawMsg : this.pendingMsg
+      }
+    },
+    watch: {
+      drawType(val) {
+        if (this.isStart) {
+          this.$refs.draw.finish()
+          this.$nextTick(() => {
+            this.$refs.draw.draw()
+          })
+        }
+      }
+    },
+    methods: {
+      ready(map) {
+        this.map = map
+        this.map.on('pointermove', this._setTipsPos)
+        this._toggleTipsShowOpen = this._toggleTipsShow.bind(this, true)
+        this._toggleTipsShowClose = this._toggleTipsShow.bind(this, false)
+
+        this.viewport = this.map.getViewport()
+        this.viewport.addEventListener('mouseover', this._toggleTipsShowOpen)
+        this.viewport.addEventListener('mouseleave', this._toggleTipsShowClose)
+      },
+      _setTipsPos(e) { // 说明标签跟随鼠标移动
+        this.tipsPos = e.coordinate
+      },
+      _toggleTipsShow(flag) { // 说明标签显示隐藏（鼠标在视口范围内）
+        this.tipsShow = flag
+      },
+
+      start() { // 开启测量功能
+        if (this.isStart) return
+        this.isStart = true
+        this.$refs.draw.draw()
+      },
+      
+      stop() { // 关闭测量功能
+        if (!this.isStart) return
+        this.isStart = false
+        this.$refs.draw.finish()
+      },
+      
+      drawEnd(e) {
+        const feature = e.feature
+        let currentMark = {}
+        currentMark.output = this.currentOutput
+        if (this.type === 'length') {
+          currentMark.pos = feature.getGeometry().getLastCoordinate()
+        } else {
+          currentMark.pos = feature.getGeometry().getInteriorPoint().getCoordinates()
+        }
+        this.marks.push(currentMark)
+
+        const style = parse(this.markStyle)
+        feature.setStyle(style)
+        currentMark.feature = feature
+        this.drawing = false
+        this.currentOutput = ''
+      },
+
+      changeHandle(e) {
+        this.drawing = true
+        let geom = e.target.getGeometry()
+        this.currentOutput = _calcOutPut.call(this, geom)
+      },
+
+      removeMark(index) {
+        this.$refs.draw.remove(this.marks[index].feature)
+        this.marks.splice(index, 1)
+      }
+       
+    },
+    created() {
+      this.parent = getParent.call(this)
+      mapReady.call(this, this.ready)
+    },
+    mounted() {
+    },
+    beforeDestroy() {
+      this.map.un('pointermove', this._setTipsPos)
+      this.viewport.removeEventListener('mouseover', this._toggleTipsShowOpen)
+      this.viewport.removeEventListener('mouseleave', this._toggleTipsShowColse)
+      if (this.map &amp;&amp; this.marks.length) {
+        this.map.removeOverlay(this.$refs.tips.overlay)
+        this.marks = []
+      }
+    }
+  }
+&lt;/script>
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-xdh-map.html">xdh-map</a></li><li><a href="module-xdh-map-circle.html">xdh-map-circle</a></li><li><a href="module-xdh-map-draw.html">xdh-map-draw</a></li><li><a href="module-xdh-map-echarts.html">xdh-map-echarts</a></li><li><a href="module-xdh-map-heat.html">xdh-map-heat</a></li><li><a href="module-xdh-map-html.html">xdh-map-html</a></li><li><a href="module-xdh-map-icon.html">xdh-map-icon</a></li><li><a href="module-xdh-map-image.html">xdh-map-image</a></li><li><a href="module-xdh-map-line.html">xdh-map-line</a></li><li><a href="module-xdh-map-mask.html">xdh-map-mask</a></li><li><a href="module-xdh-map-measure.html">xdh-map-measure</a></li><li><a href="module-xdh-map-overview.html">xdh-map-overview</a></li><li><a href="module-xdh-map-placement.html">xdh-map-placement</a></li><li><a href="module-xdh-map-pointer.html">xdh-map-pointer</a></li><li><a href="module-xdh-map-polygon.html">xdh-map-polygon</a></li><li><a href="module-xdh-map-popup.html">xdh-map-popup</a></li><li><a href="module-xdh-map-rectangle.html">xdh-map-rectangle</a></li><li><a href="module-xdh-map-scatter.html">xdh-map-scatter</a></li><li><a href="module-xdh-map-text.html">xdh-map-text</a></li><li><a href="module-xdh-map-track.html">xdh-map-track</a></li><li><a href="module-xdh-map-type.html">xdh-map-type</a></li><li><a href="module-xdh-map-zoom.html">xdh-map-zoom</a></li></ul><h3>Classes</h3><ul><li><a href="ol.source.TileSuperMapRest.html">TileSuperMapRest</a></li></ul><h3>Events</h3><ul><li><a href="module-xdh-map-type.html#~event:change">change</a></li><li><a href="module-xdh-map.html#~event:changeType">changeType</a></li><li><a href="module-xdh-map-pointer.html#~event:copy">copy</a></li><li><a href="module-xdh-map-draw.html#~event:drawend">drawend</a></li><li><a href="module-xdh-map-draw.html#~event:drawstart">drawstart</a></li><li><a href="module-xdh-map-draw.html#~event:modifyend">modifyend</a></li><li><a href="module-xdh-map-draw.html#~event:modifystart">modifystart</a></li><li><a href="module-xdh-map-track.html#~event:move">move</a></li><li><a href="module-xdh-map.html#~event:ready">ready</a></li><li><a href="module-xdh-map-track.html#~event:start">start</a></li><li><a href="module-xdh-map-track.html#~event:stop">stop</a></li></ul><h3>Global</h3><ul><li><a href="global.html#capitalize">capitalize</a></li><li><a href="global.html#createLayer">createLayer</a></li><li><a href="global.html#D2R">D2R</a></li><li><a href="global.html#featureStyleRender">featureStyleRender</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getParent">getParent</a></li><li><a href="global.html#keyMap">keyMap</a></li><li><a href="global.html#LAYERS">LAYERS</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#mixProps">mixProps</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#prefix">prefix</a></li><li><a href="global.html#props">props</a></li><li><a href="global.html#set">set</a></li><li><a href="global.html#StyleMap">StyleMap</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Mar 18 2019 08:42:19 GMT+0800 (China Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

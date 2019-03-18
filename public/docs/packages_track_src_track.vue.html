@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: packages/track/src/track.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: packages/track/src/track.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;div>&lt;/div>
+&lt;/template>
+
+&lt;script>
+  /**
+   * 轨迹动画组件
+   * @module xdh-map-track
+   */
+  import Point from 'ol/geom/Point'
+  import Feature from 'ol/Feature'
+  import {parse} from 'utils/style'
+  import {GreatCircle} from 'utils/plugins/Arc'
+  import {getParent, mapReady} from 'utils/util'
+  import CleanMixin from 'utils/mixins/clean'
+
+  export default {
+    name: 'XdhMapTrack',
+    mixins: [CleanMixin],
+    /**
+     * 参数属性
+     * @member props
+     * @property {array[]} routes 线坐标数组
+     * @property {string} src 图标图片资源
+     * @property {number} [steps=200] 两点之间移动次数，值越大，速度越慢
+     * @property {boolean} [loop=true] 是否循环动画
+     * @property {boolean} [auto=true] 是否自动播放动画
+     */
+    props: {
+      // 线坐标数组
+      routes: {
+        type: Array,
+        required: true,
+        default() {
+          return []
+        }
+      },
+      // 图标图片资源
+      src: {
+        type: String
+      },
+      // 两点之间移动次数，值越大，速度越慢
+      steps: {
+        type: Number,
+        default: 200
+      },
+      // 是否循环动画
+      loop: {
+        type: Boolean,
+        default: true
+      },
+      // 是否自动播放动画
+      auto: {
+        type: Boolean,
+        default: true
+      }
+    },
+    data() {
+      return {
+        // 轨迹移动进度
+        progress: 0,
+        // 动画状态是否暂停
+        pause: false
+      }
+    },
+    computed: {
+      // 分步完成轨迹动画，计算需要走几步
+      stepRoutes() {
+        let routes = []
+        this.routes.forEach((route, index) => {
+          if (index > 0) {
+            const prev = this.routes[index - 1]
+            const gen = new GreatCircle({x: prev[0], y: prev[1]}, {x: route[0], y: route[1]})
+            const arcLine = gen.Arc(this.steps, {offset: 0})
+            // 两段线中间有重复的点，要删除第一个
+            routes = routes.concat(arcLine.geometries[0].coords.slice(1))
+          } else {
+            routes.push(route)
+          }
+        })
+        return routes
+      },
+      // 总步数
+      totalSteps() {
+        return this.stepRoutes.length
+      }
+    },
+    methods: {
+      /**
+       * 开始动画
+       */
+      start() {
+        this.pause = false
+        /**
+         * 开始动画时触发
+         * @event start
+         * @param {array[]} stepRoutes 动画步骤
+         * @param {number} progress 当前进度
+         * @param {number} rotation 旋转角度
+         */
+        this.$emit('start', this.stepRoutes, this.progress, 0)
+        this.move()
+      },
+      /**
+       * 停止动画
+       */
+      stop() {
+        this.pause = true
+        /**
+         * 停止动画时触发
+         * @event stop
+         * @param {array[]} stepRoutes 动画步骤
+         * @param {number} progress 当前进度
+         * @param {number} rotation 旋转角度
+         */
+        this.$emit('stop', this.stepRoutes, this.progress, 0)
+      },
+      /**
+       * 移动图标，完成动画
+       */
+      move() {
+        if (this.pause) return
+
+        ++this.progress
+        // 运动到最后
+        if (this.progress >= (this.totalSteps - 1)) {
+          // 自动循环
+          if (this.loop) {
+            this.progress = 0
+            requestAnimationFrame(this.move)
+          }
+
+        } else {
+          const route = this.stepRoutes[this.progress]
+          const next = this.stepRoutes[this.progress + 1]
+          const dx = route[0] - next[0]
+          const dy = route[1] - next[1]
+          const rotation = Math.atan2(dy, dx)
+          // 如果不设置图片资源，不创建图形，只触发动画事件
+          if (this.src) {
+            const style = this.createStyle(rotation)
+            const geometry = new Point(route)
+            this.feature.setGeometry(geometry)
+            this.feature.setStyle(style)
+            this.feature._vm = this
+          }
+          /**
+           * 动画执行时触发
+           * @event move
+           * @param {array[]} stepRoutes 动画步骤
+           * @param {number} progress 当前进度
+           * @param {number} rotation 旋转角度
+           */
+          this.$emit('move', this.stepRoutes, this.progress, rotation)
+          requestAnimationFrame(this.move)
+        }
+      },
+      createStyle(rotation) {
+        return parse({
+          className: 'Style',
+          image: {
+            className: 'Icon',
+            src: this.src,
+            rotateWithView: false,
+            rotation: -rotation
+          }
+        })
+      },
+
+      ready(map) {
+        this.map = map
+        // 轨迹动画至少需要有两个点
+        if (this.routes.length &lt; 2) return
+
+        const route = this.routes[0]
+        const next = this.routes[1]
+        const dx = route[0] - next[0]
+        const dy = route[1] - next[1]
+        const rotation = Math.atan2(dy, dx)
+        if (this.src) {
+          const style = this.createStyle(rotation)
+          const point = new Point(route)
+          this.feature = new Feature(point)
+          this.feature.setStyle(style)
+          this.parent.addFeature(this.feature)
+        }
+        this.auto &amp;&amp; this.start()
+      }
+    },
+    created() {
+      this.parent = getParent.call(this)
+      mapReady.call(this, this.ready)
+    },
+    beforeDestroy() {
+      if (this.parent &amp;&amp; this.feature) {
+        this.parent.removeFeature(this.feature)
+      }
+    }
+  }
+&lt;/script>
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-xdh-map.html">xdh-map</a></li><li><a href="module-xdh-map-circle.html">xdh-map-circle</a></li><li><a href="module-xdh-map-draw.html">xdh-map-draw</a></li><li><a href="module-xdh-map-echarts.html">xdh-map-echarts</a></li><li><a href="module-xdh-map-heat.html">xdh-map-heat</a></li><li><a href="module-xdh-map-html.html">xdh-map-html</a></li><li><a href="module-xdh-map-icon.html">xdh-map-icon</a></li><li><a href="module-xdh-map-image.html">xdh-map-image</a></li><li><a href="module-xdh-map-line.html">xdh-map-line</a></li><li><a href="module-xdh-map-mask.html">xdh-map-mask</a></li><li><a href="module-xdh-map-measure.html">xdh-map-measure</a></li><li><a href="module-xdh-map-overview.html">xdh-map-overview</a></li><li><a href="module-xdh-map-placement.html">xdh-map-placement</a></li><li><a href="module-xdh-map-pointer.html">xdh-map-pointer</a></li><li><a href="module-xdh-map-polygon.html">xdh-map-polygon</a></li><li><a href="module-xdh-map-popup.html">xdh-map-popup</a></li><li><a href="module-xdh-map-rectangle.html">xdh-map-rectangle</a></li><li><a href="module-xdh-map-scatter.html">xdh-map-scatter</a></li><li><a href="module-xdh-map-text.html">xdh-map-text</a></li><li><a href="module-xdh-map-track.html">xdh-map-track</a></li><li><a href="module-xdh-map-type.html">xdh-map-type</a></li><li><a href="module-xdh-map-zoom.html">xdh-map-zoom</a></li></ul><h3>Classes</h3><ul><li><a href="ol.source.TileSuperMapRest.html">TileSuperMapRest</a></li></ul><h3>Events</h3><ul><li><a href="module-xdh-map-type.html#~event:change">change</a></li><li><a href="module-xdh-map.html#~event:changeType">changeType</a></li><li><a href="module-xdh-map-pointer.html#~event:copy">copy</a></li><li><a href="module-xdh-map-draw.html#~event:drawend">drawend</a></li><li><a href="module-xdh-map-draw.html#~event:drawstart">drawstart</a></li><li><a href="module-xdh-map-draw.html#~event:modifyend">modifyend</a></li><li><a href="module-xdh-map-draw.html#~event:modifystart">modifystart</a></li><li><a href="module-xdh-map-track.html#~event:move">move</a></li><li><a href="module-xdh-map.html#~event:ready">ready</a></li><li><a href="module-xdh-map-track.html#~event:start">start</a></li><li><a href="module-xdh-map-track.html#~event:stop">stop</a></li></ul><h3>Global</h3><ul><li><a href="global.html#capitalize">capitalize</a></li><li><a href="global.html#createLayer">createLayer</a></li><li><a href="global.html#D2R">D2R</a></li><li><a href="global.html#featureStyleRender">featureStyleRender</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getParent">getParent</a></li><li><a href="global.html#keyMap">keyMap</a></li><li><a href="global.html#LAYERS">LAYERS</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#mixProps">mixProps</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#prefix">prefix</a></li><li><a href="global.html#props">props</a></li><li><a href="global.html#set">set</a></li><li><a href="global.html#StyleMap">StyleMap</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Mar 18 2019 08:42:19 GMT+0800 (China Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
