@@ -23,6 +23,7 @@ import Scatter from './scatter'
 import Measure from './measure'
 import Tooltip from './tooltip'
 import Mask from './mask'
+import Geo from './geo'
 import '../theme/index.scss'
 
 const components = [
@@ -49,7 +50,8 @@ const components = [
   Scatter,
   Measure,
   Tooltip,
-  Mask
+  Mask,
+  Geo
 ]
 
 const install = function (Vue) {
@@ -87,6 +89,7 @@ export const XdhMapScatter = Scatter
 export const XdhMapMeasure = Measure
 export const XdhMapTooltip = Tooltip
 export const XdhMapMask = Mask
+export const XdhMapGeo = Geo
 export const parseStyle = parse
 
 export default {
@@ -116,7 +119,8 @@ export default {
   Scatter,
   Measure,
   Tooltip,
-  Mask
+  Mask,
+  Geo
 }
 
 

@@ -48,6 +48,9 @@
       <dd>
         <router-link to="/mask">Mask</router-link>
       </dd>
+      <dd>
+        <router-link to="/geo">Geo</router-link>
+      </dd>
       <dt>控件组件</dt>
       <dd>
         <router-link to="/placement">Placement</router-link>

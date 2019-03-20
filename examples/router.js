@@ -116,6 +116,10 @@ const router = new Router({
           {
             path: 'mask',
             component: () => import('./views/mask.vue')
+          },
+          {
+            path: 'geo',
+            component: () => import('./views/geo.vue')
           }
         ]
       }
