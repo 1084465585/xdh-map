@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import china from '../data/world.json'
+  import china from '../data/china.json'
   import {parseStyle} from '../../packages/index.js'
   const NAME = '广东省' // 'China'
   export default {
