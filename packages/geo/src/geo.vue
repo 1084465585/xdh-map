@@ -3,9 +3,13 @@
     <xdh-map-polygon ref="poly" v-for="(item, index) in features"  :key="`poly_${index}`" :coordinates="item.coordinates[0]"
                 fill="transparent"
                 stroke-color="transparent"
-                :stroke-width="1" :text="item.properties.name" color="transparent" @draw="drawHandle(arguments[0], item)" 
+                :stroke-width="1" :text="item.properties.name" color="transparent" 
+                @draw="drawHandle(arguments[0], item)" 
                 @pointermove="hoverHandle(...arguments, item)"
+                v-on="geoListeners(item)"
+                
     ></xdh-map-polygon>
+    <!--  -->
   </div>  
 </template>
 
@@ -89,10 +93,21 @@
         })
         return geo
       }
+      
     },
     methods: {
-      hoverHandle(e, feature, obj) {
+      geoListeners(item) {
+        let vm = this
+        let obj = Object.assign({}, vm.$listeners)
+        for (let key in obj) {
+          if (key !== 'hover' || key !== 'hoverout' || key !== 'pointermove') {
+            obj[key] = obj[key].bind(vm, ...arguments)
+          } 
+        }
+        return obj
         
+      },
+      hoverHandle(e, feature, obj) {  
         if (!this.currentFeature) {
           this.currentFeature = feature
           this.currentObj = obj
@@ -113,9 +128,10 @@
       },
       ready(map) {
         this.map = map
-        let select = new Select({condition: pointerMove})
-        this.map.addInteraction(select)
-        select.on('select', (e) => {
+        this.select = new Select({condition: pointerMove})
+        
+        this.map.addInteraction(this.select)
+        this.select.on('select', (e) => {
           if(!e.selected.length) {
             this.$emit('hoverout', e, this.currentFeature, this.currentObj)
             this.$nextTick(() => {
@@ -168,12 +184,15 @@
     },
     created() {
       this.parent = getParent.call(this)
+      console.log('listeners', this.$listeners)
     },
     mounted() {
       mapReady.call(this, this.ready)
       this.formatFeatures()
+      
     },
     beforeDestroy() {
+      this.map.removeInteraction(this.select)
     }
   }
 </script>
