@@ -1,7 +1,7 @@
 <template>
   <example>
     <xdh-map :zoom="5" :center="[116.23, 39.54]">
-      <xdh-map-geo @click="clickHandle" :state="state" @hover="hoverHandle" @hoverout="hoveroutHandle" :draw-define="drawDefineFn"></xdh-map-geo>
+      <xdh-map-geo @click="clickHandle" :state="state" @mouseEnter="hoverHandle" @mouseLeave="hoveroutHandle" :draw-define="drawDefineFn"></xdh-map-geo>
     </xdh-map>
   </example>
 </template>
@@ -29,8 +29,8 @@
       }
     },
     methods: {
-      clickHandle(e, f, obj) {
-        console.log(e, f, obj)
+      clickHandle(obj, e, f) {
+        console.log(obj, e, f)
       },
       setCantonStyle(obj) {
         return parseStyle({
@@ -78,10 +78,10 @@
           }
         })
       },
-      hoverHandle(e, feature, obj) {
+      hoverHandle(obj, e, feature) {
         feature.setStyle(this.setActiveStyle(obj))
       },
-      hoveroutHandle(e, feature, obj) {
+      hoveroutHandle(obj, e, feature) {
         if (obj.properties.name === NAME) {
           feature.setStyle(this.setCantonStyle(obj))
         } else {

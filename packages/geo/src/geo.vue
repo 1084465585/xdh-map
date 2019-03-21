@@ -100,7 +100,7 @@
         let vm = this
         let obj = Object.assign({}, vm.$listeners)
         for (let key in obj) {
-          if (key !== 'hover' || key !== 'hoverout' || key !== 'pointermove') {
+          if (key !== 'mouseLeave' || key !== 'mouseEnter' || key !== 'pointermove') {
             obj[key] = obj[key].bind(vm, ...arguments)
           } 
         }
@@ -111,13 +111,13 @@
         if (!this.currentFeature) {
           this.currentFeature = feature
           this.currentObj = obj
-          this.$emit('hover', e, feature, obj)
+          this.$emit('mouseEnter', obj, e, feature)
         } else {
           if (this.currentFeature !== feature) {
-            this.$emit('hoverout', e, this.currentFeature, this.currentObj)
+            this.$emit('mouseLeave', this.currentObj, e, this.currentFeature)
             this.currentFeature = feature
             this.currentObj = obj
-            this.$emit('hover', e, feature, obj)
+            this.$emit('mouseEnter', obj, e, feature)
           }
         }
       },
@@ -133,7 +133,7 @@
         this.map.addInteraction(this.select)
         this.select.on('select', (e) => {
           if(!e.selected.length) {
-            this.$emit('hoverout', e, this.currentFeature, this.currentObj)
+            this.$emit('mouseLeave', this.currentObj, e, this.currentFeature)
             this.$nextTick(() => {
               this.currentFeature = null
               this.currentObj = null
@@ -149,7 +149,7 @@
         let features = this.decodeGeo.features
         let arr = features.map((item, index) => {
           return {
-            index: index,
+            // index: index,
             type: item.geometry.type,
             coordinates: item.geometry.coordinates,
             properties: item.properties || {}
@@ -184,7 +184,6 @@
     },
     created() {
       this.parent = getParent.call(this)
-      console.log('listeners', this.$listeners)
     },
     mounted() {
       mapReady.call(this, this.ready)
