@@ -105,7 +105,6 @@
           } 
         }
         return obj
-        
       },
       hoverHandle(e, feature, obj) {  
         if (!this.currentFeature) {
