@@ -1,7 +1,7 @@
 <template>
   <div v-if="features.length">
     <xdh-map-polygon ref="poly" v-for="(item, index) in features"  :key="`poly_${index}`" :coordinates="item.coordinates[0]"
-                fill="transparent"
+                fill="rgba(0,0,0,0.5)"
                 stroke-color="transparent"
                 :stroke-width="1" :text="item.properties.name" color="transparent" 
                 @draw="drawHandle(arguments[0], item)" 
@@ -131,7 +131,7 @@
         
         this.map.addInteraction(this.select)
         this.select.on('select', (e) => {
-          if(!e.selected.length) {
+          if(!e.selected.length && this.currentFeature) {
             this.$emit('mouseLeave', this.currentObj, e, this.currentFeature)
             this.$nextTick(() => {
               this.currentFeature = null
@@ -176,7 +176,7 @@
             output = output.concat(inner)
           }
         })
-        
+        // console.log('output', output)
         this.features = output
       }
       

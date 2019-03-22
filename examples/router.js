@@ -120,6 +120,14 @@ const router = new Router({
           {
             path: 'geo',
             component: () => import('./views/geo.vue')
+          },
+          {
+            path: 'geo-edit',
+            component: () => import('./views/geo-edit.vue')
+          },
+          {
+            path: 'test',
+            component: () => import('./views/test.vue')
           }
         ]
       }

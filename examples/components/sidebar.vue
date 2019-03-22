@@ -51,6 +51,9 @@
       <dd>
         <router-link to="/geo">Geo</router-link>
       </dd>
+      <dd>
+        <router-link to="/geo-edit">Geo-Edit</router-link>
+      </dd>
       <dt>控件组件</dt>
       <dd>
         <router-link to="/placement">Placement</router-link>
