@@ -18,7 +18,8 @@
                :zoom="10"
                :min-zoom="5"
                :max-zoom="18"
-               @pointermove="handleMove">
+               @pointermove="handleMove"
+               >
         <xdh-map-type></xdh-map-type>
       </xdh-map>
     </example>

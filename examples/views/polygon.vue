@@ -4,12 +4,12 @@
         <xdh-map-polygon :key="1" :coordinates="coordinates"
                          fill="#f00"
                          stroke-color="yellow"
-                         :stroke-width="3" @click="clickHandle"></xdh-map-polygon>
+                         :stroke-width="3" @click="clickHandle" @dblclick="dblClickHandle"></xdh-map-polygon>
 
         <xdh-map-polygon :key="2" :coordinates="test"
                          fill="#f00"
                          stroke-color="yellow"
-                         :stroke-width="3" @click="clickHandle"></xdh-map-polygon>
+                         :stroke-width="3" @dblclick="dblClickHandle"></xdh-map-polygon>
       </xdh-map>
     </example>
 </template>
@@ -210,6 +210,9 @@
     methods: {
       clickHandle(e) {
         console.log(e)
+      },
+      dblClickHandle(e) {
+        console.log('ccc')
       }
     }
   }

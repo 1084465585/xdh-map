@@ -179,7 +179,6 @@
         // console.log('output', output)
         this.features = output
       }
-      
     },
     created() {
       this.parent = getParent.call(this)
