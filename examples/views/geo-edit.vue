@@ -5,7 +5,7 @@
       <!-- @mouseEnter="hoverHandle" @mouseLeave="hoveroutHandle" -->
 
       <xdh-map-placement placement="left-top" :margin="[10, 10]" theme="light"  >
-        <div style="padding: 10px" @click="toEdit">保存编辑</div>
+        <div style="padding: 10px; cursor: pointer" @click="toEdit">{{editing ? '保存' : '编辑'}}</div>
       </xdh-map-placement>
        
       <xdh-map-draw ref="polygon" type="Polygon" v-if="editPol.length" :default-features="editPol" @modifyend="modifyendHandle"></xdh-map-draw>
@@ -16,7 +16,7 @@
 <script>
 
   // import {clone} from 'ol/Feature'
-  import china from '../data/test.json'
+  import china from '../data/test2.json'
   import {parseStyle} from '../../packages/index.js'
   const Style = function(fill = 'transparent', stroke = 'red') {
     return parseStyle({
@@ -50,13 +50,27 @@
           this.$refs.polygon.modify()
         } else {
           this.$refs.polygon.finish()
-          console.log(this.editPol.map((item) => {
-            return item.getProperties()// .getCoordinaries()
-          }))
+          this.saveEdit(this.editPol)
 
         }
         this.editing = !this.editing
       }, 
+      saveEdit(editPol) {
+        // let arr = []
+        let oldFeatures = this.state.features
+        editPol.forEach((item, index) => {
+          let newCoor = item.getGeometry().getCoordinates()
+          let _geometry = oldFeatures[index].geometry
+          _geometry.coordinates = newCoor
+          // if (_geometry.type === 'Polygon') {
+          //   _geometry.coordinates[0] = newCoor
+          // } else {
+          //   _geometry.coordinates = newCoor
+          // }
+        })
+        
+        console.log(JSON.stringify(this.state))
+      },
       modifyendHandle(e) {
         console.log(e.target)
       },
@@ -103,7 +117,6 @@
       }
     },
     mounted() {
-      this.$refs.geo.getFeatures()
     }
   }
 </script>
