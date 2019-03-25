@@ -123,7 +123,7 @@ const router = new Router({
           },
           {
             path: 'geo-edit',
-            component: () => import('./views/geo-edit.vue')
+            component: () => import('./views/geo-edit/geo-edit.vue')
           },
           {
             path: 'test',

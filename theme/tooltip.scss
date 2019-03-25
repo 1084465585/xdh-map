@@ -18,7 +18,15 @@
     padding-left: 3px;
     border-left: 1px solid gray;
   }
-  
+  &__shadow{
+    position: absolute;
+    left: 20%;
+    bottom: 0;
+    width: 60%;
+    height: 30%;
+    transform: translate(0, 26px);
+    background-image: radial-gradient(rgba(0,0,0,0.5), transparent)
+  }
   // &__tag{
   //   position: absolute;
   //   padding: 5px;

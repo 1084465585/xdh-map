@@ -8,6 +8,7 @@
         <slot name="tool"></slot>
       </div>
     </div>
+    <div class="xdh-map-tooltip__shadow"></div>
   </xdh-map-popup>
 </template>
 

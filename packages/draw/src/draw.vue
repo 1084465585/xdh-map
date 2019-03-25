@@ -63,14 +63,7 @@
 
     freehand: Boolean,
     // Wrap the world horizontally on the sketch overlay.
-    wrapX: Boolean,
-    
-    defaultFeatures: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    }
+    wrapX: Boolean
 
   }
 
@@ -199,10 +192,15 @@
         feature.un('change', this.handleChange)
         this.parent.removeFeature(feature)
         this.features = this.features.filter((f) => { return f !== feature })
+      },
+      addFeatures(arr) {
+        if (arr.length) {
+          this.features = this.features.concat(arr)
+        }
       }
     },
     created() {
-      this.features = [...this.defaultFeatures]
+      this.features = []
       this.parent = getParent.call(this)
       mapReady.call(this, this.ready)
     },
