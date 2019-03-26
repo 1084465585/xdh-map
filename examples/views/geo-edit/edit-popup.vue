@@ -35,8 +35,8 @@
       </div>
     </div>
     <div class="btn-wrap" >
-      <div class="add" @click="addHandle">添加</div>
-      <div class="save" @click="saveHandle">保存</div>
+      <button class="add" @click="addHandle">添加</button>
+      <button class="save" @click="saveHandle">保存</button>
     </div>
   </xdh-map-popup> 
 </template>
@@ -80,6 +80,13 @@
         border: 1px solid red;
       }
     }
+  }
+}
+.btn-wrap{
+  padding: 5px;
+  line-height: 1.8;
+  button{
+    margin: 3px;
   }
 }
 </style>
@@ -155,12 +162,16 @@
         this.isAdd = true 
       },
       saveHandle() {
-        console.log(this.editProp, this.target.properties)
+        this.$emit('on-save', {
+          id: this.target.id,
+          geometry: this.target.geometry,
+          properties: this.editProp
+        })
+        this.$refs.popup.hide()
       } 
        
     },
     created() {
-       
     },
     mounted() {
       if (!this.show) {

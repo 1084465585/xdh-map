@@ -25,7 +25,7 @@
       <!-- v-if="editPol.length" :default-features="editPol" -->
       <xdh-map-draw ref="polygon" type="Polygon"  @drawstart="drawStartHandle" @drawend="addDrawEnd" ></xdh-map-draw>
       
-      <edit-popup :position="popupCenter" :offset="[0,0]" :show="popupShow" :target="editTarget"></edit-popup>
+      <edit-popup :position="popupCenter" :offset="[0,0]" :show="popupShow" :target="editTarget" @on-save="propertiesSaveHandle"></edit-popup>
       
     </xdh-map>
   </example>
@@ -53,20 +53,25 @@
 
 <script>
   // import {clone} from 'ol/Feature'
+  import {colorRgb} from './colorChange.js'
   import china from './test.json'
   import {parseStyle} from '../../../packages/index.js'
   import EditPopup from './edit-popup'
   const Style = function(obj) {
+    let fillStr = colorRgb(obj['fill'])
+    let fillColor = fillStr.substring(0, fillStr.length - 1) + `,${obj['fill-opacity']})`
+    let strokeStr = colorRgb(obj['stroke'])
+    let strokeColor = strokeStr.substring(0, strokeStr.length - 1) + `,${obj['stroke-opacity']})`
     return parseStyle({
       className: 'Style',
       fill: {
         className: 'Fill',
-        color: obj['fill']
+        color: fillColor
         // opacity: obj['fill-opacity']
       },
       stroke: {
         className: 'Stroke',
-        color: obj['stroke'],
+        color: strokeColor,
         width: obj['stroke-width']
         // opacity: obj['stroke-opacity']
       }
@@ -120,7 +125,6 @@
           let _geometry = oldFeatures[index].geometry
           _geometry.coordinates = newCoor
         })
-        
         // console.log(JSON.stringify(this.state))
       },
       toAdd() {
@@ -134,6 +138,7 @@
         }
         this.adding = !this.adding
       },
+
       saveJson() {
         console.log(JSON.stringify(this.state))
       },
@@ -170,7 +175,15 @@
         this.popupShow = true
         this.popupCenter = feature.getGeometry().getInteriorPoint().getCoordinates() 
         this.editTarget = feature.getProperties()
-        console.log(this.editTarget)
+        // console.log(feature)
+        // console.log(this.editTarget)
+      },
+      // 属性编辑弹窗保存 
+      propertiesSaveHandle(data) {
+        let targetIndex = this.editPol.findIndex((item) => { return item.ol_uid === data.id })
+        // console.log(target)
+        this.editPol[targetIndex].set('properties', data.properties)
+        this.state.features[targetIndex].properties = data.properties
       },
       setActiveStyle(obj) {
         return parseStyle({
@@ -205,10 +218,14 @@
         // this.features.push(feature.clone())
         let newFeature = feature.clone()
         newFeature.set('properties', obj.properties)
+        newFeature.set('id', newFeature.ol_uid)
+         
         newFeature.setStyle(Style(obj.properties))
         this.$refs.map.addFeature(newFeature)
+
         this.$refs.polygon.addFeatures([newFeature])
         this.editPol.push(newFeature)
+
         feature.setStyle(parseStyle({
           className: 'Style',
           fill: { className: 'Fill', color: 'transparent' },
