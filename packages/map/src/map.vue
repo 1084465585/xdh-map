@@ -96,11 +96,11 @@
         type: String,
         default: 'TDT'
       },
-      // 图层瓦片服务配置，必须返回Promise
+      // 图层瓦片服务配置
       layerConfig: {
         type: Function,
         default() {
-          return Promise.resolve({})
+          return {}
         }
       }
     },
@@ -351,9 +351,8 @@
       this._featureEvents = {}
 
       // 初始化图层瓦片服务配置
-      this.layerConfig().then(layers => {
-        setLayerConfig(layers)
-      })
+      setLayerConfig(this.layerConfig() || {})
+
     },
     mounted() {
       const layers = [].concat(createLayer(this.type))

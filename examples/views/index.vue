@@ -14,13 +14,14 @@
     坐标： <span>{{coordinate}}</span>
     <example>
       <xdh-map ref="map"
-               type="Baidu"
+               type="Amap"
                :zoom="10"
                :min-zoom="5"
                :max-zoom="18"
                @pointermove="handleMove"
-               >
-        <xdh-map-type></xdh-map-type>
+               :layer-config="layerConfig"
+      >
+        <!--        <xdh-map-type></xdh-map-type>-->
       </xdh-map>
     </example>
   </div>
@@ -47,6 +48,9 @@
       },
       handleMove(e) {
         this.coordinate = e.coordinate
+      },
+      layerConfig() {
+        return {}
       }
     }
   }
