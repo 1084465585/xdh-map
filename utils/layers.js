@@ -154,6 +154,21 @@ export function createLayer(key = 'OSM') {
     case 'TDT':
       layer = (config.server || []).map(type => createTdtLayer(type))
       break
+    case 'Custom':
+      if (typeof config.handler === 'function') {
+        layer = config.handler({
+          TileLayer,
+          XYZ,
+          TileGrid,
+          WMTSGrid,
+          WMTS,
+          TileImage,
+          getProj,
+          getWidth,
+          getTopLeft
+        }, config)
+      }
+      break
   }
   return layer
 }

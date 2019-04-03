@@ -93,7 +93,7 @@ export const XdhMapGeo = Geo
 export const parseStyle = parse
 
 export default {
-  version: '1.1.5',
+  version: '1.1.6',
   install,
   parseStyle,
   Map,

@@ -45,6 +45,11 @@ const LAYERS = {
     title: '方正',
     server: 'http://127.0.0.1:3000/proxy',
     preview: require('../sources/types/Founder.png')
+  },
+  Custom: {
+    title: '自定义',
+    handler: function (opt, config) {
+    }
   }
 }
 
