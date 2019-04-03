@@ -65,7 +65,7 @@
      * @property {Number} [zoom=10] 初始化缩放层级
      * @property {Number[]} [center] 初始化中心经纬度
      * @property {String} [type=OSM] 初始化图层瓦片地图类型, 默认可选值：OSM、Baidu、Google、Amap、SuperMap、Founder、TDT
-     * @property {Function} [layerConfig] 图层瓦片服务配置，必须返回Promise
+     * @property {Object} [layerConfig] 图层瓦片服务配置
      */
 
     props: {
@@ -98,7 +98,7 @@
       },
       // 图层瓦片服务配置
       layerConfig: {
-        type: Function,
+        type: Object,
         default() {
           return {}
         }
@@ -351,7 +351,7 @@
       this._featureEvents = {}
 
       // 初始化图层瓦片服务配置
-      setLayerConfig(this.layerConfig() || {})
+      setLayerConfig(this.layerConfig || {})
 
     },
     mounted() {
