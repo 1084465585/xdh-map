@@ -14,15 +14,7 @@ module.exports = {
     }
   },
   chainWebpack: config => {
-    config.module
-      .rule('js')
-      .include
-      .add('/packages/')
-      .add('/utils/')
-      .end()
-      .use('babel')
-      .loader('babel-loader')
-      .tap(options => options)
+
   },
   configureWebpack: {
     // 不显示文件过大优化建议
