@@ -128,8 +128,9 @@
         }
       },
       drawHandle(feature, obj) {
-        this.featureIndex = this.featureIndex - 1
+        this.featureIndex -= 1 // this.featureIndex - 1
         obj.Feature = feature
+        console.log('feaIndex', this.featureIndex)
         if (this.drawDefine) {
           this.drawDefine(feature, obj)
         }

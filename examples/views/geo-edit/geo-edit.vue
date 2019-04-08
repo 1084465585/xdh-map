@@ -1,6 +1,6 @@
 <template>
   <example>
-    <xdh-map ref="map" type="Amap" :zoom="12" :center="[113.40, 23.06]" @ready=mapReady @click="featureClickHandle">
+    <xdh-map ref="map" type="Amap" :zoom="12" :center="[113.40, 23.06]" @ready=mapReady @click="featureClickHandle" :layer-config="layerConfig">
       <xdh-map-geo v-if="isUpload && state.features.length" ref="geo" :state="state"  :draw-define="drawDefineFn" @ready="drawDone"></xdh-map-geo>
       
 
@@ -110,6 +110,13 @@
         editTarget: {
           geometry: null,
           properties: {}
+        },
+
+        layerConfig: {
+          Amap: {
+            title: '高得地图',
+            server: 'http://webrd03.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}&lang=zh_cn'
+          }
         }
       }
     },
@@ -241,6 +248,7 @@
         }))
       },
       drawDone(features) {
+        console.log('features')
         let point = features[0].Feature.getGeometry().getInteriorPoint().getCoordinates()
         this.viewer.animate({
           center: point
