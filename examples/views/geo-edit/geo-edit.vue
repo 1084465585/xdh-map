@@ -1,25 +1,29 @@
 <template>
   <example>
-    <xdh-map ref="map" :zoom="12" :center="[113.40, 23.06]" @ready=mapReady @click="featureClickHandle">
-      <xdh-map-geo ref="geo" :state="state"  :draw-define="drawDefineFn"></xdh-map-geo>
-      <!-- @mouseEnter="hoverHandle" @mouseLeave="hoveroutHandle" -->
+    <xdh-map ref="map" type="Amap" :zoom="12" :center="[113.40, 23.06]" @ready=mapReady @click="featureClickHandle">
+      <xdh-map-geo v-if="isUpload && state.features.length" ref="geo" :state="state"  :draw-define="drawDefineFn" @ready="drawDone"></xdh-map-geo>
+      
 
-      <xdh-map-placement placement="left-top" :margin="[10, 10]" theme="light"  >
-        <div style="padding: 10px; cursor: pointer" @click="toEdit">{{editing ? '保存编辑' : '编辑'}}</div>
-      </xdh-map-placement>
-      <xdh-map-placement placement="right-top" :margin="[10, 10]" theme="light"  >
-        <div style="padding: 10px; cursor: pointer" @click="toAdd">{{adding ? '保存添加' : '添加'}}</div>
-      </xdh-map-placement>
-      <xdh-map-placement placement="left-bottom" :margin="[10, 10]" theme="light"  >
-        <div style="padding: 10px; cursor: pointer" @click="saveJson">导出</div>
-      </xdh-map-placement>
       <xdh-map-placement placement="right-bottom" :margin="[10, 10]" theme="light"  >
         <div class="edit-btn-wrap clearfix">
-          <div class="edit-btn" title="添加"><span class="iconfont">&#xe720;</span></div>  
-          <div class="edit-btn" title="编辑"><span class="iconfont">&#xe768;</span></div>
-          <div class="edit-btn" title="导出"><span class="iconfont">&#xe79c;</span></div>
+          <div class="edit-btn" title="添加" @click="toEdit" v-show="state.features.length">
+            <span class="iconfont">&#xe720;</span>
+            {{editing ? '保存编辑' : '编辑'}}
+          </div>  
+          <div class="edit-btn" title="添加" @click="toAdd">
+            <span class="iconfont">&#xe768;</span>
+            {{adding ? '保存添加' : '添加'}}
+          </div> 
+          <div class="edit-btn" title="导出" @click="saveJson">
+            <span class="iconfont">&#xe79c;</span>
+            导出
+          </div>
+          <label for="uploadJson" class="edit-btn" title="导入">
+            <span class="iconfont">&#xe69e;</span>
+            导入
+          </label>
+          <input style="display: none" type="file" id="uploadJson" @change="uploadChange"/>
         </div>
-         
       </xdh-map-placement>
       
       <!-- v-if="editPol.length" :default-features="editPol" -->
@@ -54,14 +58,16 @@
 <script>
   // import {clone} from 'ol/Feature'
   import {colorRgb} from './colorChange.js'
-  import china from './test.json'
+  // import china from './test.json'
   import {parseStyle} from '../../../packages/index.js'
   import EditPopup from './edit-popup'
   const Style = function(obj) {
-    let fillStr = colorRgb(obj['fill'])
-    let fillColor = fillStr.substring(0, fillStr.length - 1) + `,${obj['fill-opacity']})`
-    let strokeStr = colorRgb(obj['stroke'])
-    let strokeColor = strokeStr.substring(0, strokeStr.length - 1) + `,${obj['stroke-opacity']})`
+    let fill = obj['fill'] || '#555555'
+    let stroke = obj['stroke'] || '#555555'
+    let fillStr = colorRgb(fill)
+    let fillColor = fillStr.substring(0, fillStr.length - 1) + `,${obj['fill-opacity'] || 0.5})`
+    let strokeStr = colorRgb(stroke)
+    let strokeColor = strokeStr.substring(0, strokeStr.length - 1) + `,${obj['stroke-opacity'] || 1})`
     return parseStyle({
       className: 'Style',
       fill: {
@@ -72,7 +78,7 @@
       stroke: {
         className: 'Stroke',
         color: strokeColor,
-        width: obj['stroke-width']
+        width: obj['stroke-width'] || 2
         // opacity: obj['stroke-opacity']
       }
     })
@@ -86,8 +92,11 @@
     data() {
       return {
         map: null,
-        // features: [],
-        state: china,
+        viewer: null,
+
+        isUpload: false, 
+        state: {'type': 'FeatureCollection', 'features': []}, // 导入geo的数据文件
+        formattedState: {'type': 'FeatureCollection', 'features': []},
 
         // ---------
         editing: false,
@@ -105,6 +114,24 @@
       }
     },
     methods: {
+      uploadChange(event) {
+        let file = event.target.files[0]
+        if (file && file.type === 'application/json') {
+          
+          let fileReader = new FileReader()
+          fileReader.readAsText(file)
+          fileReader.onload = (e) => {
+            this.isUpload = true
+            let uploadData = JSON.parse(e.currentTarget.result)
+            if (!this.state.features.length) {
+              this.state = uploadData
+            } else {
+              this.editPol = []
+              this.state.features = this.state.features.concat(uploadData.features)
+            }
+          }
+        }
+      },
       toEdit() {
         this.adding = false
         this.$refs.polygon.finish()
@@ -118,14 +145,13 @@
         this.editing = !this.editing
       }, 
       saveEdit(editPol) {
-        // let arr = []
         let oldFeatures = this.state.features
         editPol.forEach((item, index) => {
           let newCoor = item.getGeometry().getCoordinates()
           let _geometry = oldFeatures[index].geometry
           _geometry.coordinates = newCoor
         })
-        // console.log(JSON.stringify(this.state))
+       
       },
       toAdd() {
         this.editing = false
@@ -140,17 +166,25 @@
       },
 
       saveJson() {
-        console.log(JSON.stringify(this.state))
+        if (!this.state.features.length) {
+          alert('当前未有图形')
+          return
+        }
+        if (this.adding || this.editing) {
+          alert('请先保存当前改动')
+        } else {
+          console.log(JSON.stringify(this.state))
+          // let link = document.createElement('a')
+          // link.download = 'geo.json'
+          // link.href = this.state
+          // link.click()
+        }
+        
       },
       drawStartHandle(e) {
         console.log(e)
-        // let feat = this.$refs.map.getFeatureAtPixel(e.pixel)
-        // if (feat) {
-        //   return false
-        // }
       },
       addDrawEnd(e) {
-        // console.log(e.feature)
         this.editPol.push(e.feature)
         this.state.features.push({
           'type': 'Feature',
@@ -166,9 +200,11 @@
             'coordinates': e.feature.getGeometry().getCoordinates()
           }
         })
+        e.feature.setStyle(Style({}))
       },
       featureClickHandle(e) {
         // console.log(e)
+        if (this.adding) return
         const feature = this.$refs.map.getFeatureAtPixel(e.pixel)
         // console.log(feature.getProperties())
         if (!feature) return
@@ -185,35 +221,7 @@
         this.editPol[targetIndex].set('properties', data.properties)
         this.state.features[targetIndex].properties = data.properties
       },
-      setActiveStyle(obj) {
-        return parseStyle({
-          className: 'Style',
-          fill: {
-            className: 'Fill',
-            color: 'pink'
-          },
-          stroke: {
-            className: 'Stroke',
-            color: 'yellow',
-            width: 2
-          },
-          text: {
-            className: 'Text',
-            text: obj.properties.name,
-            font: '14px sans-serif',
-            fill: {
-              className: 'Fill',
-              color: 'blue'
-            }
-          }
-        })
-      },
-      // hoverHandle(obj, e, feature) {
-      //   feature.setStyle(this.setActiveStyle(obj))
-      // },
-      // hoveroutHandle(obj, e, feature) {
-      //   feature.setStyle(Style())
-      // },
+      
       drawDefineFn(feature, obj) {
         // this.features.push(feature.clone())
         let newFeature = feature.clone()
@@ -232,8 +240,15 @@
           stroke: { className: 'Stroke', color: 'transparent', width: 1 }
         }))
       },
+      drawDone(features) {
+        let point = features[0].Feature.getGeometry().getInteriorPoint().getCoordinates()
+        this.viewer.animate({
+          center: point
+        })
+      },
       mapReady(map, vm) {
         this.map = map
+        this.viewer = this.map.getView()
       }
     },
     mounted() {

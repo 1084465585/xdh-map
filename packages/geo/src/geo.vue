@@ -69,7 +69,8 @@
       return {
         features: [],
         currentFeature: null,
-        currentObj: null
+        currentObj: null,
+        featureIndex: this.state.features.length
       }
     },
     computed: {
@@ -93,7 +94,13 @@
         })
         return geo
       }
-      
+    },
+    watch: {
+      featureIndex: function(val) {
+        if (val === 0) {
+          this.$emit('ready', this.features)
+        }
+      }
     },
     methods: {
       geoListeners(item) {
@@ -121,6 +128,8 @@
         }
       },
       drawHandle(feature, obj) {
+        this.featureIndex = this.featureIndex - 1
+        obj.Feature = feature
         if (this.drawDefine) {
           this.drawDefine(feature, obj)
         }
@@ -176,7 +185,6 @@
             output = output.concat(inner)
           }
         })
-        // console.log('output', output)
         this.features = output
       }
     },
@@ -186,7 +194,6 @@
     mounted() {
       mapReady.call(this, this.ready)
       this.formatFeatures()
-      
     },
     beforeDestroy() {
       this.map.removeInteraction(this.select)
