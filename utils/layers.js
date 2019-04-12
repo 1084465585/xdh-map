@@ -64,15 +64,7 @@ function createFounderLayer(config) {
   return new TileLayer({
     source: new WMTS({
       url: basePath,
-      tileGrid: tileGrid,
-      projection: projection,
-      tileLoadFunction: function (imageTile, src) {
-        const tileCoord = imageTile.tileCoord;
-        let zoom = tileCoord[0];
-        let col = tileCoord[1];
-        let row = -(tileCoord[2] + 1);
-        imageTile.getImage().src = `${basePath}?Service=getImage&Type=RGB&ZoomOffset=0&Col=${col}&Row=${row}&Zoom=${zoom}&V=0.3`;
-      }
+      tileGrid: tileGrid
     }),
     wrapX: false
   })
