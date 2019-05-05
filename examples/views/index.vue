@@ -14,7 +14,7 @@
     坐标： <span>{{coordinate}}</span>
     <example>
       <xdh-map ref="map"
-               type="Amap"
+               type="Baidu"
                :zoom="10"
                :min-zoom="5"
                :max-zoom="18"
@@ -33,7 +33,8 @@
   export default {
     data() {
       return {
-        coordinate: []
+        coordinate: [],
+        layerConfig: {}
       }
     },
     methods: {
@@ -48,9 +49,6 @@
       },
       handleMove(e) {
         this.coordinate = e.coordinate
-      },
-      layerConfig() {
-        return {}
       }
     }
   }
