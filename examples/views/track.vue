@@ -37,7 +37,7 @@
     data() {
       return {
         center: [120.000000, 30.186209],
-        car: require('../../sources/track/car.png'),
+        car: require('../../sources/track/car-small.png'),
         line1: [
           [119.960972, 30.246209],
           [119.975288, 30.235707],

@@ -1,17 +1,18 @@
 <template>
-    <example>
-      <xdh-map :zoom="6" :center="[113, 22.9]">
-        <xdh-map-polygon :key="1" :coordinates="coordinates"
-                         fill="#f00"
-                         stroke-color="yellow"
-                         :stroke-width="3" @click="clickHandle" @dblclick="dblClickHandle"></xdh-map-polygon>
+  <example>
+    <xdh-map :zoom="6" :center="[113, 22.9]">
+      <xdh-map-polygon :key="1" :coordinates="coordinates"
+                       ref="polygon"
+                       :fill="color"
+                       stroke-color="yellow"
+                       :stroke-width="3" @click="clickHandle" @dblclick="dblClickHandle"></xdh-map-polygon>
 
-        <xdh-map-polygon :key="2" :coordinates="test"
-                         fill="#f00"
-                         stroke-color="yellow"
-                         :stroke-width="3" @dblclick="dblClickHandle"></xdh-map-polygon>
-      </xdh-map>
-    </example>
+      <xdh-map-polygon :key="2" :coordinates="test"
+                       fill="#f00"
+                       stroke-color="yellow"
+                       :stroke-width="3" @dblclick="dblClickHandle"></xdh-map-polygon>
+    </xdh-map>
+  </example>
 </template>
 
 <script>
@@ -19,6 +20,7 @@
   export default {
     data() {
       return {
+        color: '#f00',
         coordinates: [
           [120, 30],
           [120, 29],
@@ -210,6 +212,7 @@
     methods: {
       clickHandle(e) {
         console.log(e)
+        this.color = '#000'
       },
       dblClickHandle(e) {
         console.log('ccc')
