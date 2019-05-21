@@ -1,3 +1,4 @@
+import { convertToWgs84 } from '../convert';
 /**
  *  Vue组件公共参数
  */
@@ -15,23 +16,27 @@ export default {
     zIndex: Number,
     // 填充颜色
     fill: String,
-    
+
     // 鼠标经过形状
     cursor: String
   },
+  inject: ['coordType'],
   watch: {
     position: {
       deep: true,
       handler() {
         // 方法在 utils/feature.js 中定义
-        this.update()
+        this.update();
       }
     }
   },
   computed: {
     coordinate() {
       // 转换坐标的数组类型
-      return this.position.map(n => Number.parseFloat(n))
+      return convertToWgs84(
+        this.coordType,
+        this.position.map(n => Number.parseFloat(n))
+      );
     }
   },
   methods: {
@@ -40,7 +45,7 @@ export default {
         className: 'Style',
         zIndex: this.zIndex,
         fill: this.fill
-      }
+      };
     }
   }
-}
+};

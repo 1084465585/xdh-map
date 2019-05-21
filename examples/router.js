@@ -128,6 +128,10 @@ const router = new Router({
           {
             path: 'test',
             component: () => import('./views/test.vue')
+          },
+          {
+            path: 'coord-transform',
+            component: () => import('./views/coord-transform')
           }
         ]
       }

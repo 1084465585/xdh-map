@@ -130,7 +130,7 @@
       drawHandle(feature, obj) {
         this.featureIndex -= 1 // this.featureIndex - 1
         obj.Feature = feature
-        console.log('feaIndex', this.featureIndex)
+        // console.log('feaIndex', this.featureIndex)
         if (this.drawDefine) {
           this.drawDefine(feature, obj)
         }
@@ -187,9 +187,13 @@
           }
         })
         this.features = output
+      },
+      getFeatures() {
+        console.log(this.coordType)
       }
     },
     created() {
+      console.log(this.coordType)
       this.parent = getParent.call(this)
     },
     mounted() {

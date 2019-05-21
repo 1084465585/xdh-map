@@ -94,6 +94,10 @@
       <dd>
         <router-link to="/performance">Performance</router-link>
       </dd>
+      <dt>其他</dt>
+      <dd>
+        <router-link to="/coord-transform">coordinate-transform</router-link>
+      </dd>
     </dl>
     <div class="copyright">Powered by XDH FE Team.</div>
   </div>

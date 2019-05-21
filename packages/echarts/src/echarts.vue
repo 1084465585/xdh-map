@@ -3,147 +3,156 @@
 </template>
 
 <script>
+/**
+ * ECharts图表覆盖物组件
+ * @module xdh-map-echarts
+ */
 
+import { getParent, mapReady } from 'utils/util'
+import CleanMixin from 'utils/mixins/clean'
+import createCoordSystem from 'utils/plugins/CoordSystem'
+import { convertToWgs84 } from 'utils/convert'
+export default {
+  name: 'XdhMapEcharts',
+  mixins: [CleanMixin],
   /**
-   * ECharts图表覆盖物组件
-   * @module xdh-map-echarts
+   * 参数属性
+   * @member props
+   * @property {object} lib ECharts类库
+   * @property {object} options ECharts实例化参数选项，涉及到 coordinateSystem 需要设置为 ol
    */
-
-  import {getParent, mapReady} from 'utils/util'
-  import CleanMixin from 'utils/mixins/clean'
-  import createCoordSystem from 'utils/plugins/CoordSystem'
-
-  export default {
-    name: 'XdhMapEcharts',
-    mixins: [CleanMixin],
-    /**
-     * 参数属性
-     * @member props
-     * @property {object} lib ECharts类库
-     * @property {object} options ECharts实例化参数选项，涉及到 coordinateSystem 需要设置为 ol
-     */
-    props: {
-      // ECharts类库
-      lib: {
-        type: Object,
-        required: true
-      },
-      // ECharts 配置参数
-      options: Object
+  props: {
+    // ECharts类库
+    lib: {
+      type: Object,
+      required: true
     },
-    watch: {
-      options() {
-        this.postRender()
+    // ECharts 配置参数
+    options: Object
+  },
+  inject: ['coordType'],
+  watch: {
+    options() {
+      this.postRender()
+    }
+  },
+  methods: {
+    // 由于Openlayers与Echarts的click事件有冲突，Echarts触发不了click事件, 需要用mouse事件触发click
+    fixClickEvent() {
+      if (!this.map || !this.chart) return
+
+      this.proxyMapHandleClick = e => {
+        if (this.eventData) {
+          this.$emit('click', this.eventData)
+        }
       }
-    },
-    methods: {
-      // 由于Openlayers与Echarts的click事件有冲突，Echarts触发不了click事件, 需要用mouse事件触发click
-      fixClickEvent() {
-        if (!this.map || !this.chart) return
-
-        this.proxyMapHandleClick = e => {
-          if (this.eventData) {
-            this.$emit('click', this.eventData)
-          }
-        }
-        this.proxyChartMouseOver = e => {
-          this.eventData = e
-        }
-        this.proxyChartMouseOut = e => {
-          this.eventData = null
-        }
-        this.map.on('click', this.proxyMapHandleClick)
-        this.chart.on('mouseover', this.proxyChartMouseOver)
-        this.chart.on('mouseout', this.proxyChartMouseOut)
-      },
-      postRender() {
-        clearTimeout(this.timer)
-        this.timer = setTimeout(() => {
-          this.registerCoordinateSystem()
-          const el = this.createContainer()
-          const chart = this.createChart(el)
-          chart.setOption(this.options || {})
-          this.resize(chart)
-        }, 100)
-      },
-      resize(chart) {
-        if (!this.container || !this.map) return
-
-        const map = this.map
-        const size = map.getSize()
-        Object.assign(this.container.style, {
-          height: size[1] + 'px',
-          width: size[0] + 'px'
-        })
-        chart.resize()
-      },
-      createContainer() {
-        if (!this.map) return
-        if (this.container) return this.container
-
-        const map = this.map
-        const size = map.getSize()
-        const div = document.createElement('div')
-        Object.assign(div.style, {
-          height: size[1] + 'px',
-          width: size[0] + 'px',
-          top: 0,
-          left: 0,
-          zIndex: 999,
-          position: 'absolute'
-        })
-
-        this.container = div
-        map.getViewport().appendChild(div)
-
-        return this.container
-      },
-      registerCoordinateSystem() {
-        if (!this.map || this.registered) return
-        const coordSystem = createCoordSystem(this.map)
-        this.lib.registerCoordinateSystem('ol', coordSystem)
-        this.registered = true
-      },
-      createChart(el) {
-        if (this.chart) return this.chart
-        this.chart = this.lib.init(el)
-        this.fixClickEvent()
-        Object.keys(this.$listeners).forEach(key => {
-          this.chart.on(key, this.$listeners[key])
-        })
-        return this.chart
-      },
-      ready(map) {
-        this.map = map
-        this.map.on('postrender', this.postRender)
+      this.proxyChartMouseOver = e => {
+        this.eventData = e
       }
+      this.proxyChartMouseOut = e => {
+        this.eventData = null
+      }
+      this.map.on('click', this.proxyMapHandleClick)
+      this.chart.on('mouseover', this.proxyChartMouseOver)
+      this.chart.on('mouseout', this.proxyChartMouseOut)
     },
-    created() {
-      this.parent = getParent.call(this)
-      mapReady.call(this, this.ready)
-
-    },
-    beforeDestroy() {
+    postRender() {
       clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.registerCoordinateSystem()
+        const el = this.createContainer()
+        const chart = this.createChart(el)
+        chart.setOption(this.options || {})
+        this.resize(chart)
+      }, 100)
+    },
+    resize(chart) {
+      if (!this.container || !this.map) return
 
-      if (this.chart) {
-        this.chart.off('mouseover')
-        this.chart.off('mouseout')
-        Object.keys(this.$listeners).forEach(key => {
-          this.chart.off(key)
+      const map = this.map
+      const size = map.getSize()
+      Object.assign(this.container.style, {
+        height: size[1] + 'px',
+        width: size[0] + 'px'
+      })
+      chart.resize()
+    },
+    createContainer() {
+      if (!this.map) return
+      if (this.container) return this.container
+
+      const map = this.map
+      const size = map.getSize()
+      const div = document.createElement('div')
+      Object.assign(div.style, {
+        height: size[1] + 'px',
+        width: size[0] + 'px',
+        top: 0,
+        left: 0,
+        zIndex: 999,
+        position: 'absolute'
+      })
+
+      this.container = div
+      map.getViewport().appendChild(div)
+
+      return this.container
+    },
+    registerCoordinateSystem() {
+      if (!this.map || this.registered) return
+      const coordSystem = createCoordSystem(this.map)
+      this.lib.registerCoordinateSystem('ol', coordSystem)
+      this.registered = true
+    },
+    createChart(el) {
+      if (this.chart) return this.chart
+      this.chart = this.lib.init(el)
+      this.fixClickEvent()
+      Object.keys(this.$listeners).forEach(key => {
+        this.chart.on(key, this.$listeners[key])
+      })
+      return this.chart
+    },
+    ready(map) {
+      this.map = map
+      this.map.on('postrender', this.postRender)
+    }
+  },
+  created() {
+    this.parent = getParent.call(this)
+    mapReady.call(this, this.ready)
+    this.options.series.forEach(d => {
+      // 根据坐标类型进行坐标转换，echart需要通过转换传入的坐标数据实现
+      if (((d.data[0] || {}).value || []).length > 2) {
+        d.data.forEach(m => {
+          ;[m.value[0], m.value[1]] = convertToWgs84(this.coordType, [
+            m.value[0],
+            m.value[1]
+          ])
         })
-        this.chart.dispose()
       }
-      if (this.container) {
-        this.container.parentNode.removeChild(this.container)
-        this.container = null
-      }
-      if (this.map) {
-        this.map.un('click', this.proxyMapHandleClick)
-        this.map.un('postrender', this.postRender)
-      }
+    })
+  },
+  beforeDestroy() {
+    clearTimeout(this.timer)
 
+    if (this.chart) {
+      this.chart.off('mouseover')
+      this.chart.off('mouseout')
+      Object.keys(this.$listeners).forEach(key => {
+        this.chart.off(key)
+      })
+      this.chart.dispose()
+    }
+    if (this.container) {
+      this.container.parentNode.removeChild(this.container)
+      this.container = null
+    }
+    if (this.map) {
+      this.map.un('click', this.proxyMapHandleClick)
+      this.map.un('postrender', this.postRender)
     }
   }
+}
 </script>
 

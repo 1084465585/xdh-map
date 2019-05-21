@@ -16,7 +16,7 @@
   import CleanMixin from 'utils/mixins/clean'
   import factory from 'utils/mixins/factory'
   import {getParent, mapReady} from 'utils/util'
-
+import { convertToWgs84 } from 'utils/convert'
   /**
    * 参数选项
    * @member props
@@ -111,6 +111,7 @@
         this.draw()
       }
     },
+    inject: ['coordType'],
     methods: {
       draw() {
         if (!this.parent) return
@@ -127,7 +128,8 @@
         const prop = this.prop
         return this.data.map(item => {
           return new Feature({
-            geometry: new Point([item[prop.lon], item[prop.lat]]),
+            // 根据坐标类型对坐标进行转换
+            geometry: new Point(convertToWgs84(this.coordType, [item[prop.lon], item[prop.lat]])),
             weight: item[prop.weight] || 1
           })
         })

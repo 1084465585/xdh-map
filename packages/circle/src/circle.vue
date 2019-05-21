@@ -48,7 +48,6 @@
   }
 
   export const props = mixProps({props: vueProps}, BaseMixin, StrokeMixin, TextMixin)
-
   export default {
     name: 'XdhMapCircle',
     mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, CleanMixin],
