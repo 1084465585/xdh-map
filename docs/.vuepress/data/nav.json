@@ -1,0 +1,26 @@
+[
+  {
+    "text": "使用指南",
+    "link": "/"
+  },
+  {
+    "text": "覆盖物组件",
+    "link": "/overlay/"
+  },
+  {
+    "text": "控件组件",
+    "link": "/control/"
+  },
+  {
+    "text": "动效组件",
+    "link": "/animate/"
+  },
+  {
+    "text": "性能测试",
+    "link": "/performance/"
+  },
+  {
+    "text": "API文档",
+    "link": "/api"
+  }
+]

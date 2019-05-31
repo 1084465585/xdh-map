@@ -20,6 +20,6 @@ module.exports = {
     'monospaceLinks': false
   },
   opts: {
-    'destination': 'public/docs'
+    'destination': 'docs/.vuepress/public/doc'
   }
 }

@@ -1,0 +1,19 @@
+{
+  "/api": null,
+  "/overlay/": [
+    ""
+  ],
+  "/control/": [
+    ""
+  ],
+  "/animate/": [
+    ""
+  ],
+  "/performance/": [
+    ""
+  ],
+  "/": [
+    "",
+    "/map"
+  ]
+}
