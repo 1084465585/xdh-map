@@ -5,7 +5,7 @@
       <div class="demo__actions">
 
         <el-tooltip v-if="fullscreen" class="item" effect="dark" content="取消全屏" placement="top">
-          <i class=" el-icon-switch-button" @click="fullscreen=false"></i>
+          <i class=" el-icon-switch-button" @click="fullscreen=false" title="取消全屏"></i>
         </el-tooltip>
         <el-tooltip v-else class="item" effect="dark" content="全屏" placement="top">
           <i class="el-icon-full-screen" @click="fullscreen=true"></i>

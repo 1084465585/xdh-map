@@ -4,7 +4,11 @@ module.exports = {
   port: '8001',
   dest: 'dist',
   base: '/xdh-map/',
+  head: [
+    ['link', {rel: 'icon', href: '/favicon.ico'}]
+  ],
   themeConfig: {
+    logo: '/img/xdh.png',
     sidebarDepth: 3,
     nav: require('./data/nav.json'),
     sidebar: require('./data/sidebar.json'),
