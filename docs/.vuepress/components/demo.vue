@@ -135,13 +135,16 @@
     &__desc {
       margin: 10px;
       border: 1px solid #eaecef;
-      padding: 12px;
+      padding: 1rem;
       background: #fff;
       font-size: 14px;
 
-      p {
-        margin: 0;
+      /deep/ {
+        p {
+          margin: 0;
+        }
       }
+
     }
 
     &__code {
