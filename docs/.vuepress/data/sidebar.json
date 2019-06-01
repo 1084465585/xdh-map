@@ -1,19 +1,63 @@
 {
-  "/api": null,
   "/overlay/": [
-    ""
+    {
+      "title": "覆盖物组件",
+      "collapsable": false,
+      "children": [
+        "text",
+        "rectangle",
+        "polygon",
+        "circle",
+        "line",
+        "image",
+        "icon",
+        "tooltip",
+        "popup",
+        "heat",
+        "echarts",
+        "mask"
+      ]
+    }
   ],
+  "/api": null,
   "/control/": [
-    ""
+    {
+      "title": "控件组件",
+      "collapsable": false,
+      "children": [
+        "placement",
+        "pointer",
+        "overview",
+        "zoom",
+        "scale",
+        "type"
+      ]
+    }
   ],
   "/animate/": [
-    ""
+    {
+      "title": "动效组件",
+      "collapsable": false,
+      "children": [
+        "track",
+        "draw",
+        "scatter",
+        "flight",
+        "measure"
+      ]
+    }
   ],
   "/performance/": [
     ""
   ],
   "/": [
-    "",
-    "/map"
+    {
+      "title": "使用指南",
+      "collapsable": false,
+      "children": [
+        "",
+        "map"
+      ]
+    }
   ]
 }

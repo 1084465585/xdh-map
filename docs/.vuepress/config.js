@@ -11,7 +11,9 @@ module.exports = {
     logo: '/img/xdh.png',
     sidebarDepth: 3,
     nav: require('./data/nav.json'),
-    sidebar: require('./data/sidebar.json'),
+    sidebar: require('./data/sidebar.json')
+    
+    
   },
   markdown: {
     lineNumbers: true,
