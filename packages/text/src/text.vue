@@ -35,7 +35,6 @@
    * @member props
    * @property {number[]} position 经纬度位置
    * @property {number} [zIndex] 渲染层级
-   * @property {string} [fill] 填充颜色
    * @property {string} [cursor] 鼠标经过时形状
    * @property {number} [maxAngle] 最大旋转角度
    * @property {number} [offsetX] 位置偏移
