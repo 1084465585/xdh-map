@@ -1,5 +1,9 @@
 # Text 文本
 
+:::tip 提示
+ 在地图上显示文本信息，组件 [API 文档](/api.html?url=/doc/module-xdh-map-text.html)
+:::
+
 ## 基础用法
 
 :::demo

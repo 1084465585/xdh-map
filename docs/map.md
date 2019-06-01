@@ -1,6 +1,8 @@
 # 地图示例
 
+:::tip 提示
 XdhMap是主组件，所有组件都要依赖它， [XdhMap API](api.html?url=/doc/module-xdh-map.html)
+:::
 
 ## 基础用法
 :::demo
