@@ -211,12 +211,18 @@
     },
     methods: {
       clickHandle(e) {
+        
+        this.color = '#f0f0f0'
         console.log(e)
-        this.color = '#000'
       },
       dblClickHandle(e) {
         console.log('ccc')
       }
+    },
+    mounted() {
+      setTimeout(() => {
+        this.color = '#f0f0f0'
+      }, 1000)
     }
   }
 </script>

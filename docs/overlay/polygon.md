@@ -44,9 +44,6 @@ export default {
   methods: {
     clickHandle(e) {
       this.color = 'transparent'
-      console.log(e)
-      
-      console.log(this.color)
     },
     dblClickHandle(e) {
       console.log('ccc')
