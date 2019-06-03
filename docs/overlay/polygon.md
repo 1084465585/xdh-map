@@ -1,7 +1,7 @@
 # Polygon 多边形
 
 ::: tip 提示
-在地图中创建多边形， 组件[API文档](/api.html?url=/doc/module-xdh-map-polygon.html)
+在地图中创建多边形， 组件[API文档](/api.html?url=/xdh-map/doc/module-xdh-map-polygon.html)
 
 :::
 ## 基础用法

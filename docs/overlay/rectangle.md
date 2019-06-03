@@ -2,7 +2,7 @@
 
 :::tip 提示
 
-在地图上传创建矩形，组件 [API 文档](/api.html?url=/doc/module-xdh-map-rectangle.html)
+在地图上传创建矩形，组件 [API 文档](/api.html?url=/xdh-map/doc/module-xdh-map-rectangle.html)
 
 :::
 ## 基础用法
