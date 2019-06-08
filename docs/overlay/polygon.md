@@ -2,11 +2,12 @@
 
 ::: tip 提示
 在地图中创建多边形， 组件[API文档](/api.html?url=/xdh-map/doc/module-xdh-map-polygon.html)
-
 :::
+
 ## 基础用法
 
 :::demo
+
 ```html
 <template>
   <xdh-map :zoom="7" :center="[118.21, 29.11]">
@@ -16,8 +17,11 @@
       :fill="color"
       stroke-color="yellow"
       :stroke-width="3"
-      @click="clickHandle" @dblclick="dblClickHandle"
-    >   
+      text="多边形"
+      color="green"
+      font="20px"
+      @click="clickHandle"
+    >
     </xdh-map-polygon>
   </xdh-map>
 </template>
@@ -44,12 +48,10 @@ export default {
   methods: {
     clickHandle(e) {
       this.color = 'transparent'
-    },
-    dblClickHandle(e) {
-      console.log('ccc')
     }
   }  
 }
 </script>
 ```
+
 :::

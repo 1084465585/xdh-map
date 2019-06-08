@@ -4,9 +4,11 @@
 地图占位容器， 用于在地图上放置工具类型组件的容器，相对地图的父容器位置定位
 组件[API文档](/api.html?url=/doc/module-xdh-map-placement.html)
 :::
+
 ## 基本用法
 
 :::demo
+
 ```html
 <template>
   <xdh-map :zoom="7" :center="[118.21, 29.11]">
@@ -49,10 +51,11 @@
 </template>
 
 <script>
-  import {XdhMap, XdhMapPlacement} from 'xdh-map'
+  import {XdhMap, XdhMapPlacement } from 'xdh-map'
   export default {
     components: {
-      XdhMap, XdhMapPlacement
+      XdhMap,
+      XdhMapPlacement
     },
     data() {
       return {
@@ -68,4 +71,5 @@
 </script>
 
 ```
+
 :::
