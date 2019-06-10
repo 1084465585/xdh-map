@@ -14,7 +14,8 @@ module.exports = (config, isServer) => {
         'utils': resolve('utils'),
         'packages': resolve('packages'),
         'sources': resolve('sources'),
-        'xdh-map': resolve('packages/index.js')
+        'xdh-map': resolve('packages/index.js'),
+        'demo-data': resolve('docs/.vuepress/data/demo-data')
       }
     }
   }

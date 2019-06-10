@@ -1,6 +1,6 @@
 # Circle 圆形
 
-::: tip提示
+::: tip 提示
 圆形组件[API文档](/api.html?url=/xdh-map/doc/module-xdh-map-circle.html)
 :::
 

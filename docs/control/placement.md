@@ -5,7 +5,7 @@
 组件[API文档](/api.html?url=/doc/module-xdh-map-placement.html)
 :::
 
-## 基本用法
+## 基础用法
 
 :::demo
 

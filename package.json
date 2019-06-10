@@ -56,7 +56,7 @@
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",
     "vue-template-compiler": "^2.6.10",
-    "vuepress": "^1.0.0-alpha.48"
+    "vuepress": "^1.0.0"
   },
   "eslintConfig": {
     "root": true,
