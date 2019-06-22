@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[46],{495:function(e,n,t){"use strict";t.r(n);var a=t(208),c={components:{XdhMap:a.a,XdhMapRectangle:a.c}},l=t(23),p=Object(l.a)(c,function(){var e=this.$createElement,n=this._self._c||e;return n("xdh-map",[n("xdh-map-rectangle")],1)},[],!1,null,null,null);n.default=p.exports}}]);
