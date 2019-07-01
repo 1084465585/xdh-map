@@ -14,7 +14,8 @@
     <xdh-map-line 
       :routes="routes1" 
       stroke-color="#000" 
-      :stroke-width="4">
+      :arrow="true"
+      :stroke-width="2">
     </xdh-map-line>
   </xdh-map>
 </template>
