@@ -11,7 +11,7 @@
 ```html
 <template>
   <xdh-map>
-    <xdh-map-placement placement="right-top" :margin="[10]" theme="light">
+    <xdh-map-placement placement="right-top" :margin="[10]" theme="light" >
       <button @click="drawLine">画线</button>
       <button @click="drawCircle">画圆</button>
       <button @click="drawPolygon">多边形</button>
@@ -21,6 +21,7 @@
     </xdh-map-placement>
     <xdh-map-draw
       ref="line"
+      type="LineString"
       @drawend="drawend"
       @drawstart="drawstart"
     ></xdh-map-draw>
@@ -51,12 +52,15 @@
     },
     methods: {
       drawLine() {
+        this.finish()
         this.$refs.line.draw();
       },
       drawCircle() {
+        this.finish()
         this.$refs.circle.draw();
       },
       drawPolygon() {
+        this.finish()
         this.$refs.polygon.draw();
       },
       modify() {

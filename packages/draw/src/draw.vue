@@ -170,21 +170,25 @@ export default {
       this.$emit('modifystart', e)
     },
     handleDraw(e) {
-      let coords = e.feature
-        .getGeometry()
-        .getCoordinates();
-      let featureClone = e.feature.clone()
-      let originCoord = [...coords[0][0]],
-        translateCoord
-      // 取第一个坐标转换
-      translateCoord = convertFromWgs84(this.coordType, coords[0][0]);
-      // 克隆一个feature提供给对象e.convert.feature
-      featureClone
-        .getGeometry()
-        .translate(
-          translateCoord[0] - originCoord[0],
-          translateCoord[1] - originCoord[1]
-        )
+      let featureClone
+      if (this.coordType !== 'WGS84') {
+        let originCoord = [],
+          translateCoord = []
+        let coords = e.feature.getGeometry().flatCoordinates
+        // 取第一个坐标转换
+        originCoord = [coords[0], coords[1]]
+        featureClone = e.feature.clone()
+        translateCoord = convertFromWgs84(this.coordType, originCoord)
+        // 克隆一个feature提供给对象e.convert.feature
+        featureClone
+          .getGeometry()
+          .translate(
+            translateCoord[0] - originCoord[0],
+            translateCoord[1] - originCoord[1]
+          )
+      } else {
+        featureClone = e.feature
+      }
       e.convert = {
         feature: featureClone
       }
@@ -194,6 +198,11 @@ export default {
        * @event drawend
        * @param {object} e 事件对象
        */
+      console.log(
+        'transform e',
+        e.convert.feature.getGeometry().flatCoordinates,
+        e.feature.getGeometry().flatCoordinates
+      )
       this.$emit('drawend', e)
     },
     /**
