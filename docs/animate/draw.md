@@ -10,7 +10,7 @@
 
 ```html
 <template>
-  <xdh-map>
+  <xdh-map coord-type="BD09">
     <xdh-map-placement placement="right-top" :margin="[10]" theme="light" >
       <button @click="drawLine">画线</button>
       <button @click="drawCircle">画圆</button>

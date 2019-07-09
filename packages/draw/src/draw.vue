@@ -174,7 +174,7 @@ export default {
       if (this.coordType !== 'WGS84') {
         let originCoord = [],
           translateCoord = []
-        let coords = e.feature.getGeometry().flatCoordinates
+        let coords = e.feature.getGeometry().getLastCoordinate()
         // 取第一个坐标转换
         originCoord = [coords[0], coords[1]]
         featureClone = e.feature.clone()
@@ -198,11 +198,6 @@ export default {
        * @event drawend
        * @param {object} e 事件对象
        */
-      console.log(
-        'transform e',
-        e.convert.feature.getGeometry().flatCoordinates,
-        e.feature.getGeometry().flatCoordinates
-      )
       this.$emit('drawend', e)
     },
     /**
