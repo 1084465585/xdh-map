@@ -8,13 +8,16 @@ examples/
 theme/
 packages/
 utils/
+docs/
 
 # 忽略指定文件
 vue.config.js
 babel.config.js
+.DS_Store
 *.map
 .npmignore
 .editorconfig
 .eslintignore
 .gitignore
+*/**/.DS_Store
 lib/demo.html
