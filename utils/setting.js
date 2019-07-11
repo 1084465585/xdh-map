@@ -46,6 +46,16 @@ const LAYERS = {
     server: 'http://127.0.0.1:3000/proxy',
     preview: require('../sources/types/Founder.png')
   },
+  EzMap: {
+    title: '山海经纬',
+    server: 'http://10.8.6.103/PGIS_S_TileMapServer/Maps/BJSL/EzMap?Service=getImage&Type=RGB&ZoomOffset=0',
+    preview: require('../sources/types/Founder.png')
+  },
+  FcMap: {
+    title: '航天精一',
+    server: 'http://68.26.21.71/images/GetImage.do?method=showImageRedisBytable&jinyi_admin:MA_PGISSLDT&version=v1',
+    preview: require('../sources/types/Founder.png')
+  },
   Custom: {
     title: '自定义',
     handler: function (opt, config) {

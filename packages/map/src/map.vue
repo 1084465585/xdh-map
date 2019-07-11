@@ -64,7 +64,7 @@ export default {
    * @property {Number} [maxZoom=20] 最大缩放层级
    * @property {Number} [zoom=10] 初始化缩放层级
    * @property {Number[]} [center] 初始化中心经纬度
-   * @property {String} [type=OSM] 初始化图层瓦片地图类型, 默认可选值：OSM、Baidu、Google、Amap、SuperMap、Founder、TDT
+   * @property {String} [type=OSM] 初始化图层瓦片地图类型, 默认可选值：OSM、Baidu、Google、Amap、SuperMap、Founder、TDT、EzMap、FcMap
    * @property {Object} [layerConfig] 图层瓦片服务配置
    * @property {String} [coordType=WGS84] 地图的坐标类型,可选类型：'BD09'(百度地图坐标系) ，'WGS84'(1984年世界大地坐标系统) ，'GCJ02'(火星坐标系)
    */

@@ -1,3 +1,4 @@
+import qs from 'qs'
 import TileLayer from 'ol/layer/Tile'
 import OSM from 'ol/source/OSM'
 import XYZ from 'ol/source/XYZ'
@@ -10,6 +11,43 @@ import {getWidth, getTopLeft} from 'ol/extent'
 import TileSuperMapRest from './plugins/TileSuperMapRest'
 import {validate, get as getConfig} from './setting'
 
+
+function getWMTSGrid() {
+  const tileSizePixels = 256
+  const projection = getProj('EPSG:4326')
+  const projectionExtent = projection.getExtent();
+  const size = getWidth(projectionExtent) / tileSizePixels
+  let matrixIds = [];
+  let resolutions = [];
+  for (let i = 0; i <= 20; i++) {
+    matrixIds[i] = i;
+    resolutions[i] = size / Math.pow(2, i);
+  }
+  return new WMTSGrid({
+    origin: getTopLeft(projectionExtent),
+    resolutions: resolutions,
+    matrixIds: matrixIds
+  });
+}
+
+function getFcOrigins() {
+  let origins = []
+  for (let i = 0; i < 20; i++) {
+    const item = i < 7 ? [64, 64] : [107.5, 28]
+    origins.push(item)
+  }
+  return origins
+}
+
+function getFcResolutions() {
+  const result = []
+  const first = 2.0000081722216954
+  for (let i = 0; i < 20; i++) {
+    const item = first / Math.pow(2, i)
+    result.push(item)
+  }
+  return result
+}
 
 // 创建百度地图图层
 function createBaiduLayer(config) {
@@ -45,21 +83,7 @@ function createBaiduLayer(config) {
 
 // 创建方正地图图层
 function createFounderLayer(config) {
-  const tileSizePixels = 256
-  const projection = getProj('EPSG:4326')
-  const projectionExtent = projection.getExtent();
-  const size = getWidth(projectionExtent) / tileSizePixels
-  let matrixIds = [];
-  let resolutions = [];
-  for (let i = 0; i <= 20; i++) {
-    matrixIds[i] = i;
-    resolutions[i] = size / Math.pow(2, i);
-  }
-  const tileGrid = new WMTSGrid({
-    origin: getTopLeft(projectionExtent),
-    resolutions: resolutions,
-    matrixIds: matrixIds
-  });
+  const tileGrid = getWMTSGrid()
   const basePath = config.server
   return new TileLayer({
     source: new WMTS({
@@ -67,6 +91,47 @@ function createFounderLayer(config) {
       tileGrid: tileGrid
     }),
     wrapX: false
+  })
+}
+
+// 山海经纬 PGIS
+function createEzMapLayer(config) {
+  // const basePath = 'http://10.8.6.103/PGIS_S_TileMapServer/Maps/BJSL/EzMap?Service=getImage&Type=RGB&ZoomOffset=0'
+  const basePath = config.server
+  const tileGrid = getWMTSGrid()
+  
+  return new TileLayer({
+    source: new WMTS({
+      url: '',
+      crossOrigin: 'Anonymous',
+      tileGrid: tileGrid,
+      tileLoadFunction(imageTile, src) {
+        const query = qs.parse(src)
+        const params = {
+          Row: query.TileRow,
+          Col: query.TileCol,
+          Zoom: query.TileMatrix,
+          V: '1.0.0'
+        }
+        imageTile.getImage().src = `${basePath}&${qs.stringify(params)}`;
+      }
+    }),
+    wrapX: false
+  })
+}
+
+// 航天长峰、航天精一 PGIS
+function createFcMapLayer(config) {
+  // http://68.26.21.71/images/GetImage.do?method=showImageRedisBytable&jinyi_admin:MA_PGISSLDT&version=v1
+  const basePath = config.server
+  
+  return new TileLayer({
+    projection: 'EPSG:4326',
+    url: `${basePath}&l={z}&x={y}&y={x}`,
+    tileGrid: new TileGrid({
+      origin: config.origins || getFcOrigins(),
+      resolutions: config.resolutions || getFcResolutions()
+    })
   })
 }
 
@@ -145,6 +210,12 @@ export function createLayer(key = 'OSM') {
       break
     case 'TDT':
       layer = (config.server || []).map(type => createTdtLayer(type))
+      break
+    case 'EzMap':
+      layer = createEzMapLayer(config)
+      break;
+    case 'FcMap':
+      layer = createFcMapLayer(config)
       break
     case 'Custom':
       if (typeof config.handler === 'function') {
