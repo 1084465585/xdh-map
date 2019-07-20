@@ -11,7 +11,8 @@ const LAYERS = {
   },
   Baidu: {
     title: '百度',
-    server: 'http://online{index}.map.bdimg.com/onlinelabel/?qt=tile&x={x}&y={y}&z={z}&styles=pl&udt=20170301&scaler=1&p=1',
+    // server: 'http://online{index}.map.bdimg.com/onlinelabel/?qt=tile&x={x}&y={y}&z={z}&styles=pl&udt=20170301&scaler=1&p=1',
+    server: 'http://online{index}.map.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20190718',
     preview: require('../sources/types/Baidu.png')
   },
   Amap: {
