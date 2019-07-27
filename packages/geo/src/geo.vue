@@ -189,11 +189,11 @@
         this.features = output
       },
       getFeatures() {
-        console.log(this.coordType)
+        // console.log(this.coordType)
       }
     },
     created() {
-      console.log(this.coordType)
+      // console.log(this.coordType)
       this.parent = getParent.call(this)
     },
     mounted() {

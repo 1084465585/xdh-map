@@ -126,6 +126,10 @@ const router = new Router({
             component: () => import('./views/geo-edit/geo-edit.vue')
           },
           {
+            path: 'data-layer',
+            component: () => import('./views/data-layer/index.vue')
+          },
+          {
             path: 'test',
             component: () => import('./views/test.vue')
           },
