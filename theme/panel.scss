@@ -1,0 +1,15 @@
+@import "vars";
+.xdh-map-panel{
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  &__body{
+    flex: 1;
+    position: relative;
+  }
+  &__bottom{
+    flex: 0 0 auto;
+    padding: 2px 0;
+    border-top: 1px solid $--border-color-base;
+  }
+}

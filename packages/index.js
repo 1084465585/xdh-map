@@ -24,6 +24,8 @@ import Measure from './measure'
 import Tooltip from './tooltip'
 import Mask from './mask'
 import Geo from './geo'
+import Panel from './tools/panel'
+import Dialog from './tools/dialog'
 import '../theme/index.scss'
 
 const components = [
@@ -51,7 +53,9 @@ const components = [
   Measure,
   Tooltip,
   Mask,
-  Geo
+  Geo,
+  Panel,
+  Dialog
 ]
 
 const install = function (Vue) {
@@ -90,6 +94,8 @@ export const XdhMapMeasure = Measure
 export const XdhMapTooltip = Tooltip
 export const XdhMapMask = Mask
 export const XdhMapGeo = Geo
+export const XdhMapPanel = Panel
+export const XdhMapDialog = Dialog
 export const parseStyle = parse
 
 export default {
@@ -120,7 +126,9 @@ export default {
   Measure,
   Tooltip,
   Mask,
-  Geo
+  Geo,
+  Panel,
+  Dialog
 }
 
 

@@ -8,7 +8,7 @@
   color: $--popup-color;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, .5);
   border-radius: 2px;
-  &::after, &::before {
+  &.errow::after, &.errow::before {
     font-size: 0;
     content: "";
     width: 0;
@@ -20,7 +20,7 @@
     bottom: 0;
     transform: translate(-50%, 100%);
   }
-  &::before {
+  &.errow::before {
     border: 9px solid transparent;
     border-top: 13px solid rgba(50, 50, 50, .3);
   }
@@ -61,10 +61,10 @@
       background: url(../sources/popup/close_dark.png);
     }
 
-    &::after, &::before {
+    &.errow::after, &.errow::before {
       border-top: 12px solid rgba(0, 0, 0, .7);
     }
-    &::before {
+    &.errow::before {
       border-top: 13px solid rgba(50, 50, 50, .3);
     }
   }

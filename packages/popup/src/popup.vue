@@ -3,14 +3,14 @@
                 ref="html"
                 positioning="bottom-center"
                 :class="classes"
-                :style="styles">
+                :style="{'width': width}">
     <i class="xdh-map-popup__close" v-if="closable" @click="hide"></i>
     <div v-if="title" class="xdh-map-popup__title">
       <slot name="title">
-        <i :class="icon"></i> {{title}}
+        <i :class="icon"></i> {{typeof title === 'String' ? title : '标题'}}
       </slot>
     </div>
-    <div class="xdh-map-popup__body">
+    <div class="xdh-map-popup__body" :style="{'height': height}">
       <slot></slot>
     </div>
   </xdh-map-html>
@@ -53,7 +53,7 @@
       width: String,
       height: String,
       title: {
-        type: String
+        type: String || Boolean
       },
       icon: {
         type: String
@@ -63,6 +63,10 @@
         default: true
       },
       closeOnClick: {
+        type: Boolean,
+        default: true
+      },
+      showErrow: {
         type: Boolean,
         default: true
       },
@@ -76,7 +80,7 @@
     },
     computed: {
       classes() {
-        return ['xdh-map-popup', `is-${this.theme}`]
+        return ['xdh-map-popup', `is-${this.theme}`, `${this.showErrow ? 'errow' : ''}`]
       },
       styles() {
         return {
@@ -91,6 +95,7 @@
       },
       hide() {
         this.$refs.html.hide()
+        this.$emit('on-closed')
       },
       ready(map) {
         if (this.closeOnClick) {

@@ -40,6 +40,9 @@
         <router-link to="/popup">Popup</router-link>
       </dd>
       <dd>
+        <router-link to="/panel">Panel</router-link>
+      </dd>
+      <dd>
         <router-link to="/heat">Heat</router-link>
       </dd>
       <dd>

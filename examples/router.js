@@ -82,6 +82,10 @@ const router = new Router({
             component: () => import('./views/popup.vue')
           },
           {
+            path: 'panel',
+            component: () => import('./views/panel.vue')
+          },
+          {
             path: 'heat',
             component: () => import('./views/heat.vue')
           },
