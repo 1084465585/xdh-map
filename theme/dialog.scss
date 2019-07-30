@@ -3,18 +3,18 @@
   width: 1px;
   height: 1px;
   position: relative;
-  border: 1px solid red;
   .dialog{
+    display: flex;
+    flex-flow: column;
     position: absolute;
     left: 0;
     top: 0;
-    width: 300px;
-    height: 300px;
     box-shadow: 0 0 8px 0 rgba(0, 0, 0, .5);
     background: $--popup-bg;
     color: $--popup-color;
   }  
   &__header {
+    flex: 0 0 30px;
     height: 30px;
     background: $--popup-title-bg;
     line-height: 30px;
@@ -35,7 +35,17 @@
       opacity: 1;
     }
   }
-
+  &__body {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    // flex-flow: column;
+  }
+  &__bottom{
+    flex: 0 0 auto;
+    padding: 2px 0;
+    border-top: 1px solid $--border-color-base;
+  }
   &.is-dark {
     background: $--popup-bg-dark;
     color: $--popup-color-dark;

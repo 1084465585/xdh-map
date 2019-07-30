@@ -30,7 +30,6 @@
       
     },
     methods: {
-      
       clickHandle() {
         this.closed = !this.closed
       }

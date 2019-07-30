@@ -42,6 +42,10 @@ const router = new Router({
             component: () => import('./views/placement.vue')
           },
           {
+            path: 'dialog',
+            component: () => import('./views/dialog.vue')
+          },
+          {
             path: 'pointer',
             component: () => import('./views/pointer.vue')
           },
