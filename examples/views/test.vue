@@ -2,18 +2,25 @@
     <example>
       <xdh-map>
         <xdh-map-placement placement="left-top" :margin="[0,0,0,0]">
-          <xdh-map-dialog :closed.sync="closed" :position="[150, 150]">
-            <div style="">
-              <h1>测试内容</h1>
-            </div>
-            <div class="bottom" slot="bottom">
-              这个是底部  
-            </div>  
-          </xdh-map-dialog>
+          <xdh-map-drawdown :data="tabs">
+            <template v-slot:test1="props">
+              <div class="content" >
+                <h4>这个是tab1 的列表</h4>
+                <ul>
+                  <li v-for="(item, index) in props.data.ul" :key="index">{{item}}</li>
+                </ul>
+              </div>
+            </template>
+            <template v-slot:test2="props">
+              <div class="content" >
+                <h4>这个是tab2 的文字</h4>
+                <p>{{props.data.content}}</p>
+              </div>
+            </template>
+            
+          </xdh-map-drawdown>
         </xdh-map-placement>
-        <xdh-map-placement>
-          <button @click="clickHandle">打开</button>
-        </xdh-map-placement>
+       
       </xdh-map>
     </example>
 </template>
@@ -23,7 +30,24 @@
   export default {
     data() {
       return {
-        closed: true
+        tabs: [
+          {
+            title: 'test1', 
+            id: 'test1', 
+            open: true, 
+            data: {
+              ul: ['A', 'B', 'C', 'D']
+            }
+          },
+          {
+            title: 'test2', 
+            id: 'test2', 
+            open: false,
+            data: {
+              content: '“美国人”可能是一位基督徒，犹太教徒，佛教徒，或穆斯林。事实上，在美国的穆斯林比在阿富汗的穆斯林还多，不同的是，在美国他们有选择敬拜谁的自由。'  
+            }
+          }
+        ]
       }
     },
     watch: {
@@ -31,9 +55,7 @@
     },
     methods: {
       
-      clickHandle() {
-        this.closed = !this.closed
-      }
+     
     }
   }
 </script>

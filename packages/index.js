@@ -26,6 +26,7 @@ import Mask from './mask'
 import Geo from './geo'
 import Panel from './tools/panel'
 import Dialog from './tools/dialog'
+import Drawdown from './tools/drawdown'
 import '../theme/index.scss'
 
 const components = [
@@ -55,7 +56,8 @@ const components = [
   Mask,
   Geo,
   Panel,
-  Dialog
+  Dialog,
+  Drawdown
 ]
 
 const install = function (Vue) {
@@ -96,6 +98,7 @@ export const XdhMapMask = Mask
 export const XdhMapGeo = Geo
 export const XdhMapPanel = Panel
 export const XdhMapDialog = Dialog
+export const XdhMapDrawdown = Drawdown
 export const parseStyle = parse
 
 export default {
@@ -128,7 +131,8 @@ export default {
   Mask,
   Geo,
   Panel,
-  Dialog
+  Dialog,
+  Drawdown
 }
 
 

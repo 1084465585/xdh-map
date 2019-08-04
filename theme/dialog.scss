@@ -1,8 +1,9 @@
 @import "vars";
 .xdh-map-dialog{
-  width: 1px;
-  height: 1px;
+  width: 5px;
+  height: 5px;
   position: relative;
+  // border: 1px solid red;
   .dialog{
     display: flex;
     flex-flow: column;
@@ -19,6 +20,7 @@
     background: $--popup-title-bg;
     line-height: 30px;
     padding: 0 5px;
+    cursor: move;
   }
   &__close {
     background: url(../sources/popup/close.png);
