@@ -1,3 +1,10 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-08-19 21:57:21
+ * @LastEditTime: 2019-09-08 17:46:31
+ * @LastEditors: Please set LastEditors
+ */
 import Vue from 'vue'
 import Router from 'vue-router'
 
@@ -44,6 +51,10 @@ const router = new Router({
           {
             path: 'dialog',
             component: () => import('./views/dialog.vue')
+          },
+          {
+            path: 'drawdown',
+            component: () => import('./views/drawdown.vue')
           },
           {
             path: 'pointer',

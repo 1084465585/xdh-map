@@ -1,62 +1,44 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-08-19 21:57:21
+ * @LastEditTime: 2019-09-08 18:41:25
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
     <example>
-      <xdh-map>
-        <xdh-map-placement placement="left-top" :margin="[0,0,0,0]">
-          <xdh-map-drawdown :data="tabs">
-            <template v-slot:test1="props">
-              <div class="content" >
-                <h4>这个是tab1 的列表</h4>
-                <ul>
-                  <li v-for="(item, index) in props.data.ul" :key="index">{{item}}</li>
-                </ul>
-              </div>
-            </template>
-            <template v-slot:test2="props">
-              <div class="content" >
-                <h4>这个是tab2 的文字</h4>
-                <p>{{props.data.content}}</p>
-              </div>
-            </template>
-            
-          </xdh-map-drawdown>
-        </xdh-map-placement>
-       
-      </xdh-map>
+      <div style="margin-bottom: 10px">
+        <div ref="thing" draggable="true" style="width: 50px; height: 50px; background: red"></div>
+      </div>
+      <div class="map-warp" style="width: 100%; height: 500px;">
+        <xdh-map v-droppable :zoom="16" :center="[120.2014, 30.2574]" ref="map" >
+        
+        </xdh-map>
+      </div>
+      
     </example>
 </template>
 
  
 <script>
-  export default {
-    data() {
-      return {
-        tabs: [
-          {
-            title: 'test1', 
-            id: 'test1', 
-            open: true, 
-            data: {
-              ul: ['A', 'B', 'C', 'D']
-            }
-          },
-          {
-            title: 'test2', 
-            id: 'test2', 
-            open: false,
-            data: {
-              content: '“美国人”可能是一位基督徒，犹太教徒，佛教徒，或穆斯林。事实上，在美国的穆斯林比在阿富汗的穆斯林还多，不同的是，在美国他们有选择敬拜谁的自由。'  
-            }
-          }
-        ]
-      }
-    },
-    watch: {
-      
-    },
-    methods: {
-      
-     
+import droppable from '../../packages/tools/dragdrop/index'
+export default {
+  directives: {droppable},
+  data() {
+    return {
     }
+  },
+  watch: {
+    
+  },
+  methods: {
+    
+  },
+  mounted() {
+    // this.$refs.thing.addEventListener('drop', () => {
+    //   console.log('ec')
+    // })
   }
+}
 </script>
 

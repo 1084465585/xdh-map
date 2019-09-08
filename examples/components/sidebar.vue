@@ -1,3 +1,10 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-08-19 21:57:21
+ * @LastEditTime: 2019-09-08 17:44:58
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
   <div class="sidebar">
     <h3>新德汇地图应用类库</h3>
@@ -79,8 +86,13 @@
       <dd>
         <router-link to="/type">Type</router-link>
       </dd>
+
+      <dt>动效组件</dt>
       <dd>
         <router-link to="/dialog">Dialog</router-link>
+      </dd>
+      <dd>
+        <router-link to="/drawdown">Drawdown</router-link>
       </dd>
 
       <dt>动效组件</dt>
