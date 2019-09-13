@@ -1,18 +1,19 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-07-29 09:03:13
+ * @LastEditTime: 2019-09-13 16:38:22
+ * @LastEditors: Please set LastEditors
+ -->
+
 <template>
     <example>
       <xdh-map>
-        <xdh-map-placement>
-          <button @click="panelHandle">打开</button>
-        </xdh-map-placement>
-        <xdh-map-panel :position="position" :closed.sync="panelClose" @on-closed="panelClosedHandle" height="auto">
-           <div slot="title">
-             这个是标题
-           </div>
-           ssssss<br/>ssssss<br/>ssssss<br/>ssssss<br/>
-           <div slot="bottom">
-             这个是底部
-           </div>
+        
+        <xdh-map-panel :position="position"  height="auto" :visible="visible">
+          <button @click="visible = false">test</button>  
         </xdh-map-panel>
+        <xdh-map-icon class="icon" icon="iconfont icon-locus" :position="position"  @click="visible = true"></xdh-map-icon>
       </xdh-map>
     </example>
 </template>
@@ -22,7 +23,7 @@
     data() {
       return {
         position: [120, 30],
-        panelClose: true
+        visible: true
       }
     },
     watch: {
@@ -51,6 +52,13 @@
     padding: 3px;
     background: skyblue;
     color: white;
+
+  }
+}
+.xdh-map-html.icon{
+  /deep/ i.iconfont{
+    font-size: 34px;
+    color: red;
   }
 }
 </style>

@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-02 20:57:42
- * @LastEditTime: 2019-09-08 15:14:49
+ * @LastEditTime: 2019-09-13 16:43:56
  * @LastEditors: Please set LastEditors
  -->
 <template>
@@ -67,12 +67,24 @@ export default {
     },
     insertFirst: Boolean,
     // CSS class name
-    className: String
+    className: String,
+    // 切换显示隐藏
+    visible: Boolean
   },
   inject: ['coordType'],
+  data() {
+    return {
+      parentNode: null
+    }
+  },
   watch: {
     position() {
       this.show()
+    },
+    visible(val) {
+      if (this.parentNode) {
+        this.parentNode.style.display = val ? 'block' : 'none'
+      }
     }
   },
   methods: {
@@ -85,6 +97,9 @@ export default {
         })
       )
       map.addOverlay(this.overlay)
+      this.$nextTick(() => {
+        this.parentNode = this.$el.parentNode
+      })
     },
     show(position) {
       let pos = position || this.position
@@ -100,6 +115,8 @@ export default {
   },
   mounted() {
     mapReady.call(this, this.addOverlay)
+
+    
   },
   beforeDestroy() {
     if (this.overlay && this.parent) {

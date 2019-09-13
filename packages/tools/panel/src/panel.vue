@@ -1,18 +1,81 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-07-27 16:25:51
+ * @LastEditTime: 2019-09-13 16:57:34
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
-  <xdh-map-popup title="true" ref="popup" :show-errow="false" :closable="true" :close-on-click="false" :width="width" :height="height" @on-closed="handleClosed" v-bind="$attrs">
-    <div slot="title">
-      <slot name="title"></slot>
-    </div>
-    <div class="xdh-map-panel" >
-      <div class="xdh-map-panel__body">
-        <slot></slot>
-      </div>
-      <div v-if="bottom" class="xdh-map-panel__bottom">
-        <slot name="bottom"></slot>
-      </div>
-    </div>
-  </xdh-map-popup>
+  <xdh-map-html  v-bind="$attrs" positioning="bottom-center" >
+      <div class="main-warp">
+        <div class="shadow-warp">
+          <img class="shadow" src="../../../../sources/panel/shadow.png" alt="">
+        </div>
+        <div class="box">
+          <slot></slot>
+        </div>
+        <div class="bottom-pin" style="">
+          <img class="shadow-pin" src="../../../../sources/panel/shadow_pin.png" alt="">
+        </div>
+      </div> 
+    
+  </xdh-map-html>
 </template>
+<style lang="scss" scoped>
+.main-warp{
+  position: absolute;
+  border-radius: 0 0 10px 10px;
+  border-bottom: 1px solid #ccc;
+  transform: translate3d(calc(-50% + 40px), calc(-100% - 60px), 0);
+  .box{
+    position: relative;
+    box-sizing: border-box;
+    padding: 5px;
+    min-width: 200px;
+    min-height: 100px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    border-bottom: 0px solid black;
+    background: white;
+    z-index: 2;
+  }
+  .bottom-pin{
+    position: absolute;
+    bottom: -60px;
+    left: calc(50% - 80px); 
+    height: 60px; 
+    width: 80px;
+    &::after{
+      content: '';
+      display:block;
+      margin-left: -40px;
+      border-bottom: 30px solid white;
+      border-left: 80px solid transparent;
+      border-right: 80px solid transparent;
+      transform: rotate(120deg) translate3d(-45px, -30px, 0);
+    }
+    img.shadow-pin{
+      position: absolute;
+      display: block;
+      bottom: 8px;
+      left: 26%;
+    }
+  }
+  .shadow-warp{
+    position: absolute;
+    left: 12%;
+    right: -45%;
+    bottom: -23px;
+    pointer-events: none;
+    img.shadow{
+      display: block;
+      width: 100%;
+    }
+    
+  }
+
+}
+</style>
 
 <script>
   /**
@@ -20,7 +83,7 @@
    * @module xdh-map-panel
    */
 
-  import XdhMapPopup from '../../../popup'
+  import XdhMapHtml from '../../../html'
 
   /**
    * 插槽
@@ -32,7 +95,7 @@
   export default {
     name: 'XdhMapPanel',
     components: {
-      XdhMapPopup
+      XdhMapHtml
     },
     /**
      * 参数属性
@@ -44,57 +107,33 @@
      */
     props: {
       // ...XdhMapPopup.props,
-      width: {
-        type: String,
-        default: '300px'
-      },
-      height: {
-        type: String,
-        default: '260px'
-      },
-      closed: {
-        type: Boolean,
-        default: true
-      },
-      bottom: {
-        type: Boolean,
-        default: true
-      }
+      // width: {
+      //   type: String,
+      //   default: '300px'
+      // },
+      // height: {
+      //   type: String,
+      //   default: '260px'
+      // },
+      // closed: {
+      //   type: Boolean,
+      //   default: true
+      // }
     },
     data() {
       return {
-        currentClosed: this.closed
+        
       }
     },
     computed: {
       
     },
     watch: {
-      closed(val) {
-        this.currentClosed = val
-        if (val) {
-          this.$refs.popup.hide()
-          this.$emit('on-closed')
-        } else {
-          this.$refs.popup.show(this.position)
-        }
-      }
     },
     methods: {
-      handleClosed() {
-        if (!this.currentClosed) {
-          this.currentClosed = true
-          this.$emit('update:closed', this.currentClosed)
-        }
-      }
+      
     },
     mounted() {
-      if (this.closed) {
-        this.$nextTick(() => {
-          this.$refs.popup.hide()
-        })
-      }
-      
     },
     beforeDestroy() {
     }
