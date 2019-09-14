@@ -35,6 +35,15 @@
       ]
     }
   ],
+  "/tools/": [
+    {
+      "title": "小工具",
+      "collapsable": false,
+      "children": [
+        "panel"
+      ]
+    }
+  ],
   "/animate/": [
     {
       "title": "动效组件",

@@ -1,3 +1,10 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-08-19 21:57:21
+ * @LastEditTime: 2019-08-19 21:57:21
+ * @LastEditors: your name
+ -->
 <template> 
 <div class="xdh-map-dialog" ref="point" :style="{'overflow': currentClosed ? 'hidden' : 'visible'}">
   <div class="dialog" ref="dialog" :style="{'width': width, 'height': height}">
@@ -16,7 +23,22 @@
 
 
 <script>
+  /**
+   * DrawDown下拉列表
+   * @module xdh-map-drawdown
+   */
+ 
   import {getParent} from 'utils/util'
+   /**
+   * 插槽
+   * @member slots
+   * @property {boolean} closed 定义关闭变量
+   * @property {string} width 定义dialog宽度
+   * @property {string} height 定义dialog高度
+   * @property {string} title 弹窗标题
+   * @property {boolean} bottom 是否显示底部
+   * 
+   */
   export default {
     name: 'xdh-map-dialog',
     props: {

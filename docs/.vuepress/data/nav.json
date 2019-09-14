@@ -12,6 +12,10 @@
     "link": "/control/placement"
   },
   {
+    "text": "小工具",
+    "link": "/tools/panel"
+  },
+  {
     "text": "动效组件",
     "link": "/animate/track"
   },

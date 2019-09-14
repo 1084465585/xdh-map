@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-07-29 09:03:13
- * @LastEditTime: 2019-09-13 16:38:22
+ * @LastEditTime: 2019-09-14 10:39:58
  * @LastEditors: Please set LastEditors
  -->
 
@@ -10,10 +10,32 @@
     <example>
       <xdh-map>
         
-        <xdh-map-panel :position="position"  height="auto" :visible="visible">
-          <button @click="visible = false">test</button>  
+        <xdh-map-panel :position="position1"  height="auto" :visible="visible" key="panel_1">
+          <button @click="visible = false">关闭</button>
+          点击按钮关闭，点击icon 打开  
         </xdh-map-panel>
-        <xdh-map-icon class="icon" icon="iconfont icon-locus" :position="position"  @click="visible = true"></xdh-map-icon>
+        <xdh-map-icon class="icon" icon="iconfont icon-locus" :position="position1"  @click="visible = true"  key="icon_1"></xdh-map-icon>
+
+        <xdh-map-panel class="custom-panel" :position="position2"  height="auto" :visible="visible" key="panel_2">
+          <div class="custom-panel__body">
+            <div>可自定义样式：</div>
+            <pre>
+              /deep/ .xdh-map-panel{ 
+                  border-bottom: 1px solid green; 
+                .box{
+                  border-color: green;
+                  background: red;
+                }
+                .bottom-pin{
+                  &:after{
+                    border-bottom-color: red;
+                  }
+                }
+              }
+            </pre>
+          </div>
+        </xdh-map-panel>
+        <xdh-map-icon class="icon" icon="iconfont icon-locus" :position="position2"  key="icon_2"></xdh-map-icon>
       </xdh-map>
     </example>
 </template>
@@ -22,7 +44,8 @@
   export default {
     data() {
       return {
-        position: [120, 30],
+        position1: [119.4, 29.6],
+        position2: [120, 30],
         visible: true
       }
     },
@@ -46,13 +69,24 @@
 </script>
 
 <style lang="scss" scoped>
-.map-panel {
-  min-width: 300px;
-  &__header{
-    padding: 3px;
-    background: skyblue;
-    color: white;
-
+.custom-panel {
+  /deep/ .xdh-map-panel{
+    border-bottom: 1px solid green;
+    .box{
+      border-color: green;
+      background: red;
+    }
+    .bottom-pin{
+      &:after{
+        border-bottom-color: red;
+      }
+      
+    }
+  }
+  &__body{
+    width: 300px;
+    // height: 280px;
+    color: yellow;
   }
 }
 .xdh-map-html.icon{
