@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-19 21:57:21
- * @LastEditTime: 2019-09-08 17:44:58
+ * @LastEditTime: 2019-09-22 15:11:01
  * @LastEditors: Please set LastEditors
  -->
 <template>
@@ -118,6 +118,9 @@
       <dt>其他</dt>
       <dd>
         <router-link to="/coord-transform">coordinate-transform</router-link>
+      </dd>
+      <dd>
+        <router-link to="/drag-object">物件拖动</router-link>
       </dd>
     </dl>
     <div class="copyright">Powered by XDH FE Team.</div>

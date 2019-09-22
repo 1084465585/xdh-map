@@ -2,11 +2,11 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-02 20:57:42
- * @LastEditTime: 2019-09-14 10:23:27
+ * @LastEditTime: 2019-09-22 12:38:10
  * @LastEditors: Please set LastEditors
  -->
 <template>
-  <div class="xdh-map-html">
+  <div class="xdh-map-html" v-on="overlayListeners()">
     <slot></slot>
   </div>
 </template>
@@ -69,12 +69,15 @@ export default {
     // CSS class name
     className: String,
     // 切换显示隐藏
-    visible: Boolean
+    visible: Boolean,
+    // OverlayId
+    id: String
   },
   inject: ['coordType'],
   data() {
     return {
-      parentNode: null
+      parentNode: null,
+      overlay: null
     }
   },
   watch: {
@@ -108,6 +111,14 @@ export default {
     },
     hide() {
       this.overlay && this.overlay.setPosition(null)
+    },
+    overlayListeners() {
+      let vm = this
+      let obj = Object.assign({}, vm.$listeners)
+      for (let key in obj) {
+        obj[key] = obj[key].bind(vm, vm, vm.overlay, ...arguments)
+      }
+      return obj
     }
   },
   created() {

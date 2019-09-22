@@ -1,3 +1,10 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-06-02 20:57:42
+ * @LastEditTime: 2019-06-02 20:57:42
+ * @LastEditors: your name
+ */
 import { convertToWgs84 } from '../convert';
 /**
  *  Vue组件公共参数
@@ -18,7 +25,15 @@ export default {
     fill: String,
 
     // 鼠标经过形状
-    cursor: String
+    cursor: String,
+
+    // 绑定到 ol Feature 对象的 自定义属性
+    props: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
   },
   inject: ['coordType'],
   watch: {

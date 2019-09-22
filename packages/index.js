@@ -1,3 +1,10 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-09-21 10:14:35
+ * @LastEditTime: 2019-09-22 15:08:08
+ * @LastEditors: Please set LastEditors
+ */
 import {parse} from '../utils/style'
 import Map from './map'
 import Text from './text'
@@ -27,6 +34,8 @@ import Geo from './geo'
 import Panel from './tools/panel'
 import Dialog from './tools/dialog'
 import Drawdown from './tools/drawdown'
+
+// import Drag from '../utils/interactions/drag'
 import '../theme/index.scss'
 
 const components = [
@@ -100,6 +109,8 @@ export const XdhMapPanel = Panel
 export const XdhMapDialog = Dialog
 export const XdhMapDrawdown = Drawdown
 export const parseStyle = parse
+// export const Drag = DragClass
+
 
 export default {
   version: '1.1.15',

@@ -1,3 +1,10 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-03-03 10:39:23
+ * @LastEditTime: 2019-09-22 10:10:03
+ * @LastEditors: Please set LastEditors
+ */
 import Feature from 'ol/Feature'
 import {getParent, mapReady} from 'utils/util'
 
@@ -9,7 +16,10 @@ export default {
     draw() {
       // createGeometry 方法由父类实现
       const geometry = this.createGeometry()
-      this.feature = new Feature(geometry)
+      this.feature = new Feature({
+        geometry: geometry,
+        ...this.props
+      })
       this.setStyle()
       // 在图形实例记录当前vue组件的实例引用，方便从事件中取会vue组件实例
       this.feature._vm = this

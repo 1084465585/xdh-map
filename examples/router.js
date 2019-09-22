@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-19 21:57:21
- * @LastEditTime: 2019-09-08 17:46:31
+ * @LastEditTime: 2019-09-22 15:12:03
  * @LastEditors: Please set LastEditors
  */
 import Vue from 'vue'
@@ -155,6 +155,10 @@ const router = new Router({
           {
             path: 'coord-transform',
             component: () => import('./views/coord-transform')
+          },
+          {
+            path: 'drag-object',
+            component: () => import('./views/drag-object')
           }
         ]
       }
