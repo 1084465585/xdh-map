@@ -35,7 +35,7 @@ import Panel from './tools/panel'
 import Dialog from './tools/dialog'
 import Drawdown from './tools/drawdown'
 
-// import Drag from '../utils/interactions/drag'
+import Drag from '../utils/interactions/drag'
 import '../theme/index.scss'
 
 const components = [
@@ -109,7 +109,7 @@ export const XdhMapPanel = Panel
 export const XdhMapDialog = Dialog
 export const XdhMapDrawdown = Drawdown
 export const parseStyle = parse
-// export const Drag = DragClass
+export const DragClass = Drag
 
 
 export default {
@@ -143,7 +143,8 @@ export default {
   Geo,
   Panel,
   Dialog,
-  Drawdown
+  Drawdown,
+  Drag
 }
 
 

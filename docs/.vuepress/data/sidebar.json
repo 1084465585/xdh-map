@@ -40,7 +40,8 @@
       "title": "小工具",
       "collapsable": false,
       "children": [
-        "panel"
+        "panel",
+        "dialog"
       ]
     }
   ],

@@ -42,8 +42,8 @@
 
  
 <script>
-import Drag from '../../utils/interactions/drag'
-// import Drag from '../../packages/index.js'
+// import Drag from '../../utils/interactions/drag'
+import {DragClass as Drag} from '../../packages/index.js'
 export default {
   directives: {},
   data() {
