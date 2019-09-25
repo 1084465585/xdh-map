@@ -15,6 +15,7 @@ export default {
    * @property {number} [zIndex] 渲染层级
    * @property {string} [fill] 填充颜色
    * @property {string} [cursor] 鼠标经过时形状
+   * @property {object} [props] 绑定到feature上的自定义属性
    */
   props: {
     // 经纬度坐标

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: xdh-map-mask</title>
+    <title>JSDoc: Module: xdh-map-dialog</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: xdh-map-mask</h1>
+    <h1 class="page-title">Module: xdh-map-dialog</h1>
 
     
 
@@ -31,8 +31,6 @@
         
             
         
-            
-        
     
 </header>
 
@@ -40,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>遮罩蒙层</p></div>
+            <div class="description"><p>dialog 地图内置弹窗</p></div>
         
 
         
@@ -89,83 +87,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="packages_mask_src_mask.vue.html">packages/mask/src/mask.vue</a>, <a href="packages_mask_src_mask.vue.html#line2">line 2</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="packages_geo_src_geo.vue.html">packages/geo/src/geo.vue</a>, <a href="packages_geo_src_geo.vue.html#line2">line 2</a>
+        <a href="packages_tools_dialog_src_dialog.vue.html">packages/tools/dialog/src/dialog.vue</a>, <a href="packages_tools_dialog_src_dialog.vue.html#line2">line 2</a>
     </li></ul></dd>
     
 
@@ -216,64 +138,6 @@
 
         
             
-<h4 class="name" id=".props"><span class="type-signature">(static) </span>props<span class="type-signature"></span></h4>
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="packages_geo_src_geo.vue.html">packages/geo/src/geo.vue</a>, <a href="packages_geo_src_geo.vue.html#line44">line 44</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
 <h4 class="name" id="~props"><span class="type-signature">(inner) </span>props<span class="type-signature"></span></h4>
 
 
@@ -303,11 +167,7 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -319,74 +179,138 @@
 
         <tr>
             
-                <td class="name"><code>fill</code></td>
+                <td class="name"><code>closed</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">boolean</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
 
             
-                <td class="default">
-                
-                    black
-                
-                </td>
-            
 
-            <td class="description last"><p>填充颜色</p></td>
+            <td class="description last"><p>定义关闭变量</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>opacity</code></td>
+                <td class="name"><code>width</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
 
+            
+
+            <td class="description last"><p>定义dialog宽度</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
                 
-                </td>
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
             
 
             
-                <td class="default">
-                
-                    0.8
-                
-                </td>
+
+            <td class="description last"><p>定义dialog高度</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
             
 
-            <td class="description last"><p>透明度</p></td>
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>弹窗标题</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bottom</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>是否显示底部</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>dialog 右上角原点 相对 地图 右上角原点的偏移值(px)</p></td>
         </tr>
 
     
@@ -425,273 +349,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="packages_mask_src_mask.vue.html">packages/mask/src/mask.vue</a>, <a href="packages_mask_src_mask.vue.html#line14">line 14</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        
-            
-        
-            
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>遮罩蒙层</p></div>
-        
-
-        
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="packages_mask_src_mask.vue.html">packages/mask/src/mask.vue</a>, <a href="packages_mask_src_mask.vue.html#line2">line 2</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="packages_geo_src_geo.vue.html">packages/geo/src/geo.vue</a>, <a href="packages_geo_src_geo.vue.html#line2">line 2</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id=".props"><span class="type-signature">(static) </span>props<span class="type-signature"></span></h4>
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="packages_geo_src_geo.vue.html">packages/geo/src/geo.vue</a>, <a href="packages_geo_src_geo.vue.html#line44">line 44</a>
+        <a href="packages_tools_dialog_src_dialog.vue.html">packages/tools/dialog/src/dialog.vue</a>, <a href="packages_tools_dialog_src_dialog.vue.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -709,13 +367,13 @@
 
         
             
-<h4 class="name" id="~props"><span class="type-signature">(inner) </span>props<span class="type-signature"></span></h4>
+<h4 class="name" id="~slots"><span class="type-signature">(inner) </span>slots<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    <p>参数属性</p>
+    <p>插槽</p>
 </div>
 
 
@@ -738,11 +396,7 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -754,74 +408,46 @@
 
         <tr>
             
-                <td class="name"><code>fill</code></td>
+                <td class="name"><code>bottom</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
 
             
-                <td class="default">
-                
-                    black
-                
-                </td>
-            
 
-            <td class="description last"><p>填充颜色</p></td>
+            <td class="description last"><p>定义底部内容</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>opacity</code></td>
+                <td class="name"><code>default</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
 
             
-                <td class="default">
-                
-                    0.8
-                
-                </td>
-            
 
-            <td class="description last"><p>透明度</p></td>
+            <td class="description last"><p>定义主体内容</p></td>
         </tr>
 
     
@@ -860,7 +486,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="packages_mask_src_mask.vue.html">packages/mask/src/mask.vue</a>, <a href="packages_mask_src_mask.vue.html#line14">line 14</a>
+        <a href="packages_tools_dialog_src_dialog.vue.html">packages/tools/dialog/src/dialog.vue</a>, <a href="packages_tools_dialog_src_dialog.vue.html#line8">line 8</a>
     </li></ul></dd>
     
 

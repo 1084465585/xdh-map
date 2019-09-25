@@ -11,7 +11,7 @@
 
 ```html
 <template>
-    <div style="height: 500px">
+    <div style="height: 600px">
       <xdh-map>
         <xdh-map-placement placement="left-top" :margin="[0,0,0,0]">
           <xdh-map-dialog :closed.sync="closed1" :position="[150, 150]">
@@ -24,17 +24,10 @@
           </xdh-map-dialog>
         </xdh-map-placement>
 
-        <xdh-map-placement placement="left-top" :margin="[0,0,0,0]">
-          <xdh-map-dialog :closed.sync="closed2" :position="[0, 0]" :bottom="false">
-            <div style="">
-              <h1>测试内容2</h1>
-            </div>
-          </xdh-map-dialog>
-        </xdh-map-placement>
+       
 
         <xdh-map-placement>
           <button @click="handleClose1">打开</button>
-          <button @click="handleClose2">打开</button>
         </xdh-map-placement>
       </xdh-map>
     </div>
@@ -50,8 +43,7 @@ import {XdhMap, XdhMapDialog, XdhMapPlacement } from 'xdh-map'
     },
     data() {
       return {
-        closed1: true,
-        closed2: true
+        closed1: true
       }
     },
     watch: {
@@ -60,9 +52,6 @@ import {XdhMap, XdhMapDialog, XdhMapPlacement } from 'xdh-map'
     methods: {
       handleClose1() {
         this.closed1 = !this.closed1
-      },
-      handleClose2() {
-        this.closed2 = !this.closed2
       }
     }
   }

@@ -1,41 +1,42 @@
-/*
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-09-21 12:10:47
- * @LastEditTime: 2019-09-22 11:02:13
- * @LastEditors: Please set LastEditors
+/**
+ * 自定义地图物件拖动类
+ *
+ * @example
+ * /src/utils/interaction/drag 
+ * 实例化参数： 
+ * {
+ *   featureDefine: (feature) => { return feature }
+ * } 
  */
 import {Pointer as PointerInteraction} from 'ol/interaction.js'
 
+/**
+ * @class ol.interaction.drag 
+ * @classdesc 自定义拖动交互类。
+ * @param {VueComponent} mapVueComp xdh-Map 主体组件
+ * @param {Object} options - 参数。
+ * @param {boolean} [options.featureDefine = (feature) => { return feature }] - 定义可拖动的物件。
+ */ 
 class Drag {
-  /**
-   * 构造函数
-   * @constructor
-   * @param {VueComponent} mapVueComp xdh-Map 主体组件
-   * @param {Object} options 配置参数选项
-   */
+ 
   constructor(mapVm, options) {
     /**
      * @type {module:ol/pixel~Pixel}
-     * @private
      */
     this.coordinate_ = null;
 
     /**
      * @type {string|undefined}
-     * @private 用于设置 鼠标 覆盖在 地图上物体时 地图的 cursor 样式值 （设为pointer）
      */
     this.cursor_ = 'pointer'; 
 
     /**
      * @type {module:ol/Feature~Feature}
-     * @private
      */
     this.feature_ = null;
 
     /**
      * @type {string|undefined}
-     * @private 临时存放 当前 地图容器 的 cursor 样式值
      */
     this.previousCursor_ = undefined;
 
@@ -48,12 +49,17 @@ class Drag {
         } else {
           return feature
         }
-        
       })
        
       if (feature) {
         this.coordinate_ = evt.coordinate;
         this.feature_ = feature;
+        /**
+         * 拖动Feature鼠标点下时触发
+         * @event on-dragDown
+         * @param {Feature} feature
+         * @param {Object} event
+         */
         mapVm.$emit('on-dragDown', feature, evt)
       }
     
@@ -71,6 +77,12 @@ class Drag {
 
       this.coordinate_[0] = evt.coordinate[0]
       this.coordinate_[1] = evt.coordinate[1]
+      /**
+       * 拖动Feature鼠标拖动过程中触发
+       * @event on-dragMove
+       * @param {Feature} feature
+       * @param {Object} event
+       */
       mapVm.$emit('on-dragMove', this.feature_, evt)
     }
 
@@ -102,6 +114,12 @@ class Drag {
       }
     }
     function handleUpEvent(evt) {
+      /**
+       * 拖动Feature鼠标放开后触发
+       * @event on-dragUp
+       * @param {Feature} feature
+       * @param {Object} event
+       */
       mapVm.$emit('on-dragUp', this.feature_, evt)
       this.coordinate_ = null;
       this.feature_ = null;

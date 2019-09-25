@@ -41,7 +41,8 @@
       "collapsable": false,
       "children": [
         "panel",
-        "dialog"
+        "dialog",
+        "drawdown"
       ]
     }
   ],
@@ -64,6 +65,15 @@
       "collapsable": false,
       "children": [
         "text"
+      ]
+    }
+  ],
+  "/other/": [
+    {
+      "title": "其他",
+      "collapsable": false,
+      "children": [
+        "drag-object"
       ]
     }
   ],

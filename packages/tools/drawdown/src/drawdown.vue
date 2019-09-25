@@ -1,10 +1,3 @@
-<!--
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-08-19 21:57:21
- * @LastEditTime: 2019-09-14 11:12:57
- * @LastEditors: Please set LastEditors
- -->
 <template> 
 <div class="xdh-map-drawdown"  style="width: 300px" >
   <div class="item" v-for="(item, index) in tabs" :key="`${index}_${item.id}`">

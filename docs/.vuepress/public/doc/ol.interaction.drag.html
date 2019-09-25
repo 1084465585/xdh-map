@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Class: drag</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,61 +17,278 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
-
-    
-
-
-
-    
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
+    <h1 class="page-title">Class: drag</h1>
 
     
 
 
 
 
-    <section>
-        <article><h1>新德汇地图应用类库</h1>
-<p>基于Openlayers的地图应用Vue组件。内置了百度、高德、天地图、离线Google、方正PGIS、超图PGIS 瓦片图层。 包含文本、图形、html、热力图、轨迹回放等20个组件，支持与ECharts结合实现散点、飞行迁徙等基于地理位置的图表，满足项目常见需求。 使用者不需要有地图相关专业知识，甚至不需要写任何JS代码就能实现通用功能。</p>
-<h2>安装</h2>
-<pre class="prettyprint source"><code>npm install xdh-map --save
-</code></pre>
-<h3>全量引入</h3>
-<pre class="prettyprint source"><code>import XdhMap from 'xdh-map'
-import Vue from 'vue'
-import 'xdh-map/lib/xdhmap.css'
-Vue.use(XdhMap)
+<section>
 
-</code></pre>
-<h3>按需引入</h3>
-<pre class="prettyprint source"><code>import 'xdh-map/lib/xdhmap.css'
-import {XdhMap, XdhMapCircle} from 'xdh-map'
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>drag<span class="signature">(mapVueComp, options)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>自定义拖动交互类。</p></div>
+        
+    
+</header>
 
-</code></pre>
-<h3>使用示例</h3>
-<pre class="prettyprint source"><code>&lt;xdh-map>
-    &lt;xdh-map-circle :position=&quot;[120, 30]&quot;
-                    :radius=&quot;0.1&quot;
-                    fill=&quot;blue&quot;
-                    stroke-color=&quot;red&quot;
-                    :stroke-width=&quot;5&quot;>&lt;/xdh-map-circle>
-&lt;/xdh-map>
-</code></pre></article>
-    </section>
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="drag"><span class="type-signature"></span>new drag<span class="signature">(mapVueComp, options)</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>mapVueComp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">VueComponent</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>xdh-Map 主体组件</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>参数。</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>featureDefine</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    (feature) => { return feature }
+                
+                </td>
+            
+
+            <td class="description last"><p>定义可拖动的物件。</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_interactions_drag.js.html">utils/interactions/drag.js</a>, <a href="utils_interactions_drag.js.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

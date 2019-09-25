@@ -1,11 +1,3 @@
-<!--
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-07-27 16:25:51
- * @LastEditTime: 2019-09-14 12:01:41
- * @LastEditors: Please set LastEditors
- -->
-
 <template>
   <xdh-map-html v-bind="$attrs" positioning="bottom-center" >
       <div class="xdh-map-panel">
@@ -26,7 +18,7 @@
 
 <script>
   /**
-   * Panel覆盖物组件
+   * Panel气泡面板组件
    * @module xdh-map-panel
    * @description 父组件必须是 xdh-map
    */

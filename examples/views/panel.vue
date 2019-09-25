@@ -9,7 +9,6 @@
 <template>
     <example>
       <xdh-map>
-        
         <xdh-map-panel :position="position1"  height="auto" :visible="visible" key="panel_1">
           <button @click="visible = false">关闭</button>
           点击按钮关闭，点击icon 打开  

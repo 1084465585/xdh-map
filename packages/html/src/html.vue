@@ -37,6 +37,7 @@ export default {
    * @property {boolean} [stopEvent] 是否阻止时间冒泡，默认 true
    * @property {boolean} [insertFirst]
    * @property {string} [className]
+   * @property {string} [visible] 切换显示隐藏（作用于html元素的 父级overlay）
    */
   props: {
     positioning: {

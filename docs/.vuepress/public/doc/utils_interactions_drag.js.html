@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: utils/interactions/drag.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,61 +17,157 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: utils/interactions/drag.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><h1>新德汇地图应用类库</h1>
-<p>基于Openlayers的地图应用Vue组件。内置了百度、高德、天地图、离线Google、方正PGIS、超图PGIS 瓦片图层。 包含文本、图形、html、热力图、轨迹回放等20个组件，支持与ECharts结合实现散点、飞行迁徙等基于地理位置的图表，满足项目常见需求。 使用者不需要有地图相关专业知识，甚至不需要写任何JS代码就能实现通用功能。</p>
-<h2>安装</h2>
-<pre class="prettyprint source"><code>npm install xdh-map --save
-</code></pre>
-<h3>全量引入</h3>
-<pre class="prettyprint source"><code>import XdhMap from 'xdh-map'
-import Vue from 'vue'
-import 'xdh-map/lib/xdhmap.css'
-Vue.use(XdhMap)
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * 自定义地图物件拖动类
+ *
+ * @example
+ * /src/utils/interaction/drag 
+ * 实例化参数： 
+ * {
+ *   featureDefine: (feature) => { return feature }
+ * } 
+ */
+import {Pointer as PointerInteraction} from 'ol/interaction.js'
 
-</code></pre>
-<h3>按需引入</h3>
-<pre class="prettyprint source"><code>import 'xdh-map/lib/xdhmap.css'
-import {XdhMap, XdhMapCircle} from 'xdh-map'
+/**
+ * @class ol.interaction.drag 
+ * @classdesc 自定义拖动交互类。
+ * @param {VueComponent} mapVueComp xdh-Map 主体组件
+ * @param {Object} options - 参数。
+ * @param {boolean} [options.featureDefine = (feature) => { return feature }] - 定义可拖动的物件。
+ */ 
+class Drag {
+ 
+  constructor(mapVm, options) {
+    /**
+     * @type {module:ol/pixel~Pixel}
+     */
+    this.coordinate_ = null;
 
-</code></pre>
-<h3>使用示例</h3>
-<pre class="prettyprint source"><code>&lt;xdh-map>
-    &lt;xdh-map-circle :position=&quot;[120, 30]&quot;
-                    :radius=&quot;0.1&quot;
-                    fill=&quot;blue&quot;
-                    stroke-color=&quot;red&quot;
-                    :stroke-width=&quot;5&quot;>&lt;/xdh-map-circle>
-&lt;/xdh-map>
-</code></pre></article>
+    /**
+     * @type {string|undefined}
+     */
+    this.cursor_ = 'pointer'; 
+
+    /**
+     * @type {module:ol/Feature~Feature}
+     */
+    this.feature_ = null;
+
+    /**
+     * @type {string|undefined}
+     */
+    this.previousCursor_ = undefined;
+
+    function handleDownEvent(evt) {
+      let map = evt.map
+       
+      let feature = map.forEachFeatureAtPixel(evt.pixel, (feature) => {
+        if (options.featureDefine) {
+          return options.featureDefine.call(this, feature)
+        } else {
+          return feature
+        }
+      })
+       
+      if (feature) {
+        this.coordinate_ = evt.coordinate;
+        this.feature_ = feature;
+        /**
+         * 拖动Feature鼠标点下时触发
+         * @event on-dragDown
+         * @param {Feature} feature
+         * @param {Object} event
+         */
+        mapVm.$emit('on-dragDown', feature, evt)
+      }
+    
+
+      return !!feature
+    }
+    function handleDragEvent(evt) {
+      // 获取 移动开始 时的 XY 坐标
+      let deltaX = evt.coordinate[0] - this.coordinate_[0];
+      let deltaY = evt.coordinate[1] - this.coordinate_[1];
+
+      // 获取地图上的物件
+      let geometry = this.feature_.getGeometry()
+      geometry.translate(deltaX, deltaY) // 让物件跟随移动
+
+      this.coordinate_[0] = evt.coordinate[0]
+      this.coordinate_[1] = evt.coordinate[1]
+      /**
+       * 拖动Feature鼠标拖动过程中触发
+       * @event on-dragMove
+       * @param {Feature} feature
+       * @param {Object} event
+       */
+      mapVm.$emit('on-dragMove', this.feature_, evt)
+    }
+
+    // 鼠标 在地图上移动（非拖动时）
+    function handleMoveEvent(evt) {
+      if (this.cursor_) {
+        let map = evt.map
+        // 获取 地图上的 物体
+        let feature = map.forEachFeatureAtPixel(evt.pixel, (feature) => { 
+          // return feature
+          if (options.featureDefine) {
+            return options.featureDefine.call(this, feature)
+          } else {
+            return feature
+          } 
+        })
+
+        let element = evt.map.getTargetElement() // 获取地图容器div
+        
+        if (feature) { // 如果鼠标经过地图上的物体存在时
+          if (element.style.cursor !== this.cursor_) { // 判断 鼠标的 'cursor' 样式 是否为 pointer 
+            this.previousCursor_ = element.style.cursor; // 记录当前 cursor 的样式值
+            element.style.cursor = this.cursor_; // 将cursor样式 设为 pointer
+          }
+        } else if (this.previousCursor_ !== undefined) { // 还原
+          element.style.cursor = this.previousCursor_;
+          this.previousCursor_ = undefined;
+        }
+      }
+    }
+    function handleUpEvent(evt) {
+      /**
+       * 拖动Feature鼠标放开后触发
+       * @event on-dragUp
+       * @param {Feature} feature
+       * @param {Object} event
+       */
+      mapVm.$emit('on-dragUp', this.feature_, evt)
+      this.coordinate_ = null;
+      this.feature_ = null;
+      return false;
+    }
+
+    return new PointerInteraction({
+      handleDownEvent: handleDownEvent.bind(this),
+      handleDragEvent: handleDragEvent.bind(this),
+      handleMoveEvent: handleMoveEvent.bind(this),
+      handleUpEvent: handleUpEvent.bind(this)
+    }) 
+  }
+}
+
+
+
+export default Drag</code></pre>
+        </article>
     </section>
-
-
 
 
 

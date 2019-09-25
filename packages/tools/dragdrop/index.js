@@ -1,10 +1,3 @@
-/*
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-09-08 18:11:21
- * @LastEditTime: 2019-09-08 18:41:24
- * @LastEditors: Please set LastEditors
- */
 export default {
   name: 'droppable',
   bind(el, binding) {

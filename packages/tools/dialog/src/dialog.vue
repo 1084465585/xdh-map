@@ -24,23 +24,32 @@
 
 <script>
   /**
-   * DrawDown下拉列表
-   * @module xdh-map-drawdown
+   * dialog 地图内置弹窗
+   * @module xdh-map-dialog
    */
- 
+    
   import {getParent} from 'utils/util'
    /**
    * 插槽
    * @member slots
-   * @property {boolean} closed 定义关闭变量
-   * @property {string} width 定义dialog宽度
-   * @property {string} height 定义dialog高度
-   * @property {string} title 弹窗标题
-   * @property {boolean} bottom 是否显示底部
+   * @property {string} bottom 定义底部内容
+   * @property {string} default 定义主体内容
    * 
    */
+
   export default {
     name: 'xdh-map-dialog',
+    /**
+    * 参数属性
+    * @member props
+    * @property {boolean} closed 定义关闭变量
+    * @property {string} width 定义dialog宽度
+    * @property {string} height 定义dialog高度
+    * @property {string} title 弹窗标题
+    * @property {boolean} bottom 是否显示底部
+    * @property {array} position dialog 右上角原点 相对 地图 右上角原点的偏移值(px)
+    * 
+    */
     props: {
       closed: {
         type: Boolean,
