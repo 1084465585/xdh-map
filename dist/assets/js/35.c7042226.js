@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[35],{1014:function(n,t,e){"use strict";e.r(t);var s={components:{XdhMap:e(149).b}},a=e(16),c=Object(a.a)(s,function(){var n=this.$createElement;return(this._self._c||n)("xdh-map",{attrs:{center:[113.23,23.16]}})},[],!1,null,null,null);t.default=c.exports}}]);

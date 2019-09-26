@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[30],{1006:function(t,n,e){"use strict";e.r(n);var a=e(149),s={components:{XdhMap:a.b,XdhMapScatter:a.w}},p=e(16),c=Object(p.a)(s,function(){var t=this.$createElement,n=this._self._c||t;return n("xdh-map",[n("xdh-map-scatter",{attrs:{position:[120,30]}})],1)},[],!1,null,null,null);n.default=c.exports}}]);
