@@ -1,3 +1,10 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-07-27 09:25:50
+ * @LastEditTime: 2019-09-28 12:05:35
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
   <div class="xdh-map" ref="map" :style="styles">
     <slot></slot>
@@ -108,6 +115,10 @@ export default {
     coordType: {
       type: String,
       default: 'WGS84'
+    },
+    _options: {
+      type: Object,
+      default: () => { return {} }
     }
   },
   provide() {
@@ -378,7 +389,8 @@ export default {
       target: this.$refs.map,
       view: view,
       // 删除默认的控件
-      controls: []
+      controls: [],
+      ...this._options
     })
 
     /**

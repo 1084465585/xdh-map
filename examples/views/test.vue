@@ -2,63 +2,41 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-19 21:57:21
- * @LastEditTime: 2019-09-22 15:07:25
+ * @LastEditTime: 2019-09-28 17:06:00
  * @LastEditors: Please set LastEditors
  -->
 <template>
     <example>
       
       <div class="map-warp" style="width: 100%; height: 500px;">
-        <xdh-map :zoom="9" :center="[120, 30]" ref="map" @ready="readyInit" @on-dragUp="dragUpHandle" @pointermove="overLayMouseMove">
-          <xdh-map-circle :position="circleRed.point"
-                      :radius="0.1"
-                      fill="blue"
-                      stroke-color="red"
-                      :stroke-width="5"
-                      :props="{'dragFlag': circleRed.dragFlag, id: 'circleRed'}"
-          ></xdh-map-circle>
-                       
+        <xdh-map :zoom="9" :center="[120, 30]" ref="map" @ready="readyInit" >
+       
+ 
 
-          <xdh-map-circle :position="circleGreen.point"
-                      :radius="0.1"
-                      fill="blue"
-                      stroke-color="green"
-                      :stroke-width="5"
-                      :props="{'dragFlag': circleGreen.dragFlag, id: 'circleGreen'}"
-          ></xdh-map-circle>
-
-          <xdh-map-html id="test" :position="htmlPoint"   @mousedown="overLayMouseDown"
-          @mouseup="overLayMouseUp"
-          >
-            <div  style="background: red; width: 80px; height: 80px;"></div>
-          </xdh-map-html>
+         
         </xdh-map>
       </div>
-      <p>绿圈能拖红圈不能拖</p>
-      <p>pointGreen: {{circleGreen.point}}</p>
-      <p>pointHtml: {{htmlPoint}}</p>
+     
     </example>
 </template>
-
+<style>
+.xdh-dragzoom{
+  border: 2px solid green;
+}
+</style>
  
 <script>
-import Drag from '../../utils/interactions/drag'
-// import Drag from '../../packages/index.js'
+
+import DragZoom from 'ol/interaction/DragZoom'
 export default {
-  directives: {},
+  
   data() {
     return {
-
-      dragOverlay: false,
-      htmlPoint: [120.05, 30.05],
-      circleGreen: {
-        point: [120, 30],
-        dragFlag: true
-      },
-      circleRed: {
-        point: [120.08, 30.08],
-        dragFlag: false
-      }
+      mapOpts: {
+        // interaction: defaultInteractions({
+        //   shiftDragZoom: false
+        // })
+      } 
     }
   },
   watch: {
@@ -66,34 +44,29 @@ export default {
   },
   methods: {
     readyInit(map, mapComp) {
-      let dragInteraction = new Drag(mapComp, {
-        featureDefine: (feature) => {
-          let feaProps = feature.getProperties()
-          if (feaProps.dragFlag) {
-            return feature
-          }
-        }
+      this.mapView = map.getView()
+      let intersArr = map.getInteractions().getArray()
+      map.removeInteraction(intersArr[intersArr.length - 1])
+      let newDragZoom = new DragZoom({
+        className: 'xdh-dragzoom',
+        duration: 0
       })
-      map.addInteraction(dragInteraction)
-      
-    },
-    dragUpHandle(feature, event) {
-      // console.log(feature, event)
-      if (feature.getProperties().id === 'circleGreen') {
-        this[feature.getProperties().id].point = event.coordinate
-      }
-    },
-    overLayMouseDown(htmlVm, overlay, event) {
-      this.dragOverlay = overlay
-    },
-    overLayMouseMove(event) {
-      if (this.dragOverlay) {
-        this.htmlPoint = event.coordinate
-      }
-    },
-    overLayMouseUp(event) {
-      this.dragOverlay = null
-    }
+      map.addInteraction(newDragZoom)
+      let currZoom = 0
+      let currCenter = []
+      newDragZoom.on('boxstart', (e) => {
+         console.log('boxstart', e)
+        currZoom = this.mapView.getZoom()
+        currCenter = this.mapView.getCenter()
+     
+      }) 
+      newDragZoom.on('boxend', (e) => {
+        console.log('boxend', e)
+        this.mapView.setZoom(currZoom)
+        this.mapView.setCenter(currCenter)
+        return false
+      }) 
+    } 
   },
   mounted() {
   }
