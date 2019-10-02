@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-19 21:57:21
- * @LastEditTime: 2019-09-22 15:12:03
+ * @LastEditTime: 2019-10-02 16:32:42
  * @LastEditors: Please set LastEditors
  */
 import Vue from 'vue'
@@ -159,6 +159,10 @@ const router = new Router({
           {
             path: 'drag-object',
             component: () => import('./views/drag-object')
+          },
+          {
+            path: 'area-select',
+            component: () => import('./views/area-select')
           }
         ]
       }

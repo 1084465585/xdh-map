@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-19 21:57:21
- * @LastEditTime: 2019-09-22 15:11:01
+ * @LastEditTime: 2019-10-02 16:32:06
  * @LastEditors: Please set LastEditors
  -->
 <template>
@@ -121,6 +121,9 @@
       </dd>
       <dd>
         <router-link to="/drag-object">物件拖动</router-link>
+      </dd>
+      <dd>
+        <router-link to="/area-select">区域选择</router-link>
       </dd>
     </dl>
     <div class="copyright">Powered by XDH FE Team.</div>
