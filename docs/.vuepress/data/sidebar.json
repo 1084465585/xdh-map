@@ -73,7 +73,8 @@
       "title": "其他",
       "collapsable": false,
       "children": [
-        "drag-object"
+        "drag-object",
+        "area-select"
       ]
     }
   ],

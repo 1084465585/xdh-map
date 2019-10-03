@@ -2,13 +2,33 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-10-02 12:12:27
- * @LastEditTime: 2019-10-02 16:18:55
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2019-10-02 12:12:27
+ * @LastEditors: your name
+ */
+/**
+ * 自定义地图框选操作类
+ *
+ * @example
+ * /src/utils/interaction/area-select 
+ * 实例化参数：
+ * map 地图实例;
+ * mapVue 组件; 
+ * options: {
+ *   class: 'custom-select-box',
+ *   coordType: 'WGS84'
+ * } 
  */
 import DragZoom from 'ol/interaction/DragZoom'
 import Polygon from 'ol/geom/Polygon'
 import { convertToWgs84 } from 'utils/convert'
-
+/**
+ * @class ol.interaction.areaSelect 
+ * @classdesc 自定义拖动交互类。
+ * @param {VueComponent} map openlayer Map实例
+ * @param {VueComponent} mapVueComp xdh-Map 主体组件
+ * @param {Object} options - 参数。
+ * @param {boolean} [options.class = 'xdh-dragzoom'] - 自定义拖动框样式类。
+ */ 
 class AreaSelect {
   constructor(map, mapVue, options) {
     this._view = map.getView()
@@ -25,11 +45,17 @@ class AreaSelect {
       className: options.class || 'xdh-dragzoom',
       duration: 0
     })
+    
     newDragZoom.on('boxstart', (e) => {
       this._currZoom = this._view.getZoom()
       this._currCenter = this._view.getCenter()
 
       this.leftTop = e.coordinate
+      /**
+      * 键盘shift按下后拖动开始触发
+       * @event on-boxStart
+       * @param {Object} event
+       */ 
       mapVue.$emit('on-boxstart', e)
     })
     
@@ -50,6 +76,11 @@ class AreaSelect {
         })
       ])
       e.areaGeo = areaGeo
+      /**
+      * 键盘shift按下后拖动结束触发
+       * @event on-boxEnd
+       * @param {Object} event
+       */
       mapVue.$emit('on-boxend', e)
     })
     return newDragZoom

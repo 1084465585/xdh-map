@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[32],{1020:function(t,n,e){"use strict";e.r(n);var a={components:{XdhMap:e(149).b}},s=e(16),p=Object(s.a)(a,function(){var t=this.$createElement;return(this._self._c||t)("xdh-map",{attrs:{type:"Baidu"}})},[],!1,null,null,null);n.default=p.exports}}]);
