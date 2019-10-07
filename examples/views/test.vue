@@ -2,20 +2,24 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-19 21:57:21
- * @LastEditTime: 2019-10-02 16:30:46
+ * @LastEditTime: 2019-10-07 11:26:55
  * @LastEditors: Please set LastEditors
  -->
 <template>
     <example>
       
       <div class="map-warp" style="width: 100%; height: 500px;">
-        <xdh-map :zoom="9" :center="[120, 30]" ref="map" @ready="readyInit" :coord-type="coordType" @on-boxend="boxEndHandle">
-           <xdh-map-icon v-for="(item, index) in icons" :key="index" icon="iconfont icon-location" :position="item.pos" :style="{'color': item.checked ? 'red' : 'black'}"></xdh-map-icon>
+        <xdh-map :zoom="9" :center="[120, 30]" ref="map" @ready="readyInit" :coord-type="coordType" >
+          <xdh-map-polygon :key="1" :coordinates="coordinates"
+                       ref="polygon"
+                       :fill="color"
+                       stroke-color="yellow"
+                       :props="data"
+                       :stroke-width="3" @click="clickHandle" ></xdh-map-polygon>
         </xdh-map>
       </div>
       <div>
-        <button @click="clearHandle">清空</button>
-        <p>按“shift”拖动鼠标，当前选中 {{selectData.length}}个坐标</p>
+        <button @click="changeData">test</button>
       </div>
      
     </example>
@@ -28,27 +32,27 @@
  
 <script>
 // import AreaSelect from '../../utils/interactions/area-select'
-import {AreaSelectClass as AreaSelect} from '../../packages/index.js'
 
 
 export default {
   
   data() {
-    const getData = function () {
-      let data = []
-      for (let i = 0; i < 100; i++) {
-        data.push({
-          pos: [120 + Math.random() - Math.random(), 30 + Math.random() - Math.random()],
-          checked: false
-        })
-      }
-      return data
-    }
+    
     return {
       coordType: 'WGS84',
-      mapOpts: {},
-      icons: getData(),
-      selectData: []
+      map: null,
+      mapComp: null,
+      data: {
+        testId: 'test'
+      },
+      color: '#f00',
+      coordinates: [
+        [120, 30],
+        [120, 29],
+        [119, 29.5],
+        [118, 30.5],
+        [120, 30]
+      ]
     }
   },
   watch: {
@@ -56,34 +60,18 @@ export default {
   },
   methods: {
     readyInit(map, mapComp) {
-      let areaSelect = new AreaSelect(map, mapComp, {
-        class: 'custom-drag-box',
-        coordType: this.coordType
-      })
-      
-      map.addInteraction(areaSelect)
-
-      areaSelect.on('boxend', (e) => {
-        console.log(e.areaGeo)
-      })
+      this.map = map
+      this.mapComp = mapComp
     },
-    boxEndHandle(e) {
-      let includes = this.icons.reduce((total, item) => {
-        if (e.areaGeo.intersectsCoordinate(item.pos)) {
-          item.checked = true
-          total.push(item)
-        }
-        return total
-      }, [])
-      console.log(includes)
-      this.selectData = includes
+    clickHandle(e, feature) {
+      // console.log(arguments)
+      console.log(feature.getProperties())
     },
-    clearHandle() {
-      this.icons.forEach((item) => {
-        item.checked = false
-      })
-      this.selectData = []
-    } 
+    changeData() {
+      this.data = {
+        testId: 'test2'
+      }
+    }
   },
 
   mounted() {

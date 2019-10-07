@@ -1,3 +1,10 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-06-02 20:57:42
+ * @LastEditTime: 2019-10-07 11:45:54
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
   <example>
     <xdh-map
@@ -210,8 +217,10 @@ export default {
       console.log(e)
     },
     addDrawEnd(e) {
-      console.log('add end')
+      // console.log('add end', e.convert.feature, e.convert.feature.getProperties())
+      e.convert.feature.setProperties({properties: {id: new Date().getTime()}})
       this.editPol.push(e.convert.feature)
+      
       this.state.features.push({
         type: 'Feature',
         properties: {
@@ -236,11 +245,15 @@ export default {
       // 如果使用BD09或GCJ02坐标，须使用转换过的坐标e.convert.coordinate
       this.popupCenter = e.convert.coordinate
       this.editTarget = feature.getProperties()
+      console.log('editTarget', this.editTarget)
     },
     // 属性编辑弹窗保存
     propertiesSaveHandle(data) {
+      console.log('editPol', this.editPol)
       let targetIndex = this.editPol.findIndex(item => {
-        return item.ol_uid === data.id
+        let targetProp = item.getProperties()
+        console.log('targetProp', targetProp)
+        return targetProp.id === data.id
       })
       this.editPol[targetIndex].set('properties', data.properties)
       this.state.features[targetIndex].properties = data.properties

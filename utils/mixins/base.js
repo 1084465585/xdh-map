@@ -2,8 +2,8 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-02 20:57:42
- * @LastEditTime: 2019-06-02 20:57:42
- * @LastEditors: your name
+ * @LastEditTime: 2019-10-07 11:30:53
+ * @LastEditors: Please set LastEditors
  */
 import { convertToWgs84 } from '../convert';
 /**
@@ -43,6 +43,12 @@ export default {
       handler() {
         // 方法在 utils/feature.js 中定义
         this.update();
+      }
+    },
+    props: {
+      deep: true,
+      handler(val) {
+        this.feature.setProperties(val);
       }
     }
   },

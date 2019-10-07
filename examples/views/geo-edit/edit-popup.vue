@@ -1,3 +1,10 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-04-07 10:31:05
+ * @LastEditTime: 2019-04-07 10:31:05
+ * @LastEditors: your name
+ -->
 <template>
   <xdh-map-popup ref="popup" :position="position"
                   :offset="offset"
@@ -162,6 +169,7 @@
         this.isAdd = true 
       },
       saveHandle() {
+        console.log('target', this.target)
         this.$emit('on-save', {
           id: this.target.id,
           geometry: this.target.geometry,
