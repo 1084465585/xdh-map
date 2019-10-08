@@ -1,7 +1,15 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-09-28 10:20:02
+ * @LastEditTime: 2019-10-03 10:51:20
+ * @LastEditors: Please set LastEditors
+ -->
+
 # Drag 拖动交互
 
 ::: tip 提示
-圆形组件[API文档](/api.html?url=/xdh-map/doc/ol.interaction.drag.html)
+自定义拖动交互类[API文档](/api.html?url=/xdh-map/doc/ol.interaction.drag.html)
 :::
 
 ## 基础用法

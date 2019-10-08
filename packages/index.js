@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-21 10:14:35
- * @LastEditTime: 2019-09-22 15:08:08
+ * @LastEditTime: 2019-10-02 16:29:22
  * @LastEditors: Please set LastEditors
  */
 import {parse} from '../utils/style'
@@ -36,6 +36,7 @@ import Dialog from './tools/dialog'
 import Drawdown from './tools/drawdown'
 
 import Drag from '../utils/interactions/drag'
+import AreaSelect from '../utils/interactions/area-select'
 import '../theme/index.scss'
 
 const components = [
@@ -110,6 +111,7 @@ export const XdhMapDialog = Dialog
 export const XdhMapDrawdown = Drawdown
 export const parseStyle = parse
 export const DragClass = Drag
+export const AreaSelectClass = AreaSelect
 
 
 export default {
@@ -144,7 +146,8 @@ export default {
   Panel,
   Dialog,
   Drawdown,
-  Drag
+  Drag,
+  AreaSelect
 }
 
 
