@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-10-13 10:03:58
- * @LastEditTime: 2019-10-13 12:30:20
+ * @LastEditTime: 2019-10-14 23:22:07
  * @LastEditors: Please set LastEditors
  -->
 <template>
@@ -60,7 +60,7 @@
 <script>
 import { parseStyle } from '../../../packages/index.js'
 import { colorRgb } from './colorChange.js'
-
+const STYLE_PROPERTIES = {'stroke': '#555555', 'stroke-width': 2, 'stroke-opacity': 1, 'fill': '#555555', 'fill-opacity': 0.5}
 const Style = function(obj) {
   let fill = obj['fill'] || '#555555'
   let stroke = obj['stroke'] || '#555555'
@@ -142,12 +142,16 @@ export default {
       }
     },
     drawDefineFn(feature, obj) {
-      console.log(feature, obj)
+      
       let newFeature = feature.clone()
-      newFeature.setProperties({...obj.properties})
+      
+      newFeature.setProperties({...obj.properties, ...STYLE_PROPERTIES})
       newFeature.setStyle(Style(obj.properties))
+
       this.$refs.map.addFeature(newFeature)
+      this.editPol.push(newFeature)
       this.$refs.polygon.addFeatures([newFeature])
+
       feature.setStyle(
         parseStyle({
           className: 'Style',
@@ -171,7 +175,6 @@ export default {
       this.adding = false
       this.$refs.polygon.finish()
       if (!this.editing) {
-        console.log('modify')
         this.$refs.polygon.modify()
       } else {
         this.$refs.polygon.finish()
@@ -183,13 +186,32 @@ export default {
       console.log(e.convert.feature)
     },
     saveEdit(editPol) {
-      let oldFeatures = this.state.features
-      console.log(oldFeatures, editPol)
-      // editPol.forEach((item, index) => {
-      //   let newCoor = item.getGeometry().getCoordinates()
-      //   let _geometry = oldFeatures[index].geometry
-      //   _geometry.coordinates = newCoor
-      // })
+      let geos = []
+      let coords = []
+      let propsArr = editPol.map((f) => {
+        let props = f.getProperties()
+        geos.push(f.getGeometry().getType())
+        coords.push(f.getGeometry().getCoordinates())
+        delete props.geometry
+        return props
+      })
+       
+      let features = propsArr.map((item, index) => {
+        return {
+          type: 'Feature',
+          properties: {...item},
+          geometry: {
+            type: geos[index],
+            coordinates: coords[index]
+          }
+        }
+      })
+      let output = {
+        'type': 'FeatureCollection',
+        'features': features
+      }
+      console.log(JSON.stringify(output))
+      
     }
   },
   created() {},
