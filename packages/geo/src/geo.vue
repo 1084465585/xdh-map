@@ -97,7 +97,7 @@
     },
     watch: {
       featureIndex: function(val) {
-        if (val === 0) {
+        if (val <= 0) {
           this.$emit('ready', this.features)
         }
       }

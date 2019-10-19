@@ -1,10 +1,3 @@
-<!--
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-10-13 10:03:58
- * @LastEditTime: 2019-10-14 23:22:07
- * @LastEditors: Please set LastEditors
- -->
 <template>
   <example>
     <xdh-map
@@ -13,11 +6,16 @@
       :zoom="12"
       :center="[113.40, 23.06]"
       @ready="mapReady"
+      @click="featureClickHandle"
       :layer-config="layerConfig"
     >
       <xdh-map-placement placement="right-bottom" :margin="[10, 10]" theme="light">
         <div class="edit-btn-wrap clearfix">
-          <div class="edit-btn" title="添加" @click="toEdit" v-show="state.features.length">
+          <div class="edit-btn" title="添加" @click="toAdd">
+            <span class="iconfont">&#xe768;</span>
+            {{adding ? '保存添加' : '添加'}}
+          </div>
+          <div class="edit-btn" title="添加" @click="toEdit" v-show="editPol.length">
             <span class="iconfont">&#xe720;</span>
             {{editing ? '保存编辑' : '编辑'}}
           </div>
@@ -26,6 +24,7 @@
             导入
           </label>
           <input style="display: none" type="file" id="uploadJson" @change="uploadChange">
+          <div class="edit-btn" v-if="editPol.length" @click="saveOutput">输出</div>
         </div>
       </xdh-map-placement>
 
@@ -34,9 +33,19 @@
         ref="geo"
         :state="state"
         :draw-define="drawDefineFn"
+        @ready="drawDone"
       ></xdh-map-geo>
 
-      <xdh-map-draw ref="polygon" type="Polygon"   @drawend="addDrawEnd"></xdh-map-draw>
+      <xdh-map-draw ref="polygon" type="Polygon" @drawend="addDrawEnd"></xdh-map-draw>
+
+      <edit-popup
+        ref="editPopup"
+        :position="popupCenter"
+        :offset="[0,0]"
+        :show="popupShow" 
+        @on-save="propertiesSaveHandle"
+      ></edit-popup>
+      <!--  -->
     </xdh-map>
   </example>
 </template>
@@ -58,6 +67,7 @@
 }
 </style>
 <script>
+import EditPopup from './edit-popup'
 import { parseStyle } from '../../../packages/index.js'
 import { colorRgb } from './colorChange.js'
 const STYLE_PROPERTIES = {'stroke': '#555555', 'stroke-width': 2, 'stroke-opacity': 1, 'fill': '#555555', 'fill-opacity': 0.5}
@@ -89,7 +99,9 @@ const Style = function(obj) {
 
 export default {
   mixins: [],
-  components: {},
+  components: {
+    EditPopup
+  },
   props: {
     
   },
@@ -104,14 +116,19 @@ export default {
       editing: false,
       editPol: [],
       // ---------
-
-
+      adding: false,
+      // ---------  
       layerConfig: {
         Amap: {
           title: '高得地图',
           server: 'http://webrd03.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}&lang=zh_cn'
         }
-      }
+      },
+      // ------
+      popupShow: false,
+      popupCenter: [],
+      editFeature: null,
+      outputString: ''
     }
   },
   computed: {
@@ -130,14 +147,7 @@ export default {
         fileReader.onload = e => {
           this.isUpload = true
           let uploadData = JSON.parse(e.currentTarget.result)
-          if (!this.state.features.length) {
-            this.state = uploadData
-          } else {
-            this.editPol = []
-            this.state.features = this.state.features.concat(
-              uploadData.features
-            )
-          }
+          this.state = uploadData
         }
       }
     },
@@ -178,12 +188,46 @@ export default {
         this.$refs.polygon.modify()
       } else {
         this.$refs.polygon.finish()
-        this.saveEdit(this.editPol)
+        // this.saveEdit(this.editPol)
       }
       this.editing = !this.editing
     },
+    toAdd() {
+      this.editing = false
+      this.$refs.polygon.finish()
+      if (!this.adding) {
+        this.$refs.polygon.draw()
+      } else {
+        // this.saveEdit(this.editPol)
+        this.$refs.polygon.finish()
+      }
+      this.adding = !this.adding
+    },
     addDrawEnd(e) {
-      console.log(e.convert.feature)
+      e.convert.feature.setProperties({...STYLE_PROPERTIES})
+      e.convert.feature.setStyle(Style({}))
+      this.editPol.push(e.convert.feature)
+    },
+    featureClickHandle(e) {
+      if (this.adding) return
+      if (this.editing) {
+        this.$refs.polygon.finish()
+      }
+      const feature = this.$refs.map.getFeatureAtPixel(e.pixel)
+      if (!feature) return
+      this.popupShow = true
+      // 如果使用BD09或GCJ02坐标，须使用转换过的坐标e.convert.coordinate
+      this.popupCenter = e.convert.coordinate
+
+      this.editFeature = feature
+      console.log(feature.getId())
+      let editTargetProp = {...feature.getProperties()}
+      delete editTargetProp.geometry 
+      this.$refs.editPopup.setProps(editTargetProp)
+    },
+    propertiesSaveHandle(props) {
+      this.editFeature.setProperties({...props})
+      // this.saveEdit(this.editPol)
     },
     saveEdit(editPol) {
       let geos = []
@@ -210,8 +254,20 @@ export default {
         'type': 'FeatureCollection',
         'features': features
       }
-      console.log(JSON.stringify(output))
       
+      this.outputString = JSON.stringify(output)
+      console.log(this.outputString)
+    },
+    saveOutput() {
+      this.saveEdit(this.editPol)
+      const elementA = document.createElement('a');
+      elementA.download = +new Date() + '.txt'
+      elementA.style.display = 'none';
+      let blob = new Blob([this.outputString])
+      elementA.href = URL.createObjectURL(blob)
+      document.body.appendChild(elementA)
+      elementA.click()
+      document.body.removeChild(elementA)
     }
   },
   created() {},

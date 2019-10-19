@@ -20,7 +20,7 @@
         <div class="row" v-for="(val, key) in editProp" :key="key">
           <div class="label">{{key}}</div>
           <div class="value">
-            <div :class="{'show': true, 'changed': val !== target.properties[key]}"
+            <div :class="{'show': true, 'changed': val !== editProp[key]}"
              @click="setEdit(key)" v-show="editKey !== key">{{val}}</div>
             <div class="edit" v-show="editKey === key">
               <input type="text" v-model="editProp[key]" @blur="editKey = ''" />
@@ -113,20 +113,20 @@
       show: {
         type: Boolean,
         default: false
-      },
-      target: {
-        type: Object,
-        default: () => {
-          return {
-            geometry: null,
-            properties: {}
-          }
-        }
       }
+      // target: {
+      //   type: Object,
+      //   default: () => {
+      //     return {
+      //       geometry: null,
+      //       properties: {}
+      //     }
+      //   }
+      // }
     },
     data() {
       return {
-        editProp: Object.assign({}, this.target.properties),
+        editProp: {}, // Object.assign({}, this.target.properties),
 
         editKey: '',
         
@@ -141,9 +141,9 @@
        
     },
     watch: {
-      target(val) {
-        this.editProp = Object.assign({}, val.properties)
-      },
+      // target(val) {
+      //   this.editProp = Object.assign({}, val.properties)
+      // },
       show(val) {
         if (val) {
           this.$refs.popup.show()
@@ -169,13 +169,14 @@
         this.isAdd = true 
       },
       saveHandle() {
-        console.log('target', this.target)
+       
         this.$emit('on-save', {
-          id: this.target.id,
-          geometry: this.target.geometry,
-          properties: this.editProp
+          ...this.editProp
         })
         this.$refs.popup.hide()
+      },
+      setProps(data) {
+        this.editProp = {...data}
       } 
        
     },
