@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-19 21:57:21
- * @LastEditTime: 2019-10-02 16:32:42
+ * @LastEditTime: 2019-10-13 10:41:50
  * @LastEditors: Please set LastEditors
  */
 import Vue from 'vue'
@@ -142,7 +142,7 @@ const router = new Router({
           },
           {
             path: 'geo-edit',
-            component: () => import('./views/geo-edit/geo-edit.vue')
+            component: () => import('./views/geo-edit/index.vue')
           },
           {
             path: 'data-layer',
