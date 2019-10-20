@@ -1,9 +1,9 @@
 <!--
  * @Description: In User Settings Edit
  * @Author: your name
- * @Date: 2019-04-07 10:31:05
- * @LastEditTime: 2019-04-07 10:31:05
- * @LastEditors: your name
+ * @Date: 2019-10-20 09:51:58
+ * @LastEditTime: 2019-10-20 11:50:46
+ * @LastEditors: Please set LastEditors
  -->
 <template>
   <xdh-map-popup ref="popup" :position="position"
@@ -17,7 +17,7 @@
         <div class="value">值</div>
       </div>
       <div class="body">
-        <div class="row" v-for="(val, key) in editProp" :key="key">
+        <div class="row" v-for="(val, key) in editProp" :key="key" v-show="key !== '_tempId' && key !== '_isImport'">
           <div class="label">{{key}}</div>
           <div class="value">
             <div :class="{'show': true, 'changed': val !== editProp[key]}"
@@ -26,6 +26,7 @@
               <input type="text" v-model="editProp[key]" @blur="editKey = ''" />
             </div>
           </div>
+          <span v-if="definePropDel(key)" @click="removeKeyHandle(key)" class="iconfont" style="cursor: pointer">&#xe7e9;</span>
         </div>
         <div class="row" v-show="isAdd">
           <div class="label">
@@ -44,6 +45,7 @@
     <div class="btn-wrap" >
       <button class="add" @click="addHandle">添加</button>
       <button class="save" @click="saveHandle">保存</button>
+      <button class="delete" @click="deleteHandle">删除</button>
     </div>
   </xdh-map-popup> 
 </template>
@@ -70,7 +72,7 @@
       }
     }
     .value{
-      flex: 0 0 52%;
+      flex: 1; // 0 0 52%;
       padding-left: 3px;
       overflow: hidden;
       white-space:nowrap;
@@ -95,10 +97,14 @@
   button{
     margin: 3px;
   }
+  button.delete{
+    background: red;
+    color: white;
+  }
 }
 </style>
 <script>
-  const STATICKEYS = ['stroke', 'stroke-width', 'stroke-opacity', 'fill', 'fill-opacity']
+  const STATICKEYS = ['stroke', 'stroke-width', 'stroke-opacity', 'fill', 'fill-opacity', '_tempId', '_isImport']
   export default {
     name: 'EditPopup', 
     props: {
@@ -174,9 +180,26 @@
           ...this.editProp
         })
         this.$refs.popup.hide()
+      }, 
+      deleteHandle() {
+        this.$emit('on-delete', this.editProp._tempId)
       },
       setProps(data) {
         this.editProp = {...data}
+      },
+     
+      definePropDel(key) {
+        return STATICKEYS.findIndex((item) => { return item === key }) < 0
+      },
+      removeKeyHandle(propName) {
+        // delete this.editProp[key]
+        let obj = {}
+        for (const key in this.editProp) {
+          if (key !== propName) {
+            obj[key] = this.editProp[key]
+          }
+        }
+        this.editProp = obj
       } 
        
     },
