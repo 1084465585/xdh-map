@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-10-20 09:51:58
- * @LastEditTime: 2019-10-20 13:11:47
+ * @LastEditTime: 2019-10-20 20:56:48
  * @LastEditors: Please set LastEditors
  -->
 <template>
@@ -16,6 +16,8 @@
       @click="featureClickHandle"
       @on-boxend="boxEndHandle"
       @on-dragDown="dragDownHandle"
+      @on-dragMove="dragMoveHandle"
+      @on-dragUp="dragUpHandle"
       :layer-config="layerConfig"
     >
       <xdh-map-placement placement="right-bottom" :margin="[10, 10]" theme="light">
@@ -45,6 +47,9 @@
           <div class="edit-btn" title="拖动" @click="dragable = !dragable">
             <span class="iconfont">&#xe6ae;</span>
             {{dragable ? '拖动' : '打开拖动'}}
+          </div>
+           <div class="edit-btn" title="取消选择" @click="cleanSelectHandle" v-show="selectFeatures.length">
+            取消选择
           </div>
         </div>
       </xdh-map-placement> 
