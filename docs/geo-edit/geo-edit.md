@@ -1,5 +1,13 @@
+# Geo-Edit geoJson编辑器
+
+::: tip 提示
+  geoJson编辑器
+:::
+:::demo
+
+```html
 <template>
-  <example>
+  <div style="height: 500px">
     <xdh-map
       ref="map"
       type="Amap"
@@ -54,7 +62,7 @@
             刷新
           </div>
         </div>
-      </xdh-map-placement> 
+      </xdh-map-placement>
 
       <xdh-map-geo
         v-if="isUpload && state.features.length"
@@ -70,41 +78,20 @@
         ref="editPopup"
         :position="popupCenter"
         :offset="[0,0]"
-        :show="popupShow" 
+        :show="popupShow"
         @on-save="propertiesSaveHandle"
         @on-delete="featureDeleteHandle"
       ></edit-popup>
-      <!--  -->
     </xdh-map>
-  </example>
+  </div>  
 </template>
-<style lang="scss" scope>
-.clearfix {
-  &:after {
-    content: '';
-    display: table;
-    clear: both;
-  }
-}
-.edit-btn-wrap {
-  padding: 5px;
-  .edit-btn {
-    float: left;
-    margin: 0 6px;
-    cursor: pointer;
-  }
-}
-.custom-drag-box{
-  border: 2px solid red;
-}
-</style>
+
 <script>
-import EditPopup from './edit-popup'
-import { parseStyle } from '../../../packages/index.js'
+import {XdhMap, XdhMapPlacement, XdhMapGeo, XdhMapDraw} from 'xdh-map'
+import EditPopup from './edit-popup.vue'
+import { parseStyle } from 'packages';
 import { colorRgb } from './colorChange.js'
-import additionFeature from './addition-feature'
-
-
+import additionFeature from './addition-feature.js'
 const STYLE_PROPERTIES = {'stroke': '#555555', 'stroke-width': 2, 'stroke-opacity': 1, 'fill': '#555555', 'fill-opacity': 0.5}
 const Style = function(obj) {
   let fill = obj['fill'] || '#555555'
@@ -113,21 +100,18 @@ const Style = function(obj) {
   let fillColor =
     fillStr.substring(0, fillStr.length - 1) + `,${obj['fill-opacity'] || 0.5})`
   let strokeStr = colorRgb(stroke)
-  let strokeColor =
-    strokeStr.substring(0, strokeStr.length - 1) +
+  let strokeColor = strokeStr.substring(0, strokeStr.length - 1) +
     `,${obj['stroke-opacity'] || 1})`
   return parseStyle({
     className: 'Style',
     fill: {
       className: 'Fill',
       color: fillColor
-      // opacity: obj['fill-opacity']
     },
     stroke: {
       className: 'Stroke',
       color: strokeColor,
       width: obj['stroke-width'] || 2
-      // opacity: obj['stroke-opacity']
     }
   })
 }
@@ -135,14 +119,16 @@ const Style = function(obj) {
 export default {
   mixins: [additionFeature],
   components: {
-    EditPopup
+    EditPopup,
+    XdhMap,
+    XdhMapPlacement,
+    XdhMapGeo,
+    XdhMapDraw
   },
   props: {
-    
   },
   data() {
     return {
-       
       map: null,
       mapComp: null,
       viewer: null,
@@ -153,7 +139,6 @@ export default {
           server: 'http://webrd03.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}&lang=zh_cn'
         }
       },
-      
       // 编辑图形的数组
       editPol: [],
       // 上传---------
@@ -164,7 +149,6 @@ export default {
       editing: false, // 编辑状态
       // ---------
       adding: false, // 添加状态
-      
       // ------
       popupShow: false,
       popupCenter: [],
@@ -206,9 +190,8 @@ export default {
       }
     },
     drawDefineFn(feature, obj) {
-      this.importOriginFeatures.push(feature) 
+      this.importOriginFeatures.push(feature)
       let newFeature = feature.clone()
-      
       newFeature.setProperties({...obj.properties, ...STYLE_PROPERTIES, _tempId: new Date().getTime(), _isImport: true})
       newFeature.setStyle(Style(obj.properties))
 
@@ -235,7 +218,6 @@ export default {
         center: point
       })
     },
-    
     toEdit() {
       this.adding = false
       this.$refs.polygon.finish()
@@ -287,8 +269,7 @@ export default {
           this.editFeature.unset(item)
         }
       })
-      this.editFeature.setProperties({...props}) 
-      // this.saveEdit(this.editPol)
+      this.editFeature.setProperties({...props})
     },
     featureDeleteHandle(tempId) {
       let target = null
@@ -308,7 +289,7 @@ export default {
       this.editFeature = null
       this.popupShow = false
       this.popupCenter = []
-      console.log(this.editPol)
+      // console.log(this.editPol)
     },
     saveEdit(editPol) {
       let geos = []
@@ -322,7 +303,6 @@ export default {
         delete props._isImport
         return props
       })
-       
       let features = propsArr.map((item, index) => {
         return {
           type: 'Feature',
@@ -337,13 +317,11 @@ export default {
         'type': 'FeatureCollection',
         'features': features
       }
-      
       this.outputString = JSON.stringify(output)
       console.log(this.outputString)
     },
     saveOutput() {
       this.saveEdit(this.editPol)
-      /*
       const elementA = document.createElement('a');
       elementA.download = +new Date() + '.txt'
       elementA.style.display = 'none';
@@ -352,20 +330,16 @@ export default {
       document.body.appendChild(elementA)
       elementA.click()
       document.body.removeChild(elementA)
-       */
-      
     },
     clearAll() {
-       
-      this.$refs.polygon.clear() 
-      
+      this.$refs.polygon.clear()
       this.state = { type: 'FeatureCollection', features: [] }
       this.editPol = []
       this.dragable = false
       this.dragCtrl = null
       this.areaSelect = null
       this.selectFeatures = []
-      this.otherFeatures = [] 
+      this.otherFeatures = []
       this.isUpload = true
       this.editing = false
       this.adding = false
@@ -380,3 +354,28 @@ export default {
   mounted() {}
 }
 </script>
+
+<style lang="scss" scope>
+.clearfix {
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+.edit-btn-wrap {
+  padding: 5px;
+  .edit-btn {
+    float: left;
+    margin: 0 6px;
+    cursor: pointer;
+  }
+}
+.custom-drag-box{
+  border: 2px solid red;
+}
+</style>
+
+```
+
+:::

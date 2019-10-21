@@ -1,12 +1,5 @@
-/*
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-10-20 11:56:29
- * @LastEditTime: 2019-10-21 22:14:26
- * @LastEditors: Please set LastEditors
- * 此mixin 是 开发 进一步优化的操作功能（拖动/多选）
- */
-import {DragClass as Drag, AreaSelectClass as AreaSelect, parseStyle} from '../../../packages/index.js'
+import {DragClass as Drag, AreaSelectClass as AreaSelect} from 'xdh-map'
+import { parseStyle } from 'packages'
 export default {
   data() {
     return {

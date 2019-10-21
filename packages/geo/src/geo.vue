@@ -1,3 +1,10 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-10-20 09:51:58
+ * @LastEditTime: 2019-10-21 21:58:14
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
   <div v-if="features.length">
     <xdh-map-polygon ref="poly" v-for="(item, index) in features"  :key="`poly_${index}`" :coordinates="item.coordinates[0]"
@@ -189,6 +196,7 @@
         this.features = output
       },
       getFeatures() {
+        return this.features
         // console.log(this.coordType)
       }
     },

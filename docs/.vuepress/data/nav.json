@@ -28,6 +28,10 @@
     "link": "/other/drag-object"
   },
   {
+    "text": "geo编辑器",
+    "link": "/geo-edit/geo-edit"
+  },
+  {
     "text": "API文档",
     "link": "/api"
   }

@@ -1,11 +1,3 @@
-<!--
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-09-28 10:20:02
- * @LastEditTime: 2019-10-03 10:51:20
- * @LastEditors: Please set LastEditors
- -->
-
 # Drag 拖动交互
 
 ::: tip 提示
@@ -13,6 +5,7 @@
 :::
 
 ## 基础用法
+
 :::demo
 
 ```html
@@ -27,7 +20,6 @@
                       :stroke-width="5"
                       :props="{'dragFlag': circleRed.dragFlag, id: 'circleRed'}"
           ></xdh-map-circle>
-                       
 
           <xdh-map-circle :position="circleGreen.point"
                       :radius="0.1"

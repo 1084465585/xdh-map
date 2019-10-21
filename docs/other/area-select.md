@@ -1,11 +1,3 @@
-<!--
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-10-03 10:28:13
- * @LastEditTime: 2019-10-03 10:40:36
- * @LastEditors: Please set LastEditors
- -->
-
 # AreaSelect 框选交互
 
 ::: tip 提示

@@ -68,6 +68,15 @@
       ]
     }
   ],
+  "/geo-edit/": [
+    {
+      "title": "geo编辑器",
+      "collapsable": false,
+      "children": [
+        "geo-edit"
+      ]
+    }
+  ],
   "/other/": [
     {
       "title": "其他",
