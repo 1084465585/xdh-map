@@ -2,6 +2,9 @@
 
 ::: tip 提示
   geoJson编辑器
+  按shift键拖动鼠标可以批量选择元素。
+  点击元素可以打开属性修改弹窗。
+  开启拖动可以拖动元素。
 :::
 :::demo
 
@@ -88,10 +91,10 @@
 
 <script>
 import {XdhMap, XdhMapPlacement, XdhMapGeo, XdhMapDraw} from 'xdh-map'
-import EditPopup from './edit-popup.vue'
+import EditPopup from 'demo-data/geo-edit/edit-popup.vue'
 import { parseStyle } from 'packages';
-import { colorRgb } from './colorChange.js'
-import additionFeature from './addition-feature.js'
+import { colorRgb } from 'demo-data/geo-edit/colorChange.js'
+import additionFeature from 'demo-data/geo-edit/addition-feature.js'
 const STYLE_PROPERTIES = {'stroke': '#555555', 'stroke-width': 2, 'stroke-opacity': 1, 'fill': '#555555', 'fill-opacity': 0.5}
 const Style = function(obj) {
   let fill = obj['fill'] || '#555555'

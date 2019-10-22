@@ -97,9 +97,11 @@
 }
 </style>
 <script>
+import {XdhMapPopup} from 'xdh-map'
   const STATICKEYS = ['stroke', 'stroke-width', 'stroke-opacity', 'fill', 'fill-opacity', '_tempId', '_isImport']
   export default {
-    name: 'EditPopup', 
+    name: 'EditPopup',
+    components: {XdhMapPopup}, 
     props: {
       position: {
         type: Array,
@@ -113,19 +115,10 @@
         type: Boolean,
         default: false
       }
-      // target: {
-      //   type: Object,
-      //   default: () => {
-      //     return {
-      //       geometry: null,
-      //       properties: {}
-      //     }
-      //   }
-      // }
     },
     data() {
       return {
-        editProp: {}, // Object.assign({}, this.target.properties),
+        editProp: {},
 
         editKey: '',
         
