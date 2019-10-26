@@ -306,41 +306,83 @@ export default {
      * 设置地图缩放等级
      * @method zoomTo
      * @param {Number} level 等级数值
+     * @return {Promise}
      */
     zoomTo(level) {
       const view = this.map.getView()
-      view.animate({
-        zoom: Number.parseInt(level)
+      return new Promise((resolve, reject) => {
+        view.animate({
+          zoom: Number.parseInt(level)
+        }, () => {
+          resolve(view)
+        })
       })
+    },
+    /**
+     * 设置地图缩放等级
+     * @method zoomAt
+     * @param {module:ol/Extent|module:ol/Geometry} area 区域对象，可以是 ol的 extent对象或geometry对象
+     * @param {Object} options 配置参数，配置项参考 ol.view.fit() 
+     * @return {Promise}
+     */
+    zoomAt(area, options) {
+      return new Promise((resolve, reject) => {
+        if (area) {
+          let size = [this.$refs.map.offsetWidth, this.$refs.map.offsetHeight]
+          const view = this.map.getView()
+          view.fit(area, {
+            size: size,
+            padding: [0, 0, 0, 0], 
+            duration: 500,
+            ...options,
+            callback: () => {
+              resolve(this.map, this, view)
+            }
+          })
+        } else {
+          reject(new Error('定位失败'))
+        }
+      }) 
     },
 
     /**
      * 逐步放大
      * @method zoomIn
+     * @return {Promise}
      */
     zoomIn() {
       const view = this.map.getView()
-      this.zoomTo(view.getZoom() + 1)
+      return this.zoomTo(view.getZoom() + 1).then((res) => {
+        return Promise.resolve(res)
+      }) 
+      
     },
 
     /**
      * 逐步缩小
-     *  @method zoomOut
+     * @method zoomOut
+     * @return {Promise}
      */
     zoomOut() {
       const view = this.map.getView()
-      this.zoomTo(view.getZoom() - 1)
+      return this.zoomTo(view.getZoom() - 1).then((res) => {
+        return Promise.resolve(res)
+      })
     },
     /**
      * 移动到指定经纬度居中
      * @method moveTo
      * @param {Number[]} loc 经纬度数组
+     * @return {Promise}
      */
     moveTo(loc) {
       const view = this.map.getView()
-      view.animate({
-        center: loc
+      return new Promise((resolve, reject) => {
+        view.animate({
+          center: loc
+        }, () => { resolve(view) })
       })
+      
     },
     /**
      * 设置鼠标形状
