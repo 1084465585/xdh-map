@@ -8,7 +8,7 @@
           <option value="area">面积</option>
         </select>
       </xdh-map-placement>
-      <xdh-map-measure ref="measure" :type="type" ></xdh-map-measure>
+      <xdh-map-measure ref="measure" :type="type" @on-measureEnd="measureEndHandle"></xdh-map-measure>
     </xdh-map>
   </example>
 </template>
@@ -48,7 +48,11 @@
     methods: {
       start() {
         this.$refs.measure.start()
-      }
+      },
+      measureEndHandle(current, all) {
+        console.log(current, all)
+        this.$refs.measure.stop()
+      } 
     }
   }
 </script>

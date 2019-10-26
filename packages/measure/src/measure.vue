@@ -230,6 +230,13 @@
         currentMark.feature = feature
         this.drawing = false
         this.currentOutput = ''
+        /**
+         * 测量完成时触发
+         * @event on-measureEnd
+         * @param {Object} currentMark
+         * @param {Array} allMarks
+         */
+        this.$emit('on-measureEnd', currentMark, this.marks)
       },
 
       changeHandle(e) {
