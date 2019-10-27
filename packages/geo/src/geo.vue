@@ -37,7 +37,6 @@
     let result = [];
     let prevX = encodeOffsets[0];
     let prevY = encodeOffsets[1];
-    
     for (let i = 0; i < coordinate.length; i += 2) {
       let x = coordinate.charCodeAt(i) - 64;
       let y = coordinate.charCodeAt(i + 1) - 64;
@@ -206,7 +205,9 @@
     },
     mounted() {
       mapReady.call(this, this.ready)
-      this.formatFeatures()
+      this.$nextTick(() => {
+        this.formatFeatures()
+      })
     },
     beforeDestroy() {
       this.map.removeInteraction(this.select)
