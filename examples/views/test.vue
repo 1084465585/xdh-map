@@ -1,8 +1,8 @@
 <template>
   <example>
     <div class="warp"  >
-      <xdh-map ref="map" type="Amap" :layer-config="layerConfig"  :zoom="5" :center="[116.23, 39.54]" >
-        <xdh-map-geo :state="state" :draw-define="drawDefineFn" @ready="geoReadyHandle"></xdh-map-geo>
+      <xdh-map ref="map" type="Amap" :layer-config="layerConfig"  :zoom="5" :center="[116.23, 39.54]" @ready="mapReady" @pointermove="hoverHandle">
+        <xdh-map-geo :state="state" :draw-define="drawDefineFn" @ready="geoReadyHandle" ></xdh-map-geo>
       </xdh-map>
     </div>
      
@@ -15,13 +15,28 @@
   import guangdong from '../data/province/guangdong.json'
   import {parseStyle} from '../../packages/index.js'
   /*
-   
+  import VectorLayer from 'ol/layer/Vector';
+  import VectorSource from 'ol/source/Vector';
+ 
+  const heightLight = parseStyle({
+    className: 'Style',
+    fill: {
+      className: 'Fill',
+      color: 'rgba(250,0,0,0.5)'
+    },
+    stroke: {
+      className: 'Stroke',
+      color: 'blue',
+      width: 1,
+      shadow: 10
+    }
+  })
   */
-  
   export default {
     
     data() {
       return {
+        map: null,
         state: guangdong,
         layerConfig: {
           Amap: {
@@ -42,29 +57,26 @@
             shadow: 10
           }
         }),
-        shadowStyle: parseStyle({
-          className: 'Style',
-          fill: {
-            className: 'Fill',
-            color: 'rgba(0,0,0,0)'
-          },
-          stroke: {
-            className: 'Stroke',
-            color: 'rgba(250,250,250,0.3)',
-            width: 8
-          }
+        
+        featureOverlay: null
+        /*
+        new VectorLayer({
+          source: new VectorSource(),
+          style: heightLight  
         })
+        */
       }
     },
     computed: {
        
     },
     methods: {
+      mapReady(map) {
+        this.map = map
+        map.addLayer(this.featureOverlay)
+      },
       drawDefineFn(feature, obj) {
-        // let newFeature = feature.clone()
-        // newFeature.setStyle(this.shadowStyle)
         feature.setStyle(this.normalStyle)
-        // this.$refs.map.addFeature(newFeature)
       },
       geoReadyHandle(features) {
         let arrs = features.reduce((total, item) => {
@@ -82,6 +94,13 @@
           duration: 500,
           padding: [-10, -10, -10, -10]
         })
+      },
+      hoverHandle(e) {
+        let feature = this.map.forEachFeatureAtPixel(e.pixel, (feature) => {
+          return feature;
+        })
+        console.log(feature)
+        
       }
     },
     mounted() {
