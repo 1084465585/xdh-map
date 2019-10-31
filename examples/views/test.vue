@@ -14,24 +14,26 @@
   import {boundingExtent} from 'ol/extent'
   import guangdong from '../data/province/guangdong.json'
   import {parseStyle} from '../../packages/index.js'
-  /*
+ 
   import VectorLayer from 'ol/layer/Vector';
   import VectorSource from 'ol/source/Vector';
- 
-  const heightLight = parseStyle({
-    className: 'Style',
-    fill: {
-      className: 'Fill',
-      color: 'rgba(250,0,0,0.5)'
-    },
-    stroke: {
-      className: 'Stroke',
-      color: 'blue',
-      width: 1,
-      shadow: 10
-    }
+  import {Fill, Style} from 'ol/style';
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  
+  const gradient = function() {
+    let grad = context.createLinearGradient(0, 0, 500, 500);
+    grad.addColorStop(0, 'red');
+    grad.addColorStop(1, 'green');
+    
+    // ctx.shadowBlur = 20;
+    // ctx.shadowColor = "black";
+    // ctx.fillStyle = "blue"
+    return grad;
+  }
+  const fill = new Fill({
+    color: gradient()
   })
-  */
   export default {
     
     data() {
@@ -46,10 +48,7 @@
         },
         normalStyle: parseStyle({
           className: 'Style',
-          fill: {
-            className: 'Fill',
-            color: 'rgba(0,0,0,0)'
-          },
+          fill: fill,
           stroke: {
             className: 'Stroke',
             color: 'red',
@@ -57,14 +56,16 @@
             shadow: 10
           }
         }),
+        highLightStyle: parseStyle({
+          className: 'Style',
+          fill: {
+            className: 'Fill',
+            color: 'yellow'
+          }
+        }),
         
         featureOverlay: null
-        /*
-        new VectorLayer({
-          source: new VectorSource(),
-          style: heightLight  
-        })
-        */
+         
       }
     },
     computed: {
@@ -73,10 +74,15 @@
     methods: {
       mapReady(map) {
         this.map = map
-        map.addLayer(this.featureOverlay)
+        this.featureOverlay = new VectorLayer({
+          source: new VectorSource(),
+          style: () => { return this.highLightStyle }
+        })
+        this.map.addLayer(this.featureOverlay)
       },
       drawDefineFn(feature, obj) {
         feature.setStyle(this.normalStyle)
+        this.featureOverlay.getSource().addFeature(feature)
       },
       geoReadyHandle(features) {
         let arrs = features.reduce((total, item) => {
@@ -89,7 +95,7 @@
         }, [])
         
         let extent = boundingExtent(arrs2)
-        console.log(extent)
+         
         this.$refs.map.zoomAt(extent, {
           duration: 500,
           padding: [-10, -10, -10, -10]
@@ -100,6 +106,9 @@
           return feature;
         })
         console.log(feature)
+        // if (feature) {
+        //   this.featureOverlay.getSource().addFeature(feature)
+        // }
         
       }
     },
