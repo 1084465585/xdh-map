@@ -17,7 +17,7 @@
  
   import VectorLayer from 'ol/layer/Vector';
   import VectorSource from 'ol/source/Vector';
-  import {Fill, Style} from 'ol/style';
+  import {Fill} from 'ol/style';
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   

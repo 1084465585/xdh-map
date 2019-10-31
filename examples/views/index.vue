@@ -21,6 +21,7 @@
                :max-zoom="18"
                @pointermove="handleMove"
                :layer-config="layerConfig"
+               @ready="readyHandle"
       >
         <xdh-map-icon icon="iconfont icon-location" :position="hangzhou"></xdh-map-icon>
         <xdh-map-icon icon="iconfont icon-location" :position="guangzhou"></xdh-map-icon>
@@ -33,6 +34,7 @@
       </xdh-map>
       <button @click="zoomAtGSH">zoomAt广深杭</button>
       <button @click="zoomAtCQ">zoomAt大重庆</button>
+      <button @click="getLayer" style="display: none">getLayer</button>
     </example>
   </div>
 
@@ -44,6 +46,7 @@
   export default {
     data() {
       return {
+        olMap: null,
         coordinate: [],
         layerConfig: {},
         hangzhou: [120.202789, 30.248795],
@@ -53,6 +56,9 @@
       }
     },
     methods: {
+      readyHandle(map, mapComp) {
+        this.olMap = map
+      },
       changeMap(e) {
         this.$refs.map.changeType(e.target.value)
       },
@@ -85,6 +91,10 @@
       },
       handleMove(e) {
         this.coordinate = e.coordinate
+      },
+      getLayer() {
+        
+        console.log(this.olMap.getLayers().getArray())
       }
     }
   }

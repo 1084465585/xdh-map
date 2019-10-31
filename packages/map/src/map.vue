@@ -278,22 +278,42 @@ export default {
     changeType(type) {
       if (!type) return
 
-      const layers = this.map.getLayers().getArray()
-      const tileLayer = layers.find(layer => layer.type === 'TILE')
-      if (tileLayer) {
-        this.map.removeLayer(tileLayer)
-        tileLayer.disposeInternal()
-      }
-      const newLayers = [].concat(createLayer(type))
-      newLayers.forEach(layer => {
-        this.map.addLayer(layer)
+      const oldLayers = [].concat(this.map.getLayers().getArray()) // 老图层集合
+      this.$nextTick(() => {
+        // 将map图层全部删除
+        oldLayers.forEach((layer) => {
+          this.map.removeLayer(layer)
+          if (layer.type === 'TILE') {
+            layer.disposeInternal()
+          }
+        })
+        // 在老图层集合中排除原地图图层
+        let excludeLayers = oldLayers.filter((layer) => { return layer.type !== 'TILE' })
+        // 新地图图层
+        let newLayers = [].concat(createLayer(type))
+        // 将地图图层 与 老图层集合 合并
+        newLayers = newLayers.concat(excludeLayers)
+        /*
+        const tileLayer = layers.find(layer => layer.type === 'TILE')
+        if (tileLayer) {
+          this.map.removeLayer(tileLayer)
+          tileLayer.disposeInternal()
+        }
+        const newLayers = [].concat(createLayer(type))
+        */
+        // 从新加到地图上
+        newLayers.forEach(layer => {
+          this.map.addLayer(layer)
+        })
+        
+        /**
+         * 地图类型切换时触发
+         * @event changeType
+         * @param {String} type
+         */
+        this.$emit('changeType', type)
       })
-      /**
-       * 地图类型切换时触发
-       * @event changeType
-       * @param {String} type
-       */
-      this.$emit('changeType', type)
+      
     },
     /**
      * 重置地图尺寸，当容器的尺寸变化后需要执行resize
