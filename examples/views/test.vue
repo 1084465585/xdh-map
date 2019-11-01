@@ -1,11 +1,11 @@
 <template>
   <example>
     <div class="warp"  >
-      <xdh-map ref="map" type="Amap" :layer-config="layerConfig"  :zoom="5" :center="[116.23, 39.54]" @ready="mapReady" @pointermove="hoverHandle">
+      <xdh-map ref="map" type="Amap" :layer-config="layerConfig"  :zoom="5" :center="[116.23, 39.54]" @ready="mapReady"  >
         <xdh-map-geo :state="state" :draw-define="drawDefineFn" @ready="geoReadyHandle" ></xdh-map-geo>
       </xdh-map>
     </div>
-     
+    <button @click="getLayer">test</button> 
     
   </example>
 </template>
@@ -15,25 +15,41 @@
   import guangdong from '../data/province/guangdong.json'
   import {parseStyle} from '../../packages/index.js'
  
-  import VectorLayer from 'ol/layer/Vector';
-  import VectorSource from 'ol/source/Vector';
-  import {Fill} from 'ol/style';
+  // import VectorLayer from 'ol/layer/Vector';
+  // import VectorSource from 'ol/source/Vector';
+  
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   
   const gradient = function() {
-    let grad = context.createLinearGradient(0, 0, 500, 500);
+    let grad = context.createLinearGradient(0, 0, 0, 500);
     grad.addColorStop(0, 'red');
-    grad.addColorStop(1, 'green');
+    grad.addColorStop(1, 'blue');
     
     // ctx.shadowBlur = 20;
     // ctx.shadowColor = "black";
     // ctx.fillStyle = "blue"
     return grad;
   }
-  const fill = new Fill({
-    color: gradient()
-  })
+  
+  /* 
+  const createVector = function () {
+    let vector = new VectorLayer({
+      source: new VectorSource(),
+      style: () => { 
+        return parseStyle({
+          className: 'Style',
+          fill: {
+            className: 'Fill',
+            color: 'yellow'
+          }
+        })
+      }
+    })
+    return vector
+  }
+  */
+  
   export default {
     
     data() {
@@ -48,22 +64,18 @@
         },
         normalStyle: parseStyle({
           className: 'Style',
-          fill: fill,
-          stroke: {
-            className: 'Stroke',
-            color: 'red',
-            width: 1,
-            shadow: 10
-          }
-        }),
-        highLightStyle: parseStyle({
-          className: 'Style',
           fill: {
             className: 'Fill',
             color: 'yellow'
-          }
+          },
+          stroke: {
+            className: 'Stroke',
+            color: 'green',
+            width: 4
+          },
+          shadowBlur: 20,
+          shadowColor: 'red'
         }),
-        
         featureOverlay: null
          
       }
@@ -74,15 +86,17 @@
     methods: {
       mapReady(map) {
         this.map = map
-        this.featureOverlay = new VectorLayer({
-          source: new VectorSource(),
-          style: () => { return this.highLightStyle }
-        })
-        this.map.addLayer(this.featureOverlay)
+         
+        // this.map.addLayer(this.featureOverlay)
       },
       drawDefineFn(feature, obj) {
+        // let newFeature = feature.clone()
         feature.setStyle(this.normalStyle)
-        this.featureOverlay.getSource().addFeature(feature)
+        
+        // let newVector = createVector() 
+        // newVector.getSource().addFeature(newFeature)
+        // this.map.addLayer(newVector)
+       
       },
       geoReadyHandle(features) {
         let arrs = features.reduce((total, item) => {
@@ -102,17 +116,19 @@
         })
       },
       hoverHandle(e) {
-        let feature = this.map.forEachFeatureAtPixel(e.pixel, (feature) => {
-          return feature;
-        })
-        console.log(feature)
-        // if (feature) {
-        //   this.featureOverlay.getSource().addFeature(feature)
-        // }
+        console.log(e)
+        // let layer = this.map.forEachLayerAtPixel(e.pixel, (layer) => {
+        //   return layer;
+        // })
+        // console.log(layer)
         
+      },
+      getLayer() {
+        console.log(this.map.getLayers().getArray())
       }
     },
     mounted() {
+      console.log(this.state)
     }
   }
 </script>
@@ -122,7 +138,7 @@
   width: 80%; 
   height: 500px; 
   margin: 0 auto; 
-  background: black;
+  // background: black;
   border:1px solid red;
 }
 .tooltip{
