@@ -54,6 +54,18 @@
             刷新
           </div>
         </div>
+      </xdh-map-placement>
+
+      <xdh-map-placement placement="right-top" :margin="[10, 10]" theme="light">
+        <select @change="changeMap">
+          <option value="Baidu">Baidu</option>
+          <option value="Amap">Amap</option>
+          <option value="OSM">OSM</option>
+          <option value="TDT">TDT</option>
+          <option value="Google">Google</option>
+          <option value="SuperMap">SuperMap</option>
+          <option value="Founder">Founder</option>
+        </select>
       </xdh-map-placement> 
 
       <xdh-map-geo
@@ -99,6 +111,7 @@
 }
 </style>
 <script>
+import MultiPolygon from 'ol/geom/MultiPolygon';
 import EditPopup from './edit-popup'
 import { parseStyle } from '../../../packages/index.js'
 import { colorRgb } from './colorChange.js'
@@ -176,6 +189,9 @@ export default {
 
   },
   methods: {
+    changeMap(e) {
+      this.$refs.map.changeType(e.target.value)
+    },
     mapReady(map, vm) {
       this.map = map
       this.mapComp = vm
@@ -228,12 +244,24 @@ export default {
       导入geo文件后 让地图定位到对应区域
     */
     drawDone(features) {
-      let point = features[0].Feature.getGeometry()
-        .getInteriorPoint()
-        .getCoordinates()
-      this.viewer.animate({
-        center: point
+      // let point = features[0].Feature.getGeometry()
+      //   .getInteriorPoint()
+      //   .getCoordinates()
+      // this.viewer.animate({
+      //   center: point
+      // })
+      let multiPol = new MultiPolygon({})
+      let arrs = features.map((feature) => {
+        let polygon = feature.Feature.getGeometry()
+        multiPol.appendPolygon(polygon)
+        return polygon // .getCoordinates()
       })
+      console.log('arrs', arrs)
+      
+      console.log('polygon', multiPol)
+      let extent = multiPol.getExtent()
+      console.log('extent', extent)
+      this.$refs.map.zoomAt(extent)
     },
     
     toEdit() {
@@ -343,7 +371,7 @@ export default {
     },
     saveOutput() {
       this.saveEdit(this.editPol)
-      /*
+      
       const elementA = document.createElement('a');
       elementA.download = +new Date() + '.txt'
       elementA.style.display = 'none';
@@ -352,7 +380,6 @@ export default {
       document.body.appendChild(elementA)
       elementA.click()
       document.body.removeChild(elementA)
-       */
       
     },
     clearAll() {

@@ -1,17 +1,18 @@
 <template>
   <example>
     <div class="warp"  >
-      <xdh-map ref="map" type="Amap"  :zoom="11" :center="[116.23, 39.54]" @ready="mapReady"    >
+      <xdh-map ref="map" type="Baidu"  :zoom="12" :center="target" @ready="mapReady"  >
         <xdh-map-icon icon="iconfont icon-locus" :position="target"></xdh-map-icon>
       </xdh-map>
     </div>
     <div>
       <button @click="drawClick">click</button>
-      {{target}}</div> 
-      <!-- 'WGS84' | 'GCJ02' | 'BD09' -->
+      {{target}}
+    </div> 
+    <!-- 'WGS84' | 'GCJ02' | 'BD09' -->
     <div class="warp"  >
-      <xdh-map ref="map" type="Baidu"  :zoom="11" :center="[116.23, 39.54]" @click="mapClick" >
-        <xdh-map-icon icon="iconfont icon-locus" :position="[116.23, 39.54]"></xdh-map-icon>
+      <xdh-map ref="map" type="Amap"  :zoom="12" :center="target" @click="mapClick">
+        <xdh-map-icon icon="iconfont icon-locus" :position="target"></xdh-map-icon>
         <xdh-map-draw ref="circle" type="Circle" @drawend="drawend" ></xdh-map-draw>
       </xdh-map>
     </div>
@@ -21,12 +22,12 @@
 </template>
 
 <script>
-  // import { convertFromWgs84 } from 'utils/convert'
+  import { convertFromWgs84 } from 'utils/convert'
   import VectorLayer from 'ol/layer/Vector'
   import VectorSource from 'ol/source/Vector'
   import guangdong from '../data/province/guangdong.json' 
   import {parseStyle} from '../../packages'
-  import { transform, WGS84, BD09 } from 'gcoord' // GCJ02
+  import { transform, WGS84, BD09 } from 'gcoord' // GCJ02 WGS84
   const style = function () {
     return parseStyle({
       className: 'Style',
@@ -51,7 +52,7 @@
         layerSource: null,
         state: guangdong,
         isEdit: false,
-        target: [116.23, 39.54]
+        target: [116.400146484375, 39.60227966308594]
       }
     },
     computed: {
@@ -71,8 +72,11 @@
       },
       mapClick(e) {
         // console.log(e)
-        this.target = transform(e.coordinate, BD09, WGS84)
-        console.log(e.coordinate, this.target)
+        
+        let transCoord = transform(e.coordinate, WGS84, BD09)
+        let newCoord = convertFromWgs84('BD09', e.coordinate)
+        this.target = e.coordinate // newCoord // e.coordinate // newCoord //  
+        console.log(transCoord, e.coordinate, newCoord, e)
       },
       drawend(e) {
         console.log(e.feature, this.layerSource)
