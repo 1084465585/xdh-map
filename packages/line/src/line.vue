@@ -101,7 +101,15 @@ export default {
     lastSegment() {
       const length = this.routes.length
       if (length >= 2) {
-        return this.arrowStyle(this.routes[length - 2], this.routes[length - 1])
+        let start = convertToWgs84(
+          this.coordType,
+          this.routes[length - 2].map(n => Number.parseFloat(n))
+        )
+        let end = convertToWgs84(
+          this.coordType,
+          this.routes[length - 1].map(n => Number.parseFloat(n))
+        )
+        return this.arrowStyle(start, end)
       }
     },
     createStyle() {
