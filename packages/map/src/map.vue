@@ -34,7 +34,7 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import { set as setLayerConfig } from 'utils/setting'
 import { createLayer } from 'utils/layers'
-import { convertFromWgs84 } from 'utils/convert'
+import { convertFromWgs84, convertToWgs84 } from 'utils/convert'
 /*
    地图支持以下事件：
     change        (module:ol/events/Event~Event)    - Generic change event. Triggered when the revision counter is increased.change:layerGroup (module:ol/Object.ObjectEvent)
@@ -118,7 +118,9 @@ export default {
     },
     _options: {
       type: Object,
-      default: () => { return {} }
+      default: () => {
+        return {}
+      }
     }
   },
   provide() {
@@ -281,14 +283,16 @@ export default {
       const oldLayers = [].concat(this.map.getLayers().getArray()) // 老图层集合
       this.$nextTick(() => {
         // 将map图层全部删除
-        oldLayers.forEach((layer) => {
+        oldLayers.forEach(layer => {
           this.map.removeLayer(layer)
           if (layer.type === 'TILE') {
             layer.disposeInternal()
           }
         })
         // 在老图层集合中排除原地图图层
-        let excludeLayers = oldLayers.filter((layer) => { return layer.type !== 'TILE' })
+        let excludeLayers = oldLayers.filter(layer => {
+          return layer.type !== 'TILE'
+        })
         // 新地图图层
         let newLayers = [].concat(createLayer(type))
         // 将地图图层 与 老图层集合 合并
@@ -305,7 +309,7 @@ export default {
         newLayers.forEach(layer => {
           this.map.addLayer(layer)
         })
-        
+
         /**
          * 地图类型切换时触发
          * @event changeType
@@ -313,7 +317,6 @@ export default {
          */
         this.$emit('changeType', type)
       })
-      
     },
     /**
      * 重置地图尺寸，当容器的尺寸变化后需要执行resize
@@ -331,18 +334,21 @@ export default {
     zoomTo(level) {
       const view = this.map.getView()
       return new Promise((resolve, reject) => {
-        view.animate({
-          zoom: Number.parseInt(level)
-        }, () => {
-          resolve(view)
-        })
+        view.animate(
+          {
+            zoom: Number.parseInt(level)
+          },
+          () => {
+            resolve(view)
+          }
+        )
       })
     },
     /**
      * 设置地图缩放等级
      * @method zoomAt
      * @param {module:ol/Extent|module:ol/Geometry} area 区域对象，可以是 ol的 extent对象或geometry对象
-     * @param {Object} options 配置参数，配置项参考 ol.view.fit() 
+     * @param {Object} options 配置参数，配置项参考 ol.view.fit()
      * @return {Promise}
      */
     zoomAt(area, options) {
@@ -352,7 +358,7 @@ export default {
           const view = this.map.getView()
           view.fit(area, {
             size: size,
-            padding: [0, 0, 0, 0], 
+            padding: [0, 0, 0, 0],
             duration: 500,
             ...options,
             callback: () => {
@@ -362,7 +368,7 @@ export default {
         } else {
           reject(new Error('定位失败'))
         }
-      }) 
+      })
     },
 
     /**
@@ -372,10 +378,9 @@ export default {
      */
     zoomIn() {
       const view = this.map.getView()
-      return this.zoomTo(view.getZoom() + 1).then((res) => {
+      return this.zoomTo(view.getZoom() + 1).then(res => {
         return Promise.resolve(res)
-      }) 
-      
+      })
     },
 
     /**
@@ -385,7 +390,7 @@ export default {
      */
     zoomOut() {
       const view = this.map.getView()
-      return this.zoomTo(view.getZoom() - 1).then((res) => {
+      return this.zoomTo(view.getZoom() - 1).then(res => {
         return Promise.resolve(res)
       })
     },
@@ -398,11 +403,15 @@ export default {
     moveTo(loc) {
       const view = this.map.getView()
       return new Promise((resolve, reject) => {
-        view.animate({
-          center: loc
-        }, () => { resolve(view) })
+        view.animate(
+          {
+            center: loc
+          },
+          () => {
+            resolve(view)
+          }
+        )
       })
-      
     },
     /**
      * 设置鼠标形状
@@ -439,9 +448,13 @@ export default {
   },
   mounted() {
     const layers = [].concat(createLayer(this.type))
+    let center = convertToWgs84(
+      this.coordType,
+      this.center.map(n => Number.parseFloat(n))
+    )
     const view = new View({
       projection: 'EPSG:4326',
-      center: this.center,
+      center: center,
       zoom: this.zoom,
       maxZoom: this.maxZoom,
       minZoom: this.minZoom
@@ -466,6 +479,7 @@ export default {
     // 绑定地图事件
     Object.keys(this.$listeners).forEach(key => {
       this.map.on(key, e => {
+        console.log(e)
         if (e.coordinate) {
           let coordinate = convertFromWgs84(this.coordType, e.coordinate)
           e.convert = {
