@@ -153,6 +153,10 @@ const router = new Router({
             component: () => import('./views/test.vue')
           },
           {
+            path: 'test-error',
+            component: () => import('./views/test-error.vue')
+          },
+          {
             path: 'coord-transform',
             component: () => import('./views/coord-transform')
           },
