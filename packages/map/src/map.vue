@@ -479,7 +479,6 @@ export default {
     // 绑定地图事件
     Object.keys(this.$listeners).forEach(key => {
       this.map.on(key, e => {
-        console.log(e)
         if (e.coordinate) {
           let coordinate = convertFromWgs84(this.coordType, e.coordinate)
           e.convert = {

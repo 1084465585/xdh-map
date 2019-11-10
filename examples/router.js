@@ -167,6 +167,11 @@ const router = new Router({
           {
             path: 'area-select',
             component: () => import('./views/area-select')
+          },
+          // -----------测试用页面---------
+          {
+            path: 'mytest/test',
+            component: () => import('./views/mytest/test')
           }
         ]
       }
