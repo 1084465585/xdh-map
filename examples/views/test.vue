@@ -1,117 +1,51 @@
 <template>
   <example>
-    <div class="warp"  >
-      <xdh-map ref="map" type="Baidu"  :zoom="12" :center="target" @ready="mapReady"  >
-        <xdh-map-icon icon="iconfont icon-locus" :position="target"></xdh-map-icon>
-      </xdh-map>
-    </div>
-    <div>
-      <button @click="drawClick">click</button>
-      {{target}}
-    </div> 
-    <!-- 'WGS84' | 'GCJ02' | 'BD09' -->
-    <div class="warp"  >
-      <xdh-map ref="map" type="Amap"  :zoom="12" :center="target" @click="mapClick">
-        <xdh-map-icon icon="iconfont icon-locus" :position="target"></xdh-map-icon>
-        <xdh-map-draw ref="circle" type="Circle" @drawend="drawend" ></xdh-map-draw>
-      </xdh-map>
-    </div>
-   
-    
+    <xdh-map :zoom="5" :center="[116.23, 39.54]">
+      <xdh-map-geo-layer :state="state" :with-layer="false" :draw-define="drawDefineFn"></xdh-map-geo-layer>
+    </xdh-map> 
   </example>
 </template>
 
 <script>
-  import { convertFromWgs84 } from 'utils/convert'
-  import VectorLayer from 'ol/layer/Vector'
-  import VectorSource from 'ol/source/Vector'
-  import guangdong from '../data/province/guangdong.json' 
-  import {parseStyle} from '../../packages'
-  import { transform, WGS84, BD09 } from 'gcoord' // GCJ02 WGS84
-  const style = function () {
-    return parseStyle({
-      className: 'Style',
-      fill: {
-        className: 'Fill',
-        color: 'rgba(0,0,0,.3)'
-      },
-      stroke: {
-        className: 'Stroke',
-        color: 'red',
-        width: 5
-      }
-    })
-  }
+  import china from '../data/china.json'
+  import {parseStyle} from '../../packages/index.js' 
   export default {
     
     data() {
       return {
-        map: null,
-        view: null,
-        layer: null,
-        layerSource: null,
-        state: guangdong,
-        isEdit: false,
-        target: [116.400146484375, 39.60227966308594]
+        state: china,
+        style: parseStyle({
+          className: 'Style',
+          fill: {
+            className: 'Fill',
+            color: 'blue'
+          },
+          stroke: {
+            className: 'Stroke',
+            color: 'green',
+            width: 1
+          }
+        })
       }
     },
     computed: {
        
     },
     methods: {
-      mapReady(map) {
-        this.map = map
-        this.layerSource = new VectorSource({ 
-        })
-        this.layer = new VectorLayer({
-          source: this.layerSource
-        })
-        map.addLayer(this.layer) 
-        // console.log(layers)
-        // this.map.addLayer(this.featureOverlay)
-      },
-      mapClick(e) {
-        // console.log(e)
+      drawDefineFn(feature) {
+        let prop = feature.getProperties()
         
-        let transCoord = transform(e.coordinate, WGS84, BD09)
-        let newCoord = convertFromWgs84('BD09', e.coordinate)
-        this.target = e.coordinate // newCoord // e.coordinate // newCoord //  
-        console.log(transCoord, e.coordinate, newCoord, e)
-      },
-      drawend(e) {
-        console.log(e.feature, this.layerSource)
-        let feature = e.feature.clone()
-        
-        feature.setStyle(style())
-        this.layerSource.addFeature(feature) 
-      },
-      drawClick() {
-        this.isEdit = !this.isEdit
-        if (this.isEdit) {
-          this.$refs.circle.draw()
-        } else {
-          this.$refs.circle.finish()
+        if (prop.name === '广东省') {
+          feature.setStyle(this.style)
         }
       }
     },
     mounted() {
-      console.log(this.state)
+      
     }
   }
 </script>
 
 <style scoped lang="scss">
-.warp{
-  width: 80%; 
-  height: 400px; 
-  margin: 0 auto; 
-  // background: black;
-  border:1px solid red;
-}
-.tooltip{
-  padding: 5px;
-  background: white;
-  border-radius: 10px;
-  text-align: center;
-}
+
 </style>

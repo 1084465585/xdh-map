@@ -31,6 +31,7 @@ import Measure from './measure'
 import Tooltip from './tooltip'
 import Mask from './mask'
 import Geo from './geo'
+import Geolayer from './geolayer'
 import Panel from './tools/panel'
 import Dialog from './tools/dialog'
 import Drawdown from './tools/drawdown'
@@ -65,6 +66,7 @@ const components = [
   Tooltip,
   Mask,
   Geo,
+  Geolayer,
   Panel,
   Dialog,
   Drawdown
@@ -106,6 +108,7 @@ export const XdhMapMeasure = Measure
 export const XdhMapTooltip = Tooltip
 export const XdhMapMask = Mask
 export const XdhMapGeo = Geo
+export const XdhMapGeoLayer = Geolayer
 export const XdhMapPanel = Panel
 export const XdhMapDialog = Dialog
 export const XdhMapDrawdown = Drawdown
@@ -143,6 +146,7 @@ export default {
   Tooltip,
   Mask,
   Geo,
+  Geolayer,
   Panel,
   Dialog,
   Drawdown,
