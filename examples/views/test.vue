@@ -1,7 +1,7 @@
 <template>
   <example>
     <xdh-map :zoom="5" :center="[116.23, 39.54]">
-      <xdh-map-geo-layer :state="state" :with-layer="false" :draw-define="drawDefineFn"></xdh-map-geo-layer>
+      <xdh-map-geo-layer :state="state" :with-layer="true" :draw-define="drawDefineFn" @click="clickHandle" @pointermove="hoverHandle"></xdh-map-geo-layer>
     </xdh-map> 
   </example>
 </template>
@@ -33,11 +33,16 @@
     },
     methods: {
       drawDefineFn(feature) {
-        let prop = feature.getProperties()
-        
+        let prop = feature.getProperties() 
         if (prop.name === '广东省') {
           feature.setStyle(this.style)
         }
+      },
+      clickHandle(e) {
+        console.log('ccc', arguments)
+      },
+      hoverHandle(e, feature) {
+        console.log(feature)
       }
     },
     mounted() {

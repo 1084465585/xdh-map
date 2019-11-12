@@ -113,14 +113,25 @@
         } else if(this.features.length) {
           this.features.forEach((feature) => {
             feature.setStyle(this.style)
-            this.parent.addFeature(feature)
+            this.parent.addFeature(feature) 
             if (this.drawDefine) {
               this.drawDefine(feature)
             }
+           
           })
         }
+        this.bindEventAtFeatures()
       },
-     
+      bindEventAtFeatures() {
+        this.features.forEach((feature) => {
+          let obj = Object.assign({}, this.$listeners)
+          for (let key in obj) {
+            if (key !== 'mouseLeave' || key !== 'mouseEnter') {
+              this.parent._bind(key, feature, obj[key], this._uid)
+            } 
+          }
+        })
+      },
       getFeatures() {
         return this.features
       }
