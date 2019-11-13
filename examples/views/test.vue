@@ -1,7 +1,7 @@
 <template>
   <example>
     <xdh-map :zoom="5" :center="[116.23, 39.54]" >
-      <xdh-map-geo-layer :state="state" :with-layer="true" :draw-define="drawDefineFn" @click="clickHandle" @mouseEnter="hoverHandle" @mouseLeave="hoverOutHandle"></xdh-map-geo-layer>
+      <xdh-map-geo-layer :state="state" :with-layer="true" :draw-define="drawDefineFn" @click="clickHandle" @mouseEnter="hoverHandle" @mouseLeave="hoverOutHandle" @precompose="precomposeHandle"></xdh-map-geo-layer>
     </xdh-map> 
   </example>
 </template>
@@ -59,6 +59,13 @@
       },
       test() {
         console.log('test')
+      },
+      precomposeHandle(e) {
+        let context = e.context
+        context.shadowOffsetX = 0
+        context.shadowOffsetY = 0
+        context.shadowBlur = 10;
+        context.shadowColor = 'blue';
       }
     },
     mounted() {

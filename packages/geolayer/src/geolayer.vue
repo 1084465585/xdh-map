@@ -120,7 +120,7 @@
           })
         }
         this.bindEventAtFeatures()
-        this.nextTick(() => {
+        this.$nextTick(() => {
           this.$emit('ready', this.features)
         })
       },
@@ -147,7 +147,6 @@
               this.currentFeature = null
             })
           } else {
-            // console.log(e)
             this.currentFeature = e.selected[0]
             this.$emit('mouseEnter', e, this.currentFeature)
           }
@@ -177,28 +176,41 @@
           format: new GeoJSON()
         })
       })
-      /*
-      postcompose 
-      postrender 
-      precompose 
-      propertychange 
-      rendercomplete
-      */
-      this.vectorLayer.on('precompose', (e) => {
-        // console.log('layer-compose', e)
-        let context = e.context
-        context.shadowOffsetX = 0
-        context.shadowOffsetY = 0
-        context.shadowBlur = 10;
-        context.shadowColor = 'blue';
-      })
+     
+      const layerAcitons = ['postcompose', 'postrender', 'precompose', 'propertychange', 'rendercomplete']
+      
+      if (this.withLayer) {
+        // this.vectorLayer.on('precompose', (e) => {
+        //    this.$emit('precompose', e, this.vectorLayer, this)
+        //   let context = e.context
+        //   context.shadowOffsetX = 0
+        //   context.shadowOffsetY = 0
+        //   context.shadowBlur = 10;
+        //   context.shadowColor = 'blue';
+        // })
+        layerAcitons.forEach((type) => {
+          this.vectorLayer.on(type, (e) => {
+           this.$emit(type, e, this.vectorLayer, this)
+          })
+        })
+        
+      }
     },
     mounted() {
       mapReady.call(this, this.ready)
-       
     },
     beforeDestroy() {
-      
+      if (this.withLayer) {
+        this.map.removeLayer(this.vectorLayer)
+        this.features = []
+        this.vectorLayer = null
+      } else {
+        this.features.forEach((feature) => {
+          this.parent.removeFeature(feature)
+        })
+        this.features = []
+        this.vectorLayer = null
+      }
     }
   }
 </script>
