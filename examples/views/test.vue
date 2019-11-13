@@ -1,7 +1,7 @@
 <template>
   <example>
-    <xdh-map :zoom="5" :center="[116.23, 39.54]">
-      <xdh-map-geo-layer :state="state" :with-layer="true" :draw-define="drawDefineFn" @click="clickHandle" @pointermove="hoverHandle"></xdh-map-geo-layer>
+    <xdh-map :zoom="5" :center="[116.23, 39.54]" >
+      <xdh-map-geo-layer :state="state" :with-layer="true" :draw-define="drawDefineFn" @click="clickHandle" @mouseEnter="hoverHandle" @mouseLeave="hoverOutHandle"></xdh-map-geo-layer>
     </xdh-map> 
   </example>
 </template>
@@ -25,6 +25,13 @@
             color: 'green',
             width: 1
           }
+        }),
+        hoverStyle: parseStyle({
+          className: 'Style',
+          fill: {
+            className: 'Fill',
+            color: 'pink'
+          }
         })
       }
     },
@@ -41,8 +48,17 @@
       clickHandle(e) {
         console.log('ccc', arguments)
       },
+      dblClickHandle() {
+        console.log('double click')
+      },
       hoverHandle(e, feature) {
-        console.log(feature)
+        console.log('enter')
+      },
+      hoverOutHandle(e, feature) {
+        console.log('out')
+      },
+      test() {
+        console.log('test')
       }
     },
     mounted() {

@@ -11,6 +11,8 @@
   import VectorSource from 'ol/source/Vector';
   import CleanMixin from '../../../utils/mixins/clean'
   import {parseStyle} from '../../../packages'
+  import {pointerMove} from 'ol/events/condition.js'
+  import Select from 'ol/interaction/Select.js'
   const DefaultStyle = function () {
     return parseStyle({
       className: 'Style',
@@ -76,7 +78,9 @@
         
         style: DefaultStyle(),
         vectorContext: null,
-        vectorLayer: null
+        vectorLayer: null,
+
+        currentFeature: null
       }
     },
     computed: {
@@ -112,23 +116,49 @@
           this.map.addLayer(this.vectorLayer) 
         } else if(this.features.length) {
           this.features.forEach((feature) => {
-            feature.setStyle(this.style)
             this.parent.addFeature(feature) 
-            if (this.drawDefine) {
-              this.drawDefine(feature)
-            }
-           
           })
         }
         this.bindEventAtFeatures()
+        this.nextTick(() => {
+          this.$emit('ready', this.features)
+        })
       },
       bindEventAtFeatures() {
         this.features.forEach((feature) => {
           let obj = Object.assign({}, this.$listeners)
+          // console.log(obj)
           for (let key in obj) {
-            if (key !== 'mouseLeave' || key !== 'mouseEnter') {
+            if (key === 'mouseLeave' || key === 'mouseEnter' || key === 'pointermove') {
+              return
+            } else {
               this.parent._bind(key, feature, obj[key], this._uid)
-            } 
+            }
+          }
+        })
+
+        this.select = new Select({condition: pointerMove})
+        this.map.addInteraction(this.select)
+        this.select.on('select', (e) => {
+          // console.log('sel', e)
+          if(!e.selected.length && this.currentFeature) {
+            this.$emit('mouseLeave', e, this.currentFeature)
+            this.$nextTick(() => {
+              this.currentFeature = null
+            })
+          } else {
+            // console.log(e)
+            this.currentFeature = e.selected[0]
+            this.$emit('mouseEnter', e, this.currentFeature)
+          }
+        })
+      },
+      setFeatures() {
+        this.features = (new GeoJSON()).readFeatures(this.decodeGeo)
+        this.features.forEach((feature) => {
+          feature.setStyle(this.style)
+          if (this.drawDefine) {
+            this.drawDefine(feature)
           }
         })
       },
@@ -139,16 +169,21 @@
     created() {
       this.parent = getParent.call(this)
      
-      this.features = (new GeoJSON()).readFeatures(this.decodeGeo)
+      this.setFeatures()
+
       this.vectorLayer = new VectorLayer({
         source: new VectorSource({
           features: this.features,
           format: new GeoJSON()
-        }),
-        style: (feature) => {
-          return this.style
-        }
+        })
       })
+      /*
+      postcompose 
+      postrender 
+      precompose 
+      propertychange 
+      rendercomplete
+      */
       this.vectorLayer.on('precompose', (e) => {
         // console.log('layer-compose', e)
         let context = e.context
