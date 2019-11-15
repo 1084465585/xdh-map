@@ -1,6 +1,6 @@
 <template>
   <example>
-    <xdh-map :zoom="5" :center="[116.23, 39.54]" >
+    <xdh-map :zoom="5" :center="[116.23, 39.54]" @ready="readyHandle">
       <xdh-map-geo-layer :state="state" :with-layer="true" :draw-define="drawDefineFn" @click="clickHandle" @mouseEnter="hoverHandle" @mouseLeave="hoverOutHandle" @precompose="precomposeHandle"></xdh-map-geo-layer>
     </xdh-map> 
   </example>
@@ -13,6 +13,7 @@
     
     data() {
       return {
+        map: null,
         state: china,
         style: parseStyle({
           className: 'Style',
@@ -39,6 +40,12 @@
        
     },
     methods: {
+      readyHandle(map) {
+        this.map = map
+        setTimeout(() => {
+        console.log(this.map.getLayers().getArray())
+      }, 600)
+      },
       drawDefineFn(feature) {
         let prop = feature.getProperties() 
         if (prop.name === '广东省') {
@@ -60,12 +67,13 @@
       test() {
         console.log('test')
       },
+
       precomposeHandle(e) {
-        let context = e.context
-        context.shadowOffsetX = 0
-        context.shadowOffsetY = 0
-        context.shadowBlur = 10;
-        context.shadowColor = 'blue';
+        // let context = e.context
+        // context.shadowOffsetX = 0
+        // context.shadowOffsetY = 0
+        // context.shadowBlur = 10;
+        // context.shadowColor = 'blue';
       }
     },
     mounted() {

@@ -66,7 +66,7 @@
         type: Function
       },
       withLayer: {
-        type: Boolean,
+        type: Boolean || Object,
         default: true
       }
     },
@@ -176,6 +176,8 @@
           format: new GeoJSON()
         })
       })
+
+     
      
       const layerAcitons = ['postcompose', 'postrender', 'precompose', 'propertychange', 'rendercomplete']
       
@@ -188,6 +190,9 @@
         //   context.shadowBlur = 10;
         //   context.shadowColor = 'blue';
         // })
+        if (typeof this.withLayer === 'object') {
+           this.vectorLayer.setProperties(this.withLayer)
+        }
         layerAcitons.forEach((type) => {
           this.vectorLayer.on(type, (e) => {
            this.$emit(type, e, this.vectorLayer, this)
