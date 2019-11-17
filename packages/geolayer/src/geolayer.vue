@@ -66,7 +66,7 @@
         type: Function
       },
       withLayer: {
-        type: Boolean || Object,
+        // type: Boolean || Object,
         default: true
       }
     },
@@ -113,7 +113,8 @@
       ready(map) {
         this.map = map
         if (this.vectorLayer && this.withLayer) {
-          this.map.addLayer(this.vectorLayer) 
+          this.map.addLayer(this.vectorLayer)
+          
         } else if(this.features.length) {
           this.features.forEach((feature) => {
             this.parent.addFeature(feature) 
@@ -140,7 +141,6 @@
         this.select = new Select({condition: pointerMove})
         this.map.addInteraction(this.select)
         this.select.on('select', (e) => {
-          // console.log('sel', e)
           if(!e.selected.length && this.currentFeature) {
             this.$emit('mouseLeave', e, this.currentFeature)
             this.$nextTick(() => {
@@ -154,8 +154,9 @@
       },
       setFeatures() {
         this.features = (new GeoJSON()).readFeatures(this.decodeGeo)
+        console.log(this.features.length)
         this.features.forEach((feature) => {
-          feature.setStyle(this.style)
+          // feature.setStyle(this.style)
           if (this.drawDefine) {
             this.drawDefine(feature)
           }
@@ -169,27 +170,32 @@
       this.parent = getParent.call(this)
      
       this.setFeatures()
+      this.source = new VectorSource({
+        features: this.features,
+        format: new GeoJSON()
+      })
 
       this.vectorLayer = new VectorLayer({
-        source: new VectorSource({
-          features: this.features,
-          format: new GeoJSON()
+        source: this.source,
+        style: parseStyle({
+          className: 'Style',
+          fill: {
+            className: 'Fill',
+            color: 'green'
+          }
+          // stroke: {
+          //   className: 'Stroke',
+          //   color: 'red',
+          //   width: 3
+          // }
         })
       })
 
      
-     
+      /*
       const layerAcitons = ['postcompose', 'postrender', 'precompose', 'propertychange', 'rendercomplete']
       
-      if (this.withLayer) {
-        // this.vectorLayer.on('precompose', (e) => {
-        //    this.$emit('precompose', e, this.vectorLayer, this)
-        //   let context = e.context
-        //   context.shadowOffsetX = 0
-        //   context.shadowOffsetY = 0
-        //   context.shadowBlur = 10;
-        //   context.shadowColor = 'blue';
-        // })
+      if (this.withLayer) { 
         if (typeof this.withLayer === 'object') {
            this.vectorLayer.setProperties(this.withLayer)
         }
@@ -198,11 +204,25 @@
            this.$emit(type, e, this.vectorLayer, this)
           })
         })
+      }
+      */
+
+      if (this.withLayer) { 
+        if (typeof this.withLayer === 'object') {
+           this.vectorLayer.setProperties(this.withLayer)
+        }
+        
         
       }
     },
     mounted() {
       mapReady.call(this, this.ready)
+      
+      this.vectorLayer.on('prerender', (e) => {
+        console.log(e)
+        // this.$emit('precompose', e)
+      })
+         
     },
     beforeDestroy() {
       if (this.withLayer) {

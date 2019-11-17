@@ -1,7 +1,10 @@
 <template>
   <example>
-    <xdh-map :zoom="5" :center="[116.23, 39.54]" @ready="readyHandle">
-      <xdh-map-geo-layer :state="state" :with-layer="true" :draw-define="drawDefineFn" @click="clickHandle" @mouseEnter="hoverHandle" @mouseLeave="hoverOutHandle" @precompose="precomposeHandle"></xdh-map-geo-layer>
+    <xdh-map :zoom="5" :center="[116.23, 39.54]" @ready="readyHandle" >
+      <xdh-map-geo-layer :state="state" :with-layer="layerProps" :draw-define="drawDefineFn" @click="clickHandle" @mouseEnter="hoverHandle" @mouseLeave="hoverOutHandle"
+      @precompose="precomposeLayerHandle" 
+      ></xdh-map-geo-layer>
+ 
     </xdh-map> 
   </example>
 </template>
@@ -15,6 +18,7 @@
       return {
         map: null,
         state: china,
+        layerProps: {title: 'myLayer'},
         style: parseStyle({
           className: 'Style',
           fill: {
@@ -33,7 +37,8 @@
             className: 'Fill',
             color: 'pink'
           }
-        })
+        }),
+        flag: false
       }
     },
     computed: {
@@ -42,9 +47,6 @@
     methods: {
       readyHandle(map) {
         this.map = map
-        setTimeout(() => {
-        console.log(this.map.getLayers().getArray())
-      }, 600)
       },
       drawDefineFn(feature) {
         let prop = feature.getProperties() 
@@ -68,12 +70,19 @@
         console.log('test')
       },
 
-      precomposeHandle(e) {
-        // let context = e.context
-        // context.shadowOffsetX = 0
-        // context.shadowOffsetY = 0
-        // context.shadowBlur = 10;
-        // context.shadowColor = 'blue';
+      
+       precomposeLayerHandle(e) {
+        console.log('layer', e.target)
+
+        let context = e.context
+        context.shadowOffsetX = 0
+        context.shadowOffsetY = 0
+        context.shadowBlur = 10;
+        context.shadowColor = 'blue';
+        
+      },
+      postrenderHandle(e) {
+        console.log('render', e)
       }
     },
     mounted() {
