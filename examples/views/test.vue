@@ -71,7 +71,7 @@
       },
 
       
-       precomposeLayerHandle(e) {
+      precomposeLayerHandle(e) {
         console.log('layer', e.target)
 
         let context = e.context

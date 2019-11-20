@@ -154,9 +154,8 @@
       },
       setFeatures() {
         this.features = (new GeoJSON()).readFeatures(this.decodeGeo)
-        console.log(this.features.length)
         this.features.forEach((feature) => {
-          // feature.setStyle(this.style)
+          feature.setStyle(this.style)
           if (this.drawDefine) {
             this.drawDefine(feature)
           }
@@ -176,19 +175,14 @@
       })
 
       this.vectorLayer = new VectorLayer({
-        source: this.source,
-        style: parseStyle({
-          className: 'Style',
-          fill: {
-            className: 'Fill',
-            color: 'green'
-          }
-          // stroke: {
-          //   className: 'Stroke',
-          //   color: 'red',
-          //   width: 3
-          // }
-        })
+        source: this.source
+        // style: parseStyle({
+        //   className: 'Style',
+        //   fill: {
+        //     className: 'Fill',
+        //     color: 'green'
+        //   }
+        // })
       })
 
      
@@ -221,6 +215,9 @@
       this.vectorLayer.on('prerender', (e) => {
         console.log(e)
         // this.$emit('precompose', e)
+      })
+      this.vectorLayer.on('precompose', (e) => {
+        this.$emit('precompose', e)
       })
          
     },
