@@ -54,15 +54,27 @@
             刷新
           </div>
         </div>
+      </xdh-map-placement>
+
+      <xdh-map-placement placement="right-top" :margin="[10, 10]" theme="light">
+        <select @change="changeMap">
+          <option value="Baidu">Baidu</option>
+          <option value="Amap">Amap</option>
+          <option value="OSM">OSM</option>
+          <option value="TDT">TDT</option>
+          <option value="Google">Google</option>
+          <option value="SuperMap">SuperMap</option>
+          <option value="Founder">Founder</option>
+        </select>
       </xdh-map-placement> 
 
-      <xdh-map-geo
+      <xdh-map-geo-layer
         v-if="isUpload && state.features.length"
         ref="geo"
         :state="state"
         :draw-define="drawDefineFn"
         @ready="drawDone"
-      ></xdh-map-geo>
+      ></xdh-map-geo-layer>
 
       <xdh-map-draw ref="polygon" type="Polygon" @drawend="addDrawEnd"></xdh-map-draw>
 
@@ -99,6 +111,7 @@
 }
 </style>
 <script>
+import MultiPolygon from 'ol/geom/MultiPolygon';
 import EditPopup from './edit-popup'
 import { parseStyle } from '../../../packages/index.js'
 import { colorRgb } from './colorChange.js'
@@ -157,7 +170,7 @@ export default {
       // 编辑图形的数组
       editPol: [],
       // 上传---------
-      importOriginFeatures: [], // 上传后的原feature
+      
       state: { type: 'FeatureCollection', features: [] },
       isUpload: true,
       // 编辑---------
@@ -176,6 +189,9 @@ export default {
 
   },
   methods: {
+    changeMap(e) {
+      this.$refs.map.changeType(e.target.value)
+    },
     mapReady(map, vm) {
       this.map = map
       this.mapComp = vm
@@ -205,17 +221,22 @@ export default {
         }
       }
     },
-    drawDefineFn(feature, obj) {
-      this.importOriginFeatures.push(feature) 
-      let newFeature = feature.clone()
-      
-      newFeature.setProperties({...obj.properties, ...STYLE_PROPERTIES, _tempId: new Date().getTime(), _isImport: true})
-      newFeature.setStyle(Style(obj.properties))
+    drawDefineFn(feature) {
+      let props = feature.getProperties()
+      feature.setProperties({...props, ...STYLE_PROPERTIES, _tempId: new Date().getTime(), _isImport: true})
+      feature.setStyle(Style(props))
+      this.editPol.push(feature)
+      this.$refs.polygon.addFeatures([feature])
 
+      /* 老geo组件的 方法  
+      this.importOriginFeatures.push(feature) 
+      let newFeature = feature.clone() 
+      newFeature.setProperties({...props, ...STYLE_PROPERTIES, _tempId: new Date().getTime(), _isImport: true})
+      newFeature.setStyle(Style(props)) 
       this.$refs.map.addFeature(newFeature)
       this.editPol.push(newFeature)
       this.$refs.polygon.addFeatures([newFeature])
-
+      console.log('this.editPol', this.editPol)  
       feature.setStyle(
         parseStyle({
           className: 'Style',
@@ -223,17 +244,20 @@ export default {
           stroke: { className: 'Stroke', color: 'transparent', width: 1 }
         })
       )
+      */
     },
     /*
       导入geo文件后 让地图定位到对应区域
     */
     drawDone(features) {
-      let point = features[0].Feature.getGeometry()
-        .getInteriorPoint()
-        .getCoordinates()
-      this.viewer.animate({
-        center: point
+      let multiPol = new MultiPolygon({})
+      features.map((feature) => {
+        let polygon = feature.getGeometry()
+        multiPol.appendPolygon(polygon)
+        return polygon // .getCoordinates()
       })
+      let extent = multiPol.getExtent()
+      this.$refs.map.zoomAt(extent)
     },
     
     toEdit() {
@@ -275,7 +299,7 @@ export default {
       this.popupCenter = e.convert.coordinate
 
       this.editFeature = feature
-      console.log('feature', feature, feature.get('_tempId'))
+      
       let editTargetProp = {...feature.getProperties()}
       delete editTargetProp.geometry 
       this.$refs.editPopup.setProps(editTargetProp)
@@ -343,7 +367,7 @@ export default {
     },
     saveOutput() {
       this.saveEdit(this.editPol)
-      /*
+      
       const elementA = document.createElement('a');
       elementA.download = +new Date() + '.txt'
       elementA.style.display = 'none';
@@ -352,7 +376,6 @@ export default {
       document.body.appendChild(elementA)
       elementA.click()
       document.body.removeChild(elementA)
-       */
       
     },
     clearAll() {

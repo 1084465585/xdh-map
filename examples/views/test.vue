@@ -1,134 +1,88 @@
 <template>
   <example>
-    <div class="warp"  >
-      <xdh-map ref="map" type="Amap" :layer-config="layerConfig"  :zoom="5" :center="[116.23, 39.54]" @ready="mapReady" @pointermove="hoverHandle">
-        <xdh-map-geo :state="state" :draw-define="drawDefineFn" @ready="geoReadyHandle" ></xdh-map-geo>
-      </xdh-map>
-    </div>
-     
-    
+    <xdh-map :zoom="5" :center="[116.23, 39.54]" @ready="readyHandle" type="Baidu">
+      <xdh-map-geo-layer :state="state" :with-layer="layerProps" :draw-define="drawDefineFn" @click="clickHandle" @mouseEnter="hoverHandle" @mouseLeave="hoverOutHandle"
+      ></xdh-map-geo-layer>
+    </xdh-map> 
   </example>
 </template>
 
 <script>
-  import {boundingExtent} from 'ol/extent'
-  import guangdong from '../data/province/guangdong.json'
-  import {parseStyle} from '../../packages/index.js'
- 
-  import VectorLayer from 'ol/layer/Vector';
-  import VectorSource from 'ol/source/Vector';
-  import {Fill} from 'ol/style';
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
-  
-  const gradient = function() {
-    let grad = context.createLinearGradient(0, 0, 500, 500);
-    grad.addColorStop(0, 'red');
-    grad.addColorStop(1, 'green');
-    
-    // ctx.shadowBlur = 20;
-    // ctx.shadowColor = "black";
-    // ctx.fillStyle = "blue"
-    return grad;
-  }
-  const fill = new Fill({
-    color: gradient()
-  })
+  import china from '../data/china.json'
+  import {parseStyle} from '../../packages/index.js' 
   export default {
     
     data() {
       return {
         map: null,
-        state: guangdong,
-        layerConfig: {
-          Amap: {
-            title: '高得地图',
-            server: ''
-          }
-        },
-        normalStyle: parseStyle({
-          className: 'Style',
-          fill: fill,
-          stroke: {
-            className: 'Stroke',
-            color: 'red',
-            width: 1,
-            shadow: 10
-          }
-        }),
-        highLightStyle: parseStyle({
+        state: china,
+        layerProps: {title: 'myLayer'},
+        style: parseStyle({
           className: 'Style',
           fill: {
             className: 'Fill',
-            color: 'yellow'
+            color: 'blue'
+          },
+          stroke: {
+            className: 'Stroke',
+            color: 'green',
+            width: 1
           }
         }),
-        
-        featureOverlay: null
-         
+        hoverStyle: parseStyle({
+          className: 'Style',
+          fill: {
+            className: 'Fill',
+            color: 'pink'
+          }
+        }),
+        flag: false
       }
     },
     computed: {
        
     },
     methods: {
-      mapReady(map) {
+      readyHandle(map) {
         this.map = map
-        this.featureOverlay = new VectorLayer({
-          source: new VectorSource(),
-          style: () => { return this.highLightStyle }
-        })
-        this.map.addLayer(this.featureOverlay)
+        console.log('layers', this.map.getLayers().getArray())
       },
-      drawDefineFn(feature, obj) {
-        feature.setStyle(this.normalStyle)
-        this.featureOverlay.getSource().addFeature(feature)
+      drawDefineFn(feature) {
+        let prop = feature.getProperties() 
+        if (prop.name === '广东省') {
+          feature.setStyle(this.style)
+        }
       },
-      geoReadyHandle(features) {
-        let arrs = features.reduce((total, item) => {
-          total = total.concat(item.coordinates)
-          return total
-        }, [])
-        let arrs2 = arrs.reduce((total, item) => {
-          total = total.concat(item)
-          return total
-        }, [])
-        
-        let extent = boundingExtent(arrs2)
-         
-        this.$refs.map.zoomAt(extent, {
-          duration: 500,
-          padding: [-10, -10, -10, -10]
-        })
+      clickHandle(e) {
+        console.log('ccc', arguments)
       },
-      hoverHandle(e) {
-        let feature = this.map.forEachFeatureAtPixel(e.pixel, (feature) => {
-          return feature;
-        })
-        console.log(feature)
-        // if (feature) {
-        //   this.featureOverlay.getSource().addFeature(feature)
-        // }
-        
+      dblClickHandle() {
+        console.log('double click')
+      },
+      hoverHandle(e, feature) {
+        console.log('enter')
+      },
+      hoverOutHandle(e, feature) {
+        console.log('out')
+      },
+      test() {
+        console.log('test')
+      },
+
+      
+      precomposeLayerHandle(e) {
+        console.log('layer', e.target)
+      },
+      postrenderHandle(e) {
+        console.log('render', e)
       }
     },
     mounted() {
+      
     }
   }
 </script>
 
 <style scoped lang="scss">
-.warp{
-  width: 80%; 
-  height: 500px; 
-  margin: 0 auto; 
-  background: black;
-  border:1px solid red;
-}
-.tooltip{
-  padding: 5px;
-  background: white;
-  border-radius: 10px;
-  text-align: center;
-}
+
 </style>

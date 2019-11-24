@@ -1,7 +1,7 @@
 <template>
   <example>
     <xdh-map :zoom="5" :center="[116.23, 39.54]" @pointermove="mapHoverHandle">
-      <xdh-map-geo @click="clickHandle" :state="state" :draw-define="drawDefineFn" @mouseEnter="hoverHandle" @mouseLeave="hoveroutHandle"></xdh-map-geo>
+      <xdh-map-geo-layer @click="clickHandle" :state="state" :draw-define="drawDefineFn" @mouseEnter="hoverHandle" @mouseLeave="hoveroutHandle"></xdh-map-geo-layer>
       <xdh-map-html :position="position" :offset="[30, -30]">
         <div class="tooltip" v-if="showData">{{showData.cityname}}<br/>{{showData.value}}</div>
       </xdh-map-html>
@@ -66,32 +66,9 @@
       mapHoverHandle(e) {
         this.position = e.coordinate 
       },
-      clickHandle(obj, e, f) {
+      clickHandle(e, f) {
         console.log(e)
         // console.log(f.getStyle().getFill().getColor())
-      },
-      setCantonStyle(obj) {
-        return parseStyle({
-          className: 'Style',
-          fill: {
-            className: 'Fill',
-            color: 'blue'
-          },
-          stroke: {
-            className: 'Stroke',
-            color: 'green',
-            width: 1
-          },
-          text: {
-            className: 'Text',
-            text: obj.properties.name,
-            font: '14px sans-serif',
-            fill: {
-              className: 'Fill',
-              color: 'red'
-            }
-          }
-        })
       },
       setActiveStyle(obj) {
         return parseStyle({
@@ -107,7 +84,7 @@
           },
           text: {
             className: 'Text',
-            text: obj.properties.name,
+            text: obj.name,
             font: '14px sans-serif',
             fill: {
               className: 'Fill',
@@ -116,29 +93,33 @@
           }
         })
       },
-      hoverHandle(obj, e, f) {
-        this.showData = obj.properties._data
+      hoverHandle(e, f) {
+        // this.showData = obj.properties._data
+        this.showData = f.getProperties()._data
         let bg = f.getStyle().getFill().getColor()
         f.setStyle(setStyle(bg, {
           width: 3,
           color: 'green'
         }))
       },
-      hoveroutHandle(obj, e, f) {
+      hoveroutHandle(e, f) {
         this.showData = null
         let bg = f.getStyle().getFill().getColor()
         f.setStyle(setStyle(bg))
       },
-      drawDefineFn(feature, obj) {
-         
+      drawDefineFn(feature) {
+        let props = feature.getProperties()
         let target = this.data.find((item, index) => {
-          return item.cityname === obj.properties.name
+          return item.cityname === props.name
         })
         if (target) {
           let val = Math.ceil(225 * target.value / this.total)
           let bg = `rgba(225, ${225 - val}, 0, 0.9)`
-          obj.properties._originBg = bg
-          obj.properties._data = target
+          // obj.properties._originBg = bg
+          // obj.properties._data = target
+          // feature.setStyle(setStyle(bg))
+          feature.set('_originBg', bg)
+          feature.set('_data', target)
           feature.setStyle(setStyle(bg))
         } else {
           feature.setStyle(setStyle())

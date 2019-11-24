@@ -34,10 +34,7 @@ export default {
       let sels = []
       this.editPol.forEach((feature) => {
         let interiorPoint = feature.getGeometry().getInteriorPoint().getCoordinates()
-        // console.log('interiorPoint', interiorPoint)
         if (e.areaGeo.intersectsCoordinate(interiorPoint)) {
-          // console.log('fea', feature)
-
           feature.setStyle(
             parseStyle({
               className: 'Style',
@@ -49,7 +46,6 @@ export default {
         }
       })
       this.selectFeatures = sels
-      
     },
 
     dragDownHandle(feature, e) {
@@ -63,10 +59,8 @@ export default {
     },
     dragMoveHandle(feature, e) {
       if (this.otherFeatures.length) {
-        // console.log(e.coordinate, this.startCoord)
         let deltaX = e.coordinate[0] - this.startCoord[0]
         let deltaY = e.coordinate[1] - this.startCoord[1]
-        // console.log(deltaX, deltaY)
         this.otherFeatures.forEach((item) => {
           let geo = item.getGeometry()
           geo.translate(deltaX, deltaY)
