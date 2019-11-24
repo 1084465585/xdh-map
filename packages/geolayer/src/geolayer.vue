@@ -61,7 +61,7 @@
     /**
      * 参数属性
      * @member props
-     * @property {object{}} state geoJson格式的文件
+     * @property {object} state geoJson格式的文件
      * @property {function} drawDefine 定义单个Feature生成时执行的定义函数
      * @property {boolean | object} withLayer 是否使用layer图层， 或定义layer图层属性的数据， 为false / undefined / null 时表示不实用图层，默认false
      */
