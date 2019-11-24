@@ -1,10 +1,13 @@
 <template>
-  <div>
-    
-  </div>  
+  <div></div>  
 </template>
 
 <script>
+  /**
+ *  XdhMapGeolayer 组件
+ *  @module xdh-map-geo-layer
+ *  @description 根据geoJson格式的数据生成 地图的图形覆盖物
+ */
   import {mapReady, getParent} from 'utils/util'
   import GeoJSON from 'ol/format/GeoJSON';
   import VectorLayer from 'ol/layer/Vector';
@@ -56,6 +59,11 @@
     components: {
     },
     /**
+     * 参数属性
+     * @member props
+     * @property {object{}} state geoJson格式的文件
+     * @property {function} drawDefine 定义单个Feature生成时执行的定义函数
+     * @property {boolean | object} withLayer 是否使用layer图层， 或定义layer图层属性的数据， 为false / undefined / null 时表示不实用图层，默认false
      */
     props: {
       state: {
@@ -66,8 +74,8 @@
         type: Function
       },
       withLayer: {
-        // type: Boolean || Object,
-        default: true
+        type: [Boolean, Object],
+        default: false
       }
     },
     data() {
@@ -78,9 +86,7 @@
         
         style: DefaultStyle(),
         vectorContext: null,
-        vectorLayer: null,
-
-        currentFeature: null
+        vectorLayer: null
       }
     },
     computed: {
@@ -109,12 +115,10 @@
       
     },
     methods: {
-      
       ready(map) {
         this.map = map
         if (this.vectorLayer && this.withLayer) {
           this.map.addLayer(this.vectorLayer)
-          
         } else if(this.features.length) {
           this.features.forEach((feature) => {
             this.parent.addFeature(feature) 
@@ -122,13 +126,17 @@
         }
         this.bindEventAtFeatures()
         this.$nextTick(() => {
+          /**
+           * geoJson 图形渲染完成触发
+           * @event ready
+           * @param {Array} features
+           */
           this.$emit('ready', this.features)
         })
       },
       bindEventAtFeatures() {
         this.features.forEach((feature) => {
           let obj = Object.assign({}, this.$listeners)
-          // console.log(obj)
           for (let key in obj) {
             if (key === 'mouseLeave' || key === 'mouseEnter' || key === 'pointermove') {
               return
@@ -137,32 +145,56 @@
             }
           }
         })
-
+        
         this.select = new Select({condition: pointerMove})
         this.map.addInteraction(this.select)
         this.select.on('select', (e) => {
-          if(!e.selected.length && this.currentFeature) {
-            this.$emit('mouseLeave', e, this.currentFeature)
+          if (e.selected.length) {
             this.$nextTick(() => {
-              this.currentFeature = null
+              /**
+               * 鼠标进入某个feature时触发
+               * @event mouseEnter
+               * @param {Object} event
+               * @param {ol/Feature} feature
+               */
+              this.$emit('mouseEnter', e, e.selected[0])
             })
-          } else {
-            this.currentFeature = e.selected[0]
-            this.$emit('mouseEnter', e, this.currentFeature)
+          }
+          if (e.deselected.length) {
+            /**
+               * 鼠标离开某个feature时触发
+               * @event mouseEnter
+               * @param {Object} event
+               * @param {ol/Feature} feature
+               */
+            this.$emit('mouseLeave', e, e.deselected[0])
           }
         })
       },
       setFeatures() {
         this.features = (new GeoJSON()).readFeatures(this.decodeGeo)
-        this.features.forEach((feature) => {
+        this.features.forEach((feature, index) => {
           feature.setStyle(this.style)
           if (this.drawDefine) {
-            this.drawDefine(feature)
+            setTimeout(() => {
+              this.drawDefine(feature)
+            }, index)
           }
         })
       },
+      /**
+       * 获取geolayer组件生成的所有feature
+       * @method getFeatures
+       */
       getFeatures() {
         return this.features
+      },
+      /**
+       * 输出从Echarts提取的编码解码方法
+       * @method _decodePolygon
+       */
+      _decodePolygon(coordinate, encodeOffsets) {
+        return decodePolygon(coordinate, encodeOffsets)
       }
     },
     created() {
@@ -176,50 +208,19 @@
 
       this.vectorLayer = new VectorLayer({
         source: this.source
-        // style: parseStyle({
-        //   className: 'Style',
-        //   fill: {
-        //     className: 'Fill',
-        //     color: 'green'
-        //   }
-        // })
       })
 
-     
-      /*
-      const layerAcitons = ['postcompose', 'postrender', 'precompose', 'propertychange', 'rendercomplete']
-      
       if (this.withLayer) { 
         if (typeof this.withLayer === 'object') {
-           this.vectorLayer.setProperties(this.withLayer)
+          this.vectorLayer.setProperties(this.withLayer)
         }
-        layerAcitons.forEach((type) => {
-          this.vectorLayer.on(type, (e) => {
-           this.$emit(type, e, this.vectorLayer, this)
-          })
+        this.vectorLayer.on('precompose', (e) => {
+          this.$emit('precompose', e)
         })
-      }
-      */
-
-      if (this.withLayer) { 
-        if (typeof this.withLayer === 'object') {
-           this.vectorLayer.setProperties(this.withLayer)
-        }
-        
-        
       }
     },
     mounted() {
       mapReady.call(this, this.ready)
-      
-      this.vectorLayer.on('prerender', (e) => {
-        console.log(e)
-        // this.$emit('precompose', e)
-      })
-      this.vectorLayer.on('precompose', (e) => {
-        this.$emit('precompose', e)
-      })
-         
     },
     beforeDestroy() {
       if (this.withLayer) {

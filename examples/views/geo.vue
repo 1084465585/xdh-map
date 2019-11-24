@@ -1,7 +1,7 @@
 <template>
   <example>
     <xdh-map :zoom="5" :center="[116.23, 39.54]">
-      <xdh-map-geo @click="clickHandle" :state="state" @mouseEnter="hoverHandle" @mouseLeave="hoveroutHandle" :draw-define="drawDefineFn"></xdh-map-geo>
+      <xdh-map-geo-layer @click="clickHandle" :state="state" @mouseEnter="hoverHandle" @mouseLeave="hoveroutHandle" :draw-define="drawDefineFn"></xdh-map-geo-layer>
     </xdh-map>
   </example>
 </template>
@@ -29,8 +29,8 @@
       }
     },
     methods: {
-      clickHandle(obj, e, f) {
-        console.log(obj, e, f)
+      clickHandle(e, f) {
+        console.log(e, f)
       },
       setCantonStyle(obj) {
         return parseStyle({
@@ -46,7 +46,7 @@
           },
           text: {
             className: 'Text',
-            text: obj.properties.name,
+            text: obj.name,
             font: '14px sans-serif',
             fill: {
               className: 'Fill',
@@ -69,7 +69,7 @@
           },
           text: {
             className: 'Text',
-            text: obj.properties.name,
+            text: obj.name,
             font: '14px sans-serif',
             fill: {
               className: 'Fill',
@@ -78,19 +78,23 @@
           }
         })
       },
-      hoverHandle(obj, e, feature) {
-        feature.setStyle(this.setActiveStyle(obj))
+      hoverHandle(e, feature) {
+        let props = feature.getProperties()
+        feature.setStyle(this.setActiveStyle(props))
       },
-      hoveroutHandle(obj, e, feature) {
-        if (obj.properties.name === NAME) {
-          feature.setStyle(this.setCantonStyle(obj))
+      hoveroutHandle(e, feature) {
+        let props = feature.getProperties() 
+         
+        if (props.name === NAME) {
+          feature.setStyle(this.setCantonStyle(props))
         } else {
           feature.setStyle(this.normalStyle)
         }
       },
-      drawDefineFn(feature, obj) {
-        if (obj.properties.name === NAME) {
-          feature.setStyle(this.setCantonStyle(obj))
+      drawDefineFn(feature) {
+        let props = feature.getProperties() 
+        if (props.name === NAME) {
+          feature.setStyle(this.setCantonStyle(props))
         } else {
           feature.setStyle(this.normalStyle)
         }

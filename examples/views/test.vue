@@ -1,10 +1,8 @@
 <template>
   <example>
-    <xdh-map :zoom="5" :center="[116.23, 39.54]" @ready="readyHandle" >
+    <xdh-map :zoom="5" :center="[116.23, 39.54]" @ready="readyHandle" type="Baidu">
       <xdh-map-geo-layer :state="state" :with-layer="layerProps" :draw-define="drawDefineFn" @click="clickHandle" @mouseEnter="hoverHandle" @mouseLeave="hoverOutHandle"
-      @precompose="precomposeLayerHandle" 
       ></xdh-map-geo-layer>
- 
     </xdh-map> 
   </example>
 </template>
@@ -47,6 +45,7 @@
     methods: {
       readyHandle(map) {
         this.map = map
+        console.log('layers', this.map.getLayers().getArray())
       },
       drawDefineFn(feature) {
         let prop = feature.getProperties() 
@@ -73,13 +72,6 @@
       
       precomposeLayerHandle(e) {
         console.log('layer', e.target)
-
-        let context = e.context
-        context.shadowOffsetX = 0
-        context.shadowOffsetY = 0
-        context.shadowBlur = 10;
-        context.shadowColor = 'blue';
-        
       },
       postrenderHandle(e) {
         console.log('render', e)

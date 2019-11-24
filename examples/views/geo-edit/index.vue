@@ -68,13 +68,13 @@
         </select>
       </xdh-map-placement> 
 
-      <xdh-map-geo
+      <xdh-map-geo-layer
         v-if="isUpload && state.features.length"
         ref="geo"
         :state="state"
         :draw-define="drawDefineFn"
         @ready="drawDone"
-      ></xdh-map-geo>
+      ></xdh-map-geo-layer>
 
       <xdh-map-draw ref="polygon" type="Polygon" @drawend="addDrawEnd"></xdh-map-draw>
 
@@ -170,7 +170,7 @@ export default {
       // 编辑图形的数组
       editPol: [],
       // 上传---------
-      importOriginFeatures: [], // 上传后的原feature
+      
       state: { type: 'FeatureCollection', features: [] },
       isUpload: true,
       // 编辑---------
@@ -221,17 +221,22 @@ export default {
         }
       }
     },
-    drawDefineFn(feature, obj) {
-      this.importOriginFeatures.push(feature) 
-      let newFeature = feature.clone()
-      
-      newFeature.setProperties({...obj.properties, ...STYLE_PROPERTIES, _tempId: new Date().getTime(), _isImport: true})
-      newFeature.setStyle(Style(obj.properties))
+    drawDefineFn(feature) {
+      let props = feature.getProperties()
+      feature.setProperties({...props, ...STYLE_PROPERTIES, _tempId: new Date().getTime(), _isImport: true})
+      feature.setStyle(Style(props))
+      this.editPol.push(feature)
+      this.$refs.polygon.addFeatures([feature])
 
+      /* 老geo组件的 方法  
+      this.importOriginFeatures.push(feature) 
+      let newFeature = feature.clone() 
+      newFeature.setProperties({...props, ...STYLE_PROPERTIES, _tempId: new Date().getTime(), _isImport: true})
+      newFeature.setStyle(Style(props)) 
       this.$refs.map.addFeature(newFeature)
       this.editPol.push(newFeature)
       this.$refs.polygon.addFeatures([newFeature])
-
+      console.log('this.editPol', this.editPol)  
       feature.setStyle(
         parseStyle({
           className: 'Style',
@@ -239,28 +244,19 @@ export default {
           stroke: { className: 'Stroke', color: 'transparent', width: 1 }
         })
       )
+      */
     },
     /*
       导入geo文件后 让地图定位到对应区域
     */
     drawDone(features) {
-      // let point = features[0].Feature.getGeometry()
-      //   .getInteriorPoint()
-      //   .getCoordinates()
-      // this.viewer.animate({
-      //   center: point
-      // })
       let multiPol = new MultiPolygon({})
-      let arrs = features.map((feature) => {
-        let polygon = feature.Feature.getGeometry()
+      features.map((feature) => {
+        let polygon = feature.getGeometry()
         multiPol.appendPolygon(polygon)
         return polygon // .getCoordinates()
       })
-      console.log('arrs', arrs)
-      
-      console.log('polygon', multiPol)
       let extent = multiPol.getExtent()
-      console.log('extent', extent)
       this.$refs.map.zoomAt(extent)
     },
     
@@ -303,7 +299,7 @@ export default {
       this.popupCenter = e.convert.coordinate
 
       this.editFeature = feature
-      console.log('feature', feature, feature.get('_tempId'))
+      
       let editTargetProp = {...feature.getProperties()}
       delete editTargetProp.geometry 
       this.$refs.editPopup.setProps(editTargetProp)
