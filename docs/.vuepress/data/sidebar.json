@@ -16,7 +16,8 @@
         "popup",
         "heat",
         "echarts",
-        "mask"
+        "mask",
+        "geo-layer"
       ]
     }
   ],
