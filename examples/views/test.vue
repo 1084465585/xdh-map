@@ -2,7 +2,8 @@
   <example>
     <xdh-map :zoom="5" :center="[116.23, 39.54]" @ready="readyHandle" type="Baidu">
       <xdh-map-geo-layer :state="state" :with-layer="layerProps" :draw-define="drawDefineFn" @click="clickHandle" @mouseEnter="hoverHandle" @mouseLeave="hoverOutHandle"
-      ></xdh-map-geo-layer>
+      ></xdh-map-geo-layer> 
+      <!--  @precompose="precomposeLayerHandle" -->
     </xdh-map> 
   </example>
 </template>

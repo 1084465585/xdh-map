@@ -210,13 +210,9 @@
         source: this.source
       })
 
-      if (this.withLayer) { 
-        if (typeof this.withLayer === 'object') {
-          this.vectorLayer.setProperties(this.withLayer)
-        }
-        this.vectorLayer.on('precompose', (e) => {
-          this.$emit('precompose', e)
-        })
+      if (this.withLayer && typeof this.withLayer === 'object') { 
+        this.vectorLayer.setProperties(this.withLayer)
+        
       }
     },
     mounted() {
