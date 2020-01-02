@@ -172,6 +172,10 @@ const router = new Router({
           {
             path: 'mytest/test',
             component: () => import('./views/mytest/test')
+          },
+          {
+            path: 'mytest/test2',
+            component: () => import('./views/mytest/test2')
           }
         ]
       }

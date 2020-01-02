@@ -1,6 +1,14 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-08-19 21:57:21
+ * @LastEditTime: 2019-08-19 21:57:21
+ * @LastEditors: your name
+ -->
 <template> 
-  <div class="xdh-map-dialog" ref="dialog" :style="{'width': width, 'height': height}" >
-    <i class="xdh-map-dialog__close" @click="closeHandle" ></i>
+<div class="xdh-map-dialog" ref="point" :style="{'overflow': currentClosed ? 'hidden' : 'visible'}">
+  <div class="dialog" ref="dialog" :style="{'width': width, 'height': height}">
+    <i class="xdh-map-popup__close" @click="closeHandle" ></i>
     <div class="xdh-map-dialog__header"  @mousedown="mouseDownHandle"
     >{{title}}</div>
     <div class="xdh-map-dialog__body">
@@ -9,7 +17,8 @@
     <div class="xdh-map-dialog__bottom" v-if="bottom">
       <slot name="bottom"></slot>
     </div>
-  </div> 
+  </div>
+</div> 
 </template>
 
 
@@ -19,7 +28,7 @@
    * @module xdh-map-dialog
    */
     
-  // import {getParent} from 'utils/util'
+  import {getParent} from 'utils/util'
    /**
    * 插槽
    * @member slots
@@ -62,15 +71,10 @@
         type: Boolean,
         default: true
       },
-      left: {
-        type: Number,
-        default: 0
-      },
-      top: {
-        type: Number,
-        default: 0
-      },
-      mapWarp: {}
+      position: {
+        type: Array,
+        default: () => { return [0, 0] }
+      }
     },
     data() {
       return {
@@ -79,13 +83,13 @@
         pointX: 0,
         pointY: 0,
 
-        styleLeft: this.left,
-        styleTop: this.top,
+        transX: this.position[0],
+        transY: this.position[1],
 
         startX: 0,
         startY: 0,
-        mouseDownFlag: false
-         
+        mouseDownFlag: false,
+        mapWrap: null
       }
     },
     watch: {
@@ -108,13 +112,13 @@
         let dirX = e.clientX - this.startX
         let dirY = e.clientY - this.startY
        
-        let moveX = this.styleLeft + dirX
-        let moveY = this.styleTop + dirY
+        let moveX = this.transX + dirX
+        let moveY = this.transY + dirY
 
         let minX = 0
         let minY = 0
-        let maxX = this.mapWarp.offsetWidth - this.dialog.offsetWidth
-        let maxY = this.mapWarp.offsetHeight - this.dialog.offsetHeight
+        let maxX = this.mapWrap.offsetWidth - this.dialog.offsetWidth
+        let maxY = this.mapWrap.offsetHeight - this.dialog.offsetHeight
         
         if (moveX <= minX) {
           moveX = minX
@@ -127,24 +131,23 @@
           moveY = maxY
         }
 
-        this.dialog.style.left = `${moveX}px`  
-        this.dialog.style.top = `${moveY}px` 
+        this.dialog.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`  
       },
       mouseUpHandle(e) {
-        // this.transX = this.dialog.getBoundingClientRect().left - this.pointX
-        // this.transY = this.dialog.getBoundingClientRect().top - this.pointY
+        this.transX = this.dialog.getBoundingClientRect().left - this.pointX
+        this.transY = this.dialog.getBoundingClientRect().top - this.pointY
         
-        // this.dialog.style.transform = `translate3d(${this.transX}px, ${this.transY}px, 0)`
+        this.dialog.style.transform = `translate3d(${this.transX}px, ${this.transY}px, 0)`
         this.mouseDownFlag = false
       }
     },
     mounted() {
-      // let map = getParent.call(this)
-      // this.mapWarp = map.$el
+      let map = getParent.call(this)
+      this.mapWrap = map.$el
      
         
-      // this.pointX = this.$refs.point.getBoundingClientRect().left
-      // this.pointY = this.$refs.point.getBoundingClientRect().top
+      this.pointX = this.$refs.point.getBoundingClientRect().left
+      this.pointY = this.$refs.point.getBoundingClientRect().top
 
       this.dialog = this.$refs.dialog 
       

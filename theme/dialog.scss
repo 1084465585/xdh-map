@@ -1,19 +1,15 @@
 @import "vars";
+ 
+   
 .xdh-map-dialog{
-  width: 5px;
-  height: 5px;
-  position: relative;
-  // border: 1px solid red;
-  .dialog{
-    display: flex;
-    flex-flow: column;
-    position: absolute;
-    left: 0;
-    top: 0;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, .5);
-    background: $--popup-bg;
-    color: $--popup-color;
-  }  
+  display: flex;
+  flex-flow: column;
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, .5);
+  background: $--popup-bg;
+  color: $--popup-color; 
   &__header {
     flex: 0 0 30px;
     height: 30px;
@@ -37,6 +33,7 @@
       opacity: 1;
     }
   }
+ 
   &__body {
     flex: 1;
     position: relative;
@@ -58,4 +55,4 @@
       background: url(../sources/popup/close_dark.png);
     }
   }
-}
+}  
