@@ -1,6 +1,6 @@
 <template> 
-  <div class="xdh-map-dialog" ref="dialog" :style="{'width': width, 'height': height}" >
-    <i class="xdh-map-dialog__close" @click="closeHandle" ></i>
+  <div v-show="!closed" class="xdh-map-dialog" ref="dialog" :style="{'width': width, 'height': height, 'left': styleLeft + 'px', 'top': styleTop + 'px'}" >
+    <i class="xdh-map-dialog__close" @click.stop="closeHandle" ></i>
     <div class="xdh-map-dialog__header"  @mousedown="mouseDownHandle"
     >{{title}}</div>
     <div class="xdh-map-dialog__body">
@@ -76,14 +76,18 @@
       return {
         currentClosed: this.closed, 
         dialog: null,
-        pointX: 0,
-        pointY: 0,
+        
+        originLeft: this.left,
+        originTop: this.top,
 
         styleLeft: this.left,
         styleTop: this.top,
 
         startX: 0,
         startY: 0,
+        moveX: 0,
+        moveY: 0,
+
         mouseDownFlag: false
          
       }
@@ -95,6 +99,7 @@
     },
     methods: {
       closeHandle() {
+        console.log('cc', this.styleLeft, this.styleTop)
         this.currentClosed = true
         this.$emit('update:closed', this.currentClosed)
       },
@@ -107,50 +112,42 @@
         if (!this.mouseDownFlag) return
         let dirX = e.clientX - this.startX
         let dirY = e.clientY - this.startY
-       
-        let moveX = this.styleLeft + dirX
-        let moveY = this.styleTop + dirY
+        
+        this.styleLeft = this.originLeft + dirX
+        this.styleTop = this.originTop + dirY
 
         let minX = 0
         let minY = 0
         let maxX = this.mapWarp.offsetWidth - this.dialog.offsetWidth
         let maxY = this.mapWarp.offsetHeight - this.dialog.offsetHeight
         
-        if (moveX <= minX) {
-          moveX = minX
-        } else if(moveX >= maxX) {
-          moveX = maxX
+        if (this.styleLeft <= minX) {
+          this.styleLeft = minX
+        } else if(this.styleLeft >= maxX) {
+          this.styleLeft = maxX
         }
-        if (moveY <= minY) {
-          moveY = minY
-        } else if(moveY >= maxY) {
-          moveY = maxY
+        if (this.styleTop <= minY) {
+          this.styleTop = minY
+        } else if(this.styleTop >= maxY) {
+          this.styleTop = maxY
         }
+       
+          
 
-        this.dialog.style.left = `${moveX}px`  
-        this.dialog.style.top = `${moveY}px` 
       },
       mouseUpHandle(e) {
-        // this.transX = this.dialog.getBoundingClientRect().left - this.pointX
-        // this.transY = this.dialog.getBoundingClientRect().top - this.pointY
-        
-        // this.dialog.style.transform = `translate3d(${this.transX}px, ${this.transY}px, 0)`
+        console.log('up')
+        this.originLeft = this.styleLeft
+        this.originTop = this.styleTop
+ 
         this.mouseDownFlag = false
       }
     },
     mounted() {
-      // let map = getParent.call(this)
-      // this.mapWarp = map.$el
-     
-        
-      // this.pointX = this.$refs.point.getBoundingClientRect().left
-      // this.pointY = this.$refs.point.getBoundingClientRect().top
 
       this.dialog = this.$refs.dialog 
       
-      this.dialog.style.left = '0px'
-      this.dialog.style.top = '0px'
-      this.dialog.style.transform = `translate3d(${this.transX}px, ${this.transY}px, 0)`
+      
 
       this.mouseMoveHandleProxy = this.mouseMoveHandle.bind(this)
       this.mouseUpHandleProxy = this.mouseUpHandle.bind(this)

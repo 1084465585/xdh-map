@@ -1,11 +1,17 @@
 <template>
   <example>
     <div class="xdh-map-dialog-warp" ref="warp"> 
-      <xdh-map  ref="map" type="Baidu" :zoom="12" :center="target" @ready="mapReady"  >  
-        <xdh-map-icon icon="iconfont icon-locus" :position="target"></xdh-map-icon> 
+      <xdh-map style="z-index: 1" ref="map" type="Baidu" :zoom="12" :center="target" @ready="mapReady"  >  
+        <xdh-map-placement placement="left-top" :margin="[10, 10]" theme="light"  >
+          <button @click="closed1 = false">窗口1{{closed1}}</button>
+          <button @click="closed2 = false">窗口2{{closed2}}</button>
+        </xdh-map-placement> 
       </xdh-map> 
 
-      <xdh-map-dialog :width="width" :height="height" :closed="closed" :map-warp="container"></xdh-map-dialog>
+      <xdh-map-dialog style="z-index: 2" :width="width" :height="height" :closed.sync="closed1" :map-warp="container" :left="50" :top="50"></xdh-map-dialog>
+      <xdh-map-dialog style="z-index: 3" :width="width" :height="height" :closed.sync="closed2" :map-warp="container" :left="50" :top="50"></xdh-map-dialog>
+        
+
     </div>
       
 
@@ -33,9 +39,10 @@ export default {
       view: null, 
       fill: null,
       target: [113.38542938232422, 23.040218353271484],
-      width: '400px',
-      height: '400px',
-      closed: false,
+      width: '300px',
+      height: '300px',
+      closed1: false,
+      closed2: false,
       container: null
     }
   },
