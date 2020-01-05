@@ -1,5 +1,6 @@
 <template> 
-  <div v-show="!closed" class="xdh-map-dialog" ref="dialog" :style="{'width': width, 'height': height, 'left': styleLeft + 'px', 'top': styleTop + 'px'}" >
+<transition name="dialog"  >
+  <div v-show="!closed" class="xdh-map-dialog" ref="dialog" :style="{'width': width, 'height': height, 'left': styleLeft + 'px', 'top': styleTop + 'px', 'z-index': zIndex}" >
     <i class="xdh-map-dialog__close" @click.stop="closeHandle" ></i>
     <div class="xdh-map-dialog__header"  @mousedown="mouseDownHandle"
     >{{title}}</div>
@@ -10,8 +11,14 @@
       <slot name="bottom"></slot>
     </div>
   </div> 
+</transition>
 </template>
+<style scoped lang="scss">
 
+.dialog-enter-active, .dialog-leave-active {
+  transition: all 0.5s;
+}
+</style>
 
 <script>
   /**
@@ -60,7 +67,7 @@
       },
       bottom: {
         type: Boolean,
-        default: true
+        default: false
       },
       left: {
         type: Number,
@@ -70,36 +77,42 @@
         type: Number,
         default: 0
       },
-      mapWarp: {}
+      warp: {}
     },
     data() {
       return {
         currentClosed: this.closed, 
         dialog: null,
-        
-        originLeft: this.left,
-        originTop: this.top,
 
         styleLeft: this.left,
         styleTop: this.top,
 
         startX: 0,
         startY: 0,
-        moveX: 0,
-        moveY: 0,
+        originLeft: this.left,
+        originTop: this.top,
 
-        mouseDownFlag: false
-         
+        mouseDownFlag: false,
+        field: this.warp,
+        zIndex: 1 
       }
     },
     watch: {
       closed(val) {
         this.currentClosed = val
+      },
+      left(val) {
+        this.styleLeft = val
+        this.originLeft = val
+        
+      },
+      top(val) {
+        this.styleTop = val
+        this.originTop = val
       }
     },
     methods: {
       closeHandle() {
-        console.log('cc', this.styleLeft, this.styleTop)
         this.currentClosed = true
         this.$emit('update:closed', this.currentClosed)
       },
@@ -107,6 +120,8 @@
         this.startX = e.clientX
         this.startY = e.clientY
         this.mouseDownFlag = true
+
+        this._mDownCtrl()
       },
       mouseMoveHandle(e) {
         if (!this.mouseDownFlag) return
@@ -118,8 +133,8 @@
 
         let minX = 0
         let minY = 0
-        let maxX = this.mapWarp.offsetWidth - this.dialog.offsetWidth
-        let maxY = this.mapWarp.offsetHeight - this.dialog.offsetHeight
+        let maxX = this.field.offsetWidth - this.dialog.offsetWidth
+        let maxY = this.field.offsetHeight - this.dialog.offsetHeight
         
         if (this.styleLeft <= minX) {
           this.styleLeft = minX
@@ -136,16 +151,48 @@
 
       },
       mouseUpHandle(e) {
-        console.log('up')
         this.originLeft = this.styleLeft
         this.originTop = this.styleTop
  
         this.mouseDownFlag = false
-      }
+        this.$emit('update:left', this.styleLeft)
+        this.$emit('update:top', this.styleTop)
+        
+      },
+      definePositionWarp(dom) {
+        let parent = dom.parentNode
+        let positionStyle = window.getComputedStyle(parent, false)['position']
+        if (positionStyle === 'relative' || positionStyle === 'absolute') {
+          return parent
+        } else {
+          this.definePositionWarp(parent)
+        }
+        
+      },
+      _mDownCtrl() {
+        if (this.$parent.$options.name !== 'xdh-map-warp') return
+        let otherDialogs = this.$parent.getAllDialogs()
+        otherDialogs.forEach((vm) => { vm._setIndex(1) }) 
+        this.$nextTick(() => {
+          this._setIndex(otherDialogs.length)
+        })
+      },
+      _setIndex(index) {
+        this.zIndex = index
+      } 
     },
-    mounted() {
-
+    mounted() { 
       this.dialog = this.$refs.dialog 
+      
+      if (!this.field) {
+        
+        this.field = this.definePositionWarp(this.$el) 
+      }
+
+      if (this.$parent.$options.name === 'xdh-map-warp') {
+        this.$parent.registerDialog(this)
+      }
+       
       
       
 

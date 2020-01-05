@@ -35,6 +35,7 @@ import Geolayer from './geolayer'
 import Panel from './tools/panel'
 import Dialog from './tools/dialog'
 import Drawdown from './tools/drawdown'
+import Warp from './tools/warp'
 
 import Drag from '../utils/interactions/drag'
 import AreaSelect from '../utils/interactions/area-select'
@@ -69,7 +70,8 @@ const components = [
   Geolayer,
   Panel,
   Dialog,
-  Drawdown
+  Drawdown,
+  Warp
 ]
 
 const install = function (Vue) {
@@ -112,6 +114,7 @@ export const XdhMapGeoLayer = Geolayer
 export const XdhMapPanel = Panel
 export const XdhMapDialog = Dialog
 export const XdhMapDrawdown = Drawdown
+export const XdhMapWarp = Warp
 export const parseStyle = parse
 export const DragClass = Drag
 export const AreaSelectClass = AreaSelect
@@ -150,6 +153,7 @@ export default {
   Panel,
   Dialog,
   Drawdown,
+  Warp,
   Drag,
   AreaSelect
 }

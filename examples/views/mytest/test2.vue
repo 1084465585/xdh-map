@@ -1,18 +1,23 @@
 <template>
   <example>
-    <div class="xdh-map-dialog-warp" ref="warp"> 
-      <xdh-map style="z-index: 1" ref="map" type="Baidu" :zoom="12" :center="target" @ready="mapReady"  >  
+    <xdh-map-warp ref="warp">
+    
+      <xdh-map slot="map"  ref="map" type="Baidu" :zoom="12" :center="target" @ready="mapReady"  >  
         <xdh-map-placement placement="left-top" :margin="[10, 10]" theme="light"  >
-          <button @click="closed1 = false">窗口1{{closed1}}</button>
-          <button @click="closed2 = false">窗口2{{closed2}}</button>
+          <button @click="openDialog">打开窗口</button>
+          <button @click="closeDialog">关闭窗口</button>
         </xdh-map-placement> 
       </xdh-map> 
 
-      <xdh-map-dialog style="z-index: 2" :width="width" :height="height" :closed.sync="closed1" :map-warp="container" :left="50" :top="50"></xdh-map-dialog>
-      <xdh-map-dialog style="z-index: 3" :width="width" :height="height" :closed.sync="closed2" :map-warp="container" :left="50" :top="50"></xdh-map-dialog>
+      
+      <xdh-map-dialog :key="1" :width="width" :height="height" :closed.sync="closed1" :left="left" :top="top"></xdh-map-dialog>
+       
+    
+      
+      <!-- <xdh-map-dialog :key="2" :width="width" :height="height" :closed.sync="closed2"  :left="50" :top="50"></xdh-map-dialog> -->
         
 
-    </div>
+    </xdh-map-warp>
       
 
     
@@ -27,6 +32,8 @@
   border: 1px solid red;
  
 }
+
+ 
 </style>
 <script> 
 // import {DragClass as Drag} from '../../packages/index.js'
@@ -39,32 +46,45 @@ export default {
       view: null, 
       fill: null,
       target: [113.38542938232422, 23.040218353271484],
-      width: '300px',
-      height: '300px',
-      closed1: false,
+      width: '0px',
+      height: '0px',
+      closed1: true,
       closed2: false,
-      container: null
+      container: null,
+      left: 0,
+      top: 0
     }
   },
   computed: {
       
   },
   methods: {
-      mapReady(map) {
+    mapReady(map) {
       this.map = map
-      // let dialog = new Overlay({
-      //   element: this.$refs.dialog,
-      //   position: this.target,
-      //   positioning: 'top-left',
-      //   stopEvent: true
-      // })
-      // this.map.addOverlay(dialog)
+    },
+    openDialog() {
+      if (!this.closed1) return
+      
+      this.left = 80
+      this.top = 80
+      this.width = '300px'
+      this.height = '300px'
+      this.closed1 = false
+    },
+    closeDialog() {
+
+      if (this.closed1) return
+      this.closed1 = true
+      this.left = 600
+      this.top = 600
+      this.width = '0px'
+      this.height = '0px'
     }
   },
   created() { 
   },
   mounted() {
-    this.container = this.$refs.warp
+    this.container = this.$refs.warp.$el
   }
 }
 </script>
