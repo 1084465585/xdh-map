@@ -1,20 +1,24 @@
-<template> 
-<transition name="dialog"  >
-  <div v-show="!closed" class="xdh-map-dialog" ref="dialog" :style="{'width': width, 'height': height, 'left': styleLeft + 'px', 'top': styleTop + 'px', 'z-index': zIndex}" >
-    <i class="xdh-map-dialog__close" @click.stop="closeHandle" ></i>
-    <div class="xdh-map-dialog__header"  @mousedown="mouseDownHandle"
-    >{{title}}</div>
-    <div class="xdh-map-dialog__body">
-      <slot></slot>
+<template>  
+  <!-- <transition name="dialog"  > -->
+    <!--  v-show="!closed" -->
+    <div class="xdh-map-dialog" ref="dialog"   :style="{'width': dialogW, 'height': dialogH,'left': styleLeft + 'px', 'top': styleTop + 'px', 'z-index': zIndex}" >
+      <i class="xdh-map-dialog__close" @click.stop="closeHandle" ></i>
+      <div class="xdh-map-dialog__header"  @mousedown="mouseDownHandle"
+      >{{title}}</div>
+      <div class="xdh-map-dialog__body"  v-show="!closed"> 
+        <slot></slot>
+      </div>
+      <div class="xdh-map-dialog__bottom" v-if="bottom">
+        <slot name="bottom"></slot>
+      </div>
     </div>
-    <div class="xdh-map-dialog__bottom" v-if="bottom">
-      <slot name="bottom"></slot>
-    </div>
-  </div> 
-</transition>
+
+  <!-- </transition>  -->
 </template>
 <style scoped lang="scss">
-
+// .dialog-enter, .dialog-leave-to{
+//   opacity: 0;
+// }
 .dialog-enter-active, .dialog-leave-active {
   transition: all 0.5s;
 }
@@ -69,14 +73,6 @@
         type: Boolean,
         default: false
       },
-      left: {
-        type: Number,
-        default: 0
-      },
-      top: {
-        type: Number,
-        default: 0
-      },
       warp: {}
     },
     data() {
@@ -84,13 +80,16 @@
         currentClosed: this.closed, 
         dialog: null,
 
-        styleLeft: this.left,
-        styleTop: this.top,
+        dialogW: '0px', // this.width,
+        dialogH: '0px', // this.height,
+
+        styleLeft: 0,
+        styleTop: 0,
 
         startX: 0,
         startY: 0,
-        originLeft: this.left,
-        originTop: this.top,
+        originLeft: 0,
+        originTop: 0,
 
         mouseDownFlag: false,
         field: this.warp,
@@ -99,7 +98,15 @@
     },
     watch: {
       closed(val) {
+        if (val) {
+          this.dialogW = '0px'
+          this.dialogH = '0px'
+        } else {
+          this.dialogW = this.width
+          this.dialogH = this.height
+        }
         this.currentClosed = val
+        
       },
       left(val) {
         this.styleLeft = val
@@ -114,9 +121,11 @@
     methods: {
       closeHandle() {
         this.currentClosed = true
+        this.$emit('on-closed')
         this.$emit('update:closed', this.currentClosed)
       },
       mouseDownHandle(e) {
+        this.dialog.style.transition = ''
         this.startX = e.clientX
         this.startY = e.clientY
         this.mouseDownFlag = true
@@ -151,12 +160,11 @@
 
       },
       mouseUpHandle(e) {
+        this.dialog.style.transition = 'all 0.5s'
         this.originLeft = this.styleLeft
         this.originTop = this.styleTop
  
         this.mouseDownFlag = false
-        this.$emit('update:left', this.styleLeft)
-        this.$emit('update:top', this.styleTop)
         
       },
       definePositionWarp(dom) {
@@ -179,10 +187,17 @@
       },
       _setIndex(index) {
         this.zIndex = index
-      } 
+      },
+      setPosition(l, t) {
+        this.styleLeft = l
+        this.styleTop = t 
+        this.originLeft = l
+        this.originTop = t
+      }
     },
     mounted() { 
       this.dialog = this.$refs.dialog 
+      this.dialog.style.transition = 'all 0.5s'
       
       if (!this.field) {
         

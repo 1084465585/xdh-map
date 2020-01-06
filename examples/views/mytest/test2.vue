@@ -10,13 +10,13 @@
       </xdh-map> 
 
       
-      <xdh-map-dialog :key="1" :width="width" :height="height" :closed.sync="closed1" :left="left" :top="top"></xdh-map-dialog>
+      <xdh-map-dialog ref="dialog" :key="1" :width="width" :height="height" :closed.sync="closed1" @on-closed="closedHandle"></xdh-map-dialog>
        
     
       
-      <!-- <xdh-map-dialog :key="2" :width="width" :height="height" :closed.sync="closed2"  :left="50" :top="50"></xdh-map-dialog> -->
-        
-
+      <!-- <xdh-map-dialog :key="2" :width="width" :height="height" :closed.sync="closed2"  :left="50" :top="50"></xdh-map-dialog> style="width: 50px; height: 50px"-->
+     
+      
     </xdh-map-warp>
       
 
@@ -32,7 +32,7 @@
   border: 1px solid red;
  
 }
-
+ 
  
 </style>
 <script> 
@@ -42,12 +42,14 @@ export default {
   
   data() {
     return {
+      test: true,
+
       map: null,
       view: null, 
       fill: null,
       target: [113.38542938232422, 23.040218353271484],
-      width: '0px',
-      height: '0px',
+      width: '300px',
+      height: '300px',
       closed1: true,
       closed2: false,
       container: null,
@@ -64,21 +66,18 @@ export default {
     },
     openDialog() {
       if (!this.closed1) return
+      this.closed1 = false 
+      this.$refs.dialog.setPosition(300, 300)
       
-      this.left = 80
-      this.top = 80
-      this.width = '300px'
-      this.height = '300px'
-      this.closed1 = false
     },
     closeDialog() {
 
-      if (this.closed1) return
+      if (this.closed1) return 
+      this.$refs.dialog.setPosition(0, 0)
       this.closed1 = true
-      this.left = 600
-      this.top = 600
-      this.width = '0px'
-      this.height = '0px'
+    },
+    closedHandle() {
+      this.$refs.dialog.setPosition(0, 0)
     }
   },
   created() { 
