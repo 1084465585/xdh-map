@@ -5,14 +5,15 @@
   display: flex;
   flex-flow: column;
   position: absolute;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, .5);
-  background: $--popup-bg;
-  color: $--popup-color; 
+  background: $--dialog-bg;
+  color: $--dialog-light-color;
+  box-shadow: $--shadow-base; // 0 0 8px 0 rgba(0, 0, 0, .5);
   overflow: hidden;
+ 
   &__header {
     flex: 0 0 30px;
     height: 30px;
-    background: $--popup-title-bg;
+    background: $--dialog-title-bg-light;
     line-height: 30px;
     padding: 0 5px;
     cursor: move;
@@ -43,13 +44,14 @@
     padding: 2px 0;
     border-top: 1px solid $--border-color-base;
   }
+ 
+   
   &.is-dark {
-    background: $--popup-bg-dark;
-    color: $--popup-color-dark;
-    .xdh-map-popup__title {
-      background: $--popup-title-bg-dark;
+    .xdh-map-dialog__header {
+      color: $--dialog-dark-color;
+      background: $--dialog-title-bg-dark;
     }
-    .xdh-map-popup__close {
+    .xdh-map-dialog__close {
       background: url(../sources/popup/close_dark.png);
     }
   }

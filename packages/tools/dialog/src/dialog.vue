@@ -1,19 +1,17 @@
 <template>  
-  <!-- <transition name="dialog"  > -->
-    <!--  v-show="!closed" -->
-    <div class="xdh-map-dialog" ref="dialog"   :style="{'width': dialogW, 'height': dialogH,'left': styleLeft + 'px', 'top': styleTop + 'px', 'z-index': zIndex}" >
-      <i class="xdh-map-dialog__close" @click.stop="closeHandle" ></i>
-      <div class="xdh-map-dialog__header"  @mousedown="mouseDownHandle"
-      >{{title}}</div>
-      <div class="xdh-map-dialog__body"  v-show="!closed"> 
-        <slot></slot>
-      </div>
-      <div class="xdh-map-dialog__bottom" v-if="bottom">
-        <slot name="bottom"></slot>
-      </div>
+ 
+  <div :class="{'xdh-map-dialog': true, 'is-dark': isDark}" ref="dialog"   :style="{'width': dialogW, 'height': dialogH,'left': styleLeft + 'px', 'top': styleTop + 'px', 'z-index': zIndex}" @click.stop="_mDownCtrl">
+    <i class="xdh-map-dialog__close" @click.stop="closeHandle" ></i>
+    <div class="xdh-map-dialog__header"  @mousedown="mouseDownHandle"
+    >{{title}}</div>
+    <div class="xdh-map-dialog__body"  > 
+      <slot></slot>
     </div>
-
-  <!-- </transition>  -->
+    <div class="xdh-map-dialog__bottom" v-if="bottom">
+      <slot name="bottom"></slot>
+    </div>
+  </div>
+ 
 </template>
 <style scoped lang="scss">
 // .dialog-enter, .dialog-leave-to{
@@ -73,7 +71,27 @@
         type: Boolean,
         default: false
       },
-      warp: {}
+      warp: {},
+      animate: {
+        type: Boolean,
+        default: false
+      },
+      form: {
+        type: Array,
+        default: () => { return [0, 0] }
+      },
+      isDark: {
+        type: Boolean,
+        default: false
+      }
+      // left: {
+      //   type: Number,
+      //   default: 0
+      // },
+      // top: {
+      //   type: Number,
+      //   default: 0
+      // }
     },
     data() {
       return {
@@ -85,15 +103,17 @@
 
         styleLeft: 0,
         styleTop: 0,
+        originLeft: 0,
+        originTop: 0,
+          
 
         startX: 0,
         startY: 0,
-        originLeft: 0,
-        originTop: 0,
-
+        
         mouseDownFlag: false,
         field: this.warp,
-        zIndex: 1 
+        zIndex: 1,
+        transition: this.animate ? 'all 0.5s' : '' 
       }
     },
     watch: {
@@ -101,22 +121,21 @@
         if (val) {
           this.dialogW = '0px'
           this.dialogH = '0px'
+          // this.form && this.form.length && this._setPosition(this.form)
         } else {
           this.dialogW = this.width
-          this.dialogH = this.height
+          this.dialogH = this.height 
+           
+          this._mDownCtrl()
         }
         this.currentClosed = val
-        
-      },
-      left(val) {
-        this.styleLeft = val
-        this.originLeft = val
-        
-      },
-      top(val) {
-        this.styleTop = val
-        this.originTop = val
       }
+      // left(val) {
+      //   this._setPosition([val, this.styleTop])
+      // },
+      // top(val) {
+      //   this._setPosition([this.styleLeft, val])
+      // }
     },
     methods: {
       closeHandle() {
@@ -160,11 +179,14 @@
 
       },
       mouseUpHandle(e) {
-        this.dialog.style.transition = 'all 0.5s'
+        this.dialog.style.transition = this.transition
         this.originLeft = this.styleLeft
         this.originTop = this.styleTop
  
+ 
         this.mouseDownFlag = false
+       
+        this.$emit('on-mouseDown')
         
       },
       definePositionWarp(dom) {
@@ -187,17 +209,14 @@
       },
       _setIndex(index) {
         this.zIndex = index
-      },
-      setPosition(l, t) {
-        this.styleLeft = l
-        this.styleTop = t 
-        this.originLeft = l
-        this.originTop = t
       }
+      
     },
     mounted() { 
+
+      
       this.dialog = this.$refs.dialog 
-      this.dialog.style.transition = 'all 0.5s'
+      this.dialog.style.transition = this.transition
       
       if (!this.field) {
         
