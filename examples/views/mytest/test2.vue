@@ -12,7 +12,7 @@
       </xdh-map> 
 
       
-      <xdh-map-dialog title="弹窗1" ref="dialog" :key="1" :width="width" :height="height" :left.sync="left" :top.sync="top" :closed.sync="closed1" @on-closed="closedHandle" :animate="true" :bottom="true" :is-dark="true" @on-mouseDown="mouseDownHandle">
+      <xdh-map-dialog title="弹窗1" ref="dialog" :key="1" :width="width" :height="height"  :closed.sync="closed1" @on-closed="closedHandle" :animate="true" :bottom="true" :is-dark="true" @on-mouseDown="mouseDownHandle">
         <div slot="bottom">ccc</div>
       </xdh-map-dialog>
        
