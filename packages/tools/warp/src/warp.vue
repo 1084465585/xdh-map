@@ -5,27 +5,11 @@
       <slot name="map"></slot>
     </div>
     <slot></slot>
-    <div style="position: absolute; right: 0;bottom:0;z-index: 1000">
-      <button @click="test">test</button>
-    </div>
   </div> 
   
 </template>
 
 <style lang="scss" scoped>
-.xdh-map-warp{
-  width: 100%;
-  height: 100%;
-  position: relative;
-  .map-warp{
-    position: absolute;
-    width: 100%;
-    top:0;
-    bottom: 0;
-    z-index: 0;
-  }
-}
-
 </style>
 
 
@@ -40,8 +24,8 @@
    /**
    * 插槽
    * @member slots
-   * @property {string} bottom 定义底部内容
-   * @property {string} default 定义主体内容
+   * @property {string} map 定义地图的放置位置（默认为z-index: 0）
+   * @property {string} default 其他布局内容
    * 
    */
 
@@ -50,11 +34,14 @@
     /**
     * 参数属性
     * @member props
-    * @property {boolean} closed 定义关闭变量
+    * @property {number} dialogLayer 弹窗的z-index 层级倍数（用于将xdh-map-dialog弹窗与其他自定义内容的zindex区分开），设置 dialogLayer 后，所有在 warp容器内 注册的 xdh-map-dialog 会以此作为倍数设置 z-index的值
     * 
     */
     props: {
-     
+      dialogLayer: {
+        type: Number,
+        default: 1
+      }
     },
     data() {
       return {
@@ -62,16 +49,26 @@
          
       }
     },
+    provide() {
+      return {
+        dialogLayer: this.dialogLayer
+      }
+    },
     watch: { 
     },
     methods: {
-      test() {
-        console.log(this.dialogList)
-      },
       registerDialog(vm) {
         this.dialogList = this.dialogList.concat([vm])
       },
       getAllDialogs() {
+        return this.dialogList
+      },
+      setDialogsSeries(vm) {
+        let targetIndex = this.dialogList.findIndex((dialog) => {
+          return dialog._uid === vm._uid
+        })
+        let current = this.dialogList.splice(targetIndex, 1)
+        this.dialogList = current.concat(this.dialogList)
         return this.dialogList
       }
     },

@@ -6,13 +6,14 @@
   flex-flow: column;
   position: absolute;
   background: $--dialog-bg;
-  color: $--dialog-light-color;
+ 
   box-shadow: $--shadow-base; // 0 0 8px 0 rgba(0, 0, 0, .5);
   overflow: hidden;
  
   &__header {
     flex: 0 0 30px;
-    height: 30px;
+    height: 30px; 
+    color: $--dialog-light-color;
     background: $--dialog-title-bg-light;
     line-height: 30px;
     padding: 0 5px;
@@ -38,6 +39,7 @@
     flex: 1;
     position: relative;
     width: 100%;
+    color: $--dialog-light-color;
   }
   &__bottom{
     flex: 0 0 auto;
@@ -47,6 +49,7 @@
  
    
   &.is-dark {
+    background: $--dialog-bg;
     .xdh-map-dialog__header {
       color: $--dialog-dark-color;
       background: $--dialog-title-bg-dark;

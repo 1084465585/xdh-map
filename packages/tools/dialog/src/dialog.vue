@@ -1,6 +1,6 @@
 <template>  
  
-  <div :class="{'xdh-map-dialog': true, 'is-dark': isDark}" ref="dialog"   :style="{'width': dialogW, 'height': dialogH,'left': styleLeft + 'px', 'top': styleTop + 'px', 'z-index': zIndex}" @click.stop="_mDownCtrl">
+  <div :class="classes" ref="dialog"   :style="{'width': dialogW + 'px', 'height': dialogH + 'px','left': styleLeft + 'px', 'top': styleTop + 'px', 'z-index': zIndex}" @click.stop="_mDownCtrl">
     <i class="xdh-map-dialog__close" @click.stop="closeHandle" v-if="showClose"></i>
     <div class="xdh-map-dialog__header"  @mousedown="mouseDownHandle" v-if="header"
     >{{title}}</div>
@@ -36,26 +36,26 @@
     * 参数属性
     * @member props
     * @property {boolean} closed 定义关闭变量
-    * @property {string} width 定义dialog宽度
-    * @property {string} height 定义dialog高度
+    * @property {string} posStyle 定义弹窗left/top/right/bottom/width/height 的css字符串
     * @property {string} title 弹窗标题
     * @property {boolean} bottom 是否显示底部
     * @property {array} position dialog 右上角原点 相对 地图 右上角原点的偏移值(px)
-    * 
+    * @property {HTMLNode} warp dialog 所在的定位容器 （通常与xdh-map-warp结合使用，为xdh-map-warp的$el）
+    * @property {boolean} animate 是否启用动画
+    * @property {boolean} header 是否显示头部
+    * @property {boolean} showClose 是否关闭按钮
+    * @property {array} hideAt 弹窗隐藏时归位到容器某个位置
     */
     props: {
+      posStyle: {
+        type: String,
+        default: 'left: 0px; top:0px; width: 300px; height: 300px;'
+      },
       closed: {
         type: Boolean,
         default: true
       },
-      width: {
-        type: String,
-        default: '300px'
-      },
-      height: {
-        type: String,
-        default: '280px'
-      },
+      
       header: {
         type: Boolean,
         default: true
@@ -73,21 +73,13 @@
         type: Boolean,
         default: false
       },
-      from: {
+      hideAt: {
         type: Array,
         default: () => { return [0, 0] }
-      },
-      isDark: {
-        type: Boolean,
-        default: false
-      },
-      left: {
-        type: Number,
-        default: 0
-      },
-      top: {
-        type: Number,
-        default: 0
+      }, 
+      theme: {
+        type: String,
+        default: ''
       },
       showClose: {
         type: Boolean,
@@ -99,14 +91,16 @@
         currentClosed: this.closed, 
         dialog: null,
 
-        dialogW: this.width,
-        dialogH: this.height,
+        width: 0,
+        height: 0,
+        left: 0,
+        top: 0,
 
-        styleLeft: this.left,
-        styleTop: this.top,
-        originLeft: this.left,
-        originTop: this.top,
-          
+        dialogW: 0,
+        dialogH: 0,
+
+        styleLeft: 0,
+        styleTop: 0, 
 
         startX: 0,
         startY: 0,
@@ -118,50 +112,85 @@
         closedPos: null
       }
     },
+    computed: {
+      classes() {
+        return this.theme ? ['xdh-map-dialog', `is-${this.theme}`] : ['xdh-map-dialog']
+      }
+    },
+    inject: ['dialogLayer'],
     watch: {
-      closed(val) {
-        if (val) {
-          this.closedPos = [this.styleLeft, this.styleTop]
-          this.dialogW = '0px'
-          this.dialogH = '0px'
-          this.from && this.from.length && this._setPosition(this.from)
+      closed(val) { 
+        if (val) { 
+          this._close()
         } else {
-          this.dialogW = this.width
-          this.dialogH = this.height
-          if (this.closedPos) {
-            this._setPosition(this.closedPos) 
-            this.originLeft = this.closedPos[0]
-            this.originTop = this.closedPos[1]
-          } else {
-            this._setPosition([this.left, this.top])
-          }
-          
-          this._mDownCtrl()
+          this._open()
         }
         this.currentClosed = val
+      },
+      posStyle(val) {
+        if (!this.field) {
+          this.field = this.definePositionWarp(this.$el)
+        } else {
+          this._initDialogPos()
+        }
+      },
+      hideAt(val) {
+        if (this.closed) {
+          if (this.hideAt && this.hideAt.length) {
+            this.styleLeft = this.hideAt[0]
+            this.styleTop = this.hideAt[1]
+          }
+        }
       }
     },
     methods: {
+      _close() {
+        this.left = this.styleLeft
+        this.top = this.styleTop
+        this.$nextTick(() => {
+          this.dialogW = 0
+          this.dialogH = 0
+          // ------------
+          if (this.hideAt && this.hideAt.length) {
+            this.styleLeft = this.hideAt[0]
+            this.styleTop = this.hideAt[1]
+          }
+        })
+        
+      },
+      _open() {
+        this.dialogW = this.width
+        this.dialogH = this.height 
+        
+        this.styleLeft = this.left
+        this.styleTop = this.top
+          
+        this._mDownCtrl()
+      },
       closeHandle() {
-        this.currentClosed = true
+        this.currentClosed = true 
         this.$emit('on-closed')
         this.$emit('update:closed', this.currentClosed)
       },
-      mouseDownHandle(e) {
-        this.dialog.style.transition = ''
+      mouseDownHandle(e) { 
+        this.left = this.styleLeft
+        this.top = this.styleTop
+
+        this.dialog.style.transition = '' // this.transition
         this.startX = e.clientX
         this.startY = e.clientY
         this.mouseDownFlag = true
 
         this._mDownCtrl()
+        this.$emit('on-mouseDown', this.styleLeft, this.styleTop)
       },
       mouseMoveHandle(e) {
         if (!this.mouseDownFlag) return
         let dirX = e.clientX - this.startX
         let dirY = e.clientY - this.startY
         
-        this.styleLeft = this.originLeft + dirX
-        this.styleTop = this.originTop + dirY
+        this.styleLeft = this.left + dirX
+        this.styleTop = this.top + dirY
 
         let minX = 0
         let minY = 0
@@ -180,54 +209,53 @@
         }
       },
       mouseUpHandle(e) {
-        this.dialog.style.transition = this.transition
-        this.originLeft = this.styleLeft
-        this.originTop = this.styleTop
- 
         this.mouseDownFlag = false
-       
-        this.$emit('on-mouseDown')
-
-        this.$emit('update:left', this.styleLeft)
-        this.$emit('update:top', this.styleTop)
-        
+        this.dialog.style.transition = this.transition 
+        this.$emit('on-mouseUp', this.styleLeft, this.styleTop)
       },
       definePositionWarp(dom) {
         let parent = dom.parentNode
         let positionStyle = window.getComputedStyle(parent, false)['position']
-        if (positionStyle === 'relative' || positionStyle === 'absolute') {
+        if (positionStyle === 'relative' || positionStyle === 'absolute' || parent.tagName === 'BODY') {
           return parent
         } else {
           this.definePositionWarp(parent)
         }
-        
       },
       _mDownCtrl() {
         if (this.$parent.$options.name !== 'xdh-map-warp') return
-        let otherDialogs = this.$parent.getAllDialogs()
-        otherDialogs.forEach((vm) => { vm._setIndex(1) }) 
-        this.$nextTick(() => {
-          this._setIndex(otherDialogs.length)
-        })
+        let otherDialogs = this.$parent.setDialogsSeries(this)
+        otherDialogs.forEach((vm, index) => { vm._setIndex(otherDialogs.length - index) }) 
       },
       _setIndex(index) {
-        this.zIndex = index
+        this.zIndex = index * this.dialogLayer
       },
-      _setPosition(pos) {
-        this.styleLeft = pos[0]
-        this.styleTop = pos[1]
+      
+      _initDialogPos() {
+        let div = document.createElement('DIV')
+        div.style = 'position:absolute;' + this.posStyle
+        this.field.appendChild(div)
+        
+        this.width = div.offsetWidth
+        this.height = div.offsetHeight
+        this.left = div.offsetLeft
+        this.top = div.offsetTop
+
+        
+
+        if (!this.closed) {
+          this.styleLeft = div.offsetLeft
+          this.styleTop = div.offsetTop
+
+          this.dialogW = div.offsetWidth
+          this.dialogH = div.offsetHeight
+        }
+        this.field.removeChild(div)
       }
       
     },
     created() {
-      if (this.closed) {
-        this.dialogW = 0
-        this.dialogH = 0
-        
-      } else {
-        this.dialogW = this.width
-        this.dialogH = this.height
-      }
+       
     },
     mounted() { 
 
@@ -236,7 +264,8 @@
       this.dialog.style.transition = this.transition
       
       if (!this.field) {
-        this.field = this.definePositionWarp(this.$el) 
+        this.field = this.definePositionWarp(this.$el)
+        this._initDialogPos()
       }
 
       
@@ -262,3 +291,63 @@
   }
 </script>
 
+<style lang="scss" scoped>
+/* 
+@import "../../../../theme/_vars";
+.xdh-map-dialog{
+  display: flex;
+  flex-flow: column;
+  position: absolute;
+  background: $--dialog-bg;
+  color: $--dialog-light-color;
+  box-shadow: $--shadow-base; // 0 0 8px 0 rgba(0, 0, 0, .5);
+  overflow: hidden;
+ 
+  &__header {
+    flex: 0 0 30px;
+    height: 30px;
+    background: $--dialog-title-bg-light;
+    line-height: 30px;
+    padding: 0 5px;
+    cursor: move;
+  }
+  &__close {
+    background: url(../../../../sources/popup/close.png);
+    background-size: contain;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: -3px;
+    opacity: 0.7;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+  }
+ 
+  &__body {
+    flex: 1;
+    position: relative;
+    width: 100%;
+  }
+  &__bottom{
+    flex: 0 0 auto;
+    padding: 2px 0;
+    border-top: 1px solid $--border-color-base;
+  }
+ 
+   
+  &.is-dark {
+    .xdh-map-dialog__header {
+      color: $--dialog-dark-color;
+      background: $--dialog-title-bg-dark;
+    }
+    .xdh-map-dialog__close {
+      background: url(../../../../sources/popup/close_dark.png);
+    }
+  }
+}  
+*/
+</style>
