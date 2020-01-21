@@ -1,71 +1,60 @@
 <template>
   <example>
-    <xdh-map-warp ref="warp" :dialog-layer="3">
-    
-      <xdh-map slot="map"  ref="map" type="Baidu" :zoom="12" :center="target" @ready="mapReady"  >  
-        <xdh-map-placement  placement="right-bottom" :margin="[10, 10]" theme="light">
-          <button @click="closed4 = !closed4">打开窗口4</button>
-        </xdh-map-placement> 
-      </xdh-map> 
-
-      
-     
-       
-      <div class="side-menu" ref="btnWarp">
-        <button @click="closed1 = !closed1">打开窗口1</button> <br/> 
-        <button @click="closed2 = false">打开窗口2</button> <br/>
-        <button @click="closed3 = false">打开窗口3</button>
-      </div>
-
-      <xdh-map-dialog title="弹窗1" ref="dialog1" :key="1"  :closed.sync="closed1" :pos-style="posStyle1"  :animate="true" :hide-at="from1" > 
-        <div style="padding: 5px">
-          <p> 初始样式: {{posStyle1}}</p>
-          <p> 隐藏于: {{from1}}</p>
-        </div>
-      </xdh-map-dialog>
-      <xdh-map-dialog title="弹窗2" ref="dialog2" :key="2"  :closed.sync="closed2" :pos-style="posStyle2"  :animate="true" :hide-at="from2">
-        <div style="padding: 5px">
-          <p> 初始样式: {{posStyle2}}</p>
-          <p> 隐藏于: {{from2}}</p>
-        </div>
-      </xdh-map-dialog> 
-      <xdh-map-dialog title="弹窗3" ref="dialog3" :key="3"  :closed.sync="closed3" :pos-style="posStyle3"  :animate="true" :hide-at="from3">
-        <div style="padding: 5px">
-          <p> 初始样式: {{posStyle3}}</p>
-          <p> 隐藏于: {{from3}}</p>
-        </div> 
-      </xdh-map-dialog>
-
-       <xdh-map-dialog  ref="dialog4" :key="4"  :closed.sync="closed4" :pos-style="posStyle4"  :animate="true" :header="false" :show-close="false" :hide-at="from4"> 
-        <div style="padding: 10px">
-          <div>窗口4</div>
-          <p> 这是一个固定位置的dialog</p>
-          <p> 初始样式: {{posStyle4}}</p>
-          <p> 隐藏于: {{from4}}</p>
-        </div>
-      </xdh-map-dialog>
-    
-    </xdh-map-warp>
-      
-
+    <div style="height: 400px">
+      <xdh-map ref="map" @on-zoomed="zoomHandle" type="Baidu" :zoom="zoom" :center="target" @ready="mapReady"  @pointermove="handleMove" >
+        <xdh-map-scale units="metric" placement="left-bottom"></xdh-map-scale>   
+        <xdh-map-zoom placement="left-top" theme="dark" :margin="[10]" ></xdh-map-zoom>
+        <xdh-map-text v-for="(item,index) in textArray"
+                    :key="index"
+                    v-bind="item"
+        ></xdh-map-text>
+      </xdh-map>
+    </div> 
+    <div>
+      <button @click="updateExtent">getExtent</button>
+    </div>
+    <div>坐标： <span>{{coordinate}}</span></div> 
+    <div>extent: <span>{{extent}}</span></div>
+    <div>zoom: <span>{{zoom}}</span></div>
     
   </example>
 </template>
 <style scoped lang="scss">
-.side-menu{
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 5px;
-  background: white;
-}
+ 
  
  
 </style>
 <script> 
-// import {DragClass as Drag} from '../../packages/index.js'
-// import Overlay from 'ol/Overlay'
+import * as olExtent from 'ol/extent'; // getCenter, getHeight
+import * as olSphere from 'ol/sphere';
+const random = function(x, y) {
+  return (y - x) * Math.random() + x
+}
+
+const clot = function(points, distance, arr = []) {
+  // let arr = []
+  let _points = points.concat()
+  let first = _points.splice(0, 1)[0]
+  let _arr = [first]
+  if (_points.length) {
+    for (let index = 0; index < _points.length; index++) {
+      if (olSphere.getDistance(first.position, _points[index].position) <= distance) {
+        _arr.push(_points.splice(index, 1)[0])
+      }
+    }
+  }
+  arr.push(_arr)
+  // console.log(_points)
+  if (_points.length) {
+    clot(_points, distance, arr)
+  }
+}
+
+ 
+
+
+
+// zoomLayer = [7, 8, 9, 10]
 export default {
   
   data() {
@@ -74,23 +63,13 @@ export default {
       map: null,
       view: null, 
       fill: null,
-      target: [113.38542938232422, 23.040218353271484],
+      zoom: 7,
+      target: [113, 23],
+      coordinate: [0, 0],
+      extent: [0, 0],
 
-      posStyle1: '',
-      posStyle2: '',
-      posStyle3: '',
-      posStyle4: 'bottom: 20px; left: 25%; width:50%; height: 180px',
-      from1: [0, 0],
-      from2: [0, 0],
-      from3: [0, 0],
-      from4: [0, 0],
-      closed1: false,
-      closed2: true,
-      closed3: true,
-      closed4: false,
-
-      container: null,
-      from: [0, 0]
+      total: 80,
+      textArray: []
     }
   },
   computed: {
@@ -99,55 +78,64 @@ export default {
   methods: {
     mapReady(map) {
       this.map = map
+      this.view = this.map.getView()
+      this.extent = this.view.calculateExtent() 
+
+      let unit = this.getScale(this.extent)
+      let distance = unit * 120
+      
+      let arr = []
+      clot(this.textArray, distance, arr)
+      console.log('arr', arr)
+      
     },
-    openDialog() {
-      if (!this.closed1) return
-      this.closed1 = false
+    updateExtent() {
+      this.extent = this.view.calculateExtent()
     },
-    closeDialog() {
-      if (this.closed1) return
-      this.closed1 = true
+    handleMove(e) {
+      this.coordinate = e.coordinate
     },
-    closedHandle() {
+    zoomHandle(view, level) {
+      // console.log(view, level)
+      this.zoom = level
+    },
+    createTexts() {
+      let texts = []
+      for (let i = 0; i < this.total; i++) {
+        // let n = 0.5 - Math.random() > 0 ? 1 : -1
+        // let m = 0.5 - Math.random() > 0 ? 1 : -1
+        texts.push({
+          position: [random(107, 119), random(20.8, 25.2)],
+          text: `${i}`,
+          font: '12px',
+          background: '#fff',
+          strokeColor: 'red',
+          padding: [5, 5, 5, 5],
+          color: 'blue'
+        })
+      }
+      return texts
+    },
+    getScale(extent) {
+      let mapWidth = this.$refs.map.$el.offsetWidth
+      let bottomLeft = olExtent.getBottomLeft(extent)
+      let bottomRight = olExtent.getBottomRight(extent)
+      let distance = olSphere.getDistance(bottomLeft, bottomRight)
+      // console.log('unit', distance / mapWidth)
+      let unit = distance / mapWidth
+      return unit
+    }
     
-    },
-    mouseDownHandle() {
-      
-    },
-    initDialogsPlace() {
-      let warpWidth = this.container.offsetWidth
-      let right = warpWidth - this.$refs.btnWarp.offsetLeft + 10
-      let tops = [
-                  this.$refs.btnWarp.offsetTop - 55, 
-                  this.$refs.btnWarp.offsetTop - 15,
-                  this.$refs.btnWarp.offsetTop + 25
-                ]
-      let posStyles = tops.map((item) => {
-        return `right: ${right}px; top:${item}px; width: 300px; height: 300px;`
-      })
-      
-      this.posStyle1 = posStyles[0]
-      this.posStyle2 = posStyles[1]
-      this.posStyle3 = posStyles[2]
-      this.posStyle4 = `bottom: 20px; left: 25%; width:${warpWidth / 2}px; height: 180px`
-      
-      this.from1 = [this.$refs.btnWarp.offsetLeft, tops[0]]
-      this.from2 = [this.$refs.btnWarp.offsetLeft, tops[1]]
-      this.from3 = [this.$refs.btnWarp.offsetLeft, tops[2]]
-      this.from4 = [warpWidth, this.container.offsetHeight]
-    } 
+    
   },
   created() { 
+    this.textArray = this.createTexts()
   },
   mounted() {
-    this.container = this.$refs.warp.$el
-    this.initDialogsPlace() 
-    
-    this.rezieProxy = this.initDialogsPlace.bind(this)
-    window.addEventListener('resize', this.rezieProxy, false)
+     
   },
   beforeDestroy() {
-    window.removeEventListener('onResize', this.rezieProxy, false)
+     
   }
 }
 </script>

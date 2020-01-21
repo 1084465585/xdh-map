@@ -339,6 +339,7 @@ export default {
             zoom: Number.parseInt(level)
           },
           () => {
+            this.$emit('on-zoomed', view, level)
             resolve(view)
           }
         )
@@ -362,6 +363,7 @@ export default {
             duration: 500,
             ...options,
             callback: () => {
+              this.$emit('on-zoomed', view, view.getZoom())
               resolve(this.map, this, view)
             }
           })
@@ -408,6 +410,7 @@ export default {
             center: loc
           },
           () => {
+            this.$emit('on-moved', view, loc)
             resolve(view)
           }
         )
@@ -479,7 +482,7 @@ export default {
     // 绑定地图事件
     Object.keys(this.$listeners).forEach(key => {
       this.map.on(key, e => {
-        console.log(e)
+        // console.log(e)
         if (e.coordinate) {
           let coordinate = convertFromWgs84(this.coordType, e.coordinate)
           e.convert = {

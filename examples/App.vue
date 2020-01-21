@@ -6,7 +6,7 @@
   export default {}
 </script>
 
-<style>
+<style lang="scss">
   html, body {
     height: 100%;
     margin: 0;
@@ -17,4 +17,5 @@
     height: 30px;
     margin: 5px;
   }
+ 
 </style>
