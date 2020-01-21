@@ -1,5 +1,6 @@
 import {parse} from './style'
-import * as sphere from 'ol/sphere'
+import * as Sphere from 'ol/sphere'
+import * as Extent from 'ol/extent'
 
 const BASE_TYPES = [Array, String, Boolean, Object, Function]
 
@@ -125,5 +126,61 @@ export function mapReady(callback) {
  * @return {Number} 返回距离，单位为米；
  */
 export function getDistance(coor1, coor2) {
-  return sphere.getDistance(coor1, coor2)
+  return Sphere.getDistance(coor1, coor2)
 }
+
+/*
+ * 计算当前地图 1px 相当于 多少 m 距离
+*/
+export function getScale(map, mapComp) {
+  let mapWidth = mapComp.$el.offsetWidth
+  let view = map.getView()
+  let extent = view.calculateExtent() 
+  let bottomLeft = Extent.getBottomLeft(extent)
+  let bottomRight = Extent.getBottomRight(extent)
+  let distance = Sphere.getDistance(bottomLeft, bottomRight)
+  let unit = distance / mapWidth
+  return unit
+}
+
+ 
+const _clot = function(points, distance, arr = [], prop = 'position') {
+  let _points = points.concat()
+  let first = _points.splice(0, 1)[0]
+  let _arr = [first]
+  let isCoor = Array.isArray(first)
+  
+  if (!isCoor && (!prop || prop && !first[prop])) return []
+  if (!isCoor && !Array.isArray(first[prop])) return []
+  if (_points.length) {
+    for (let index = 0; index < _points.length; index++) {
+      let dis = isCoor ? Sphere.getDistance(first, _points[index]) : Sphere.getDistance(first[prop], _points[index][prop])
+      if (dis <= distance) {
+        _arr.push(_points.splice(index, 1)[0])
+      }
+    }
+  }
+  arr.push(_arr)
+  if (_points.length) {
+    _clot(_points, distance, arr)
+  }
+}
+export const pointClot = function(points, distance, prop, info = {}) {
+  let arr = []
+  _clot(points, distance, arr, prop)
+  return arr.map((item) => {
+
+    let area = Extent.boundingExtent(item.map((p) => { return Array.isArray(p) ? p : p[prop] }))
+    let center = Extent.getCenter(area)
+    return {
+      center: center,
+      area: area,
+      detailShow: false,
+      points: item
+    }
+  })
+}
+
+export const olExtent = Extent
+
+export const olSphere = Sphere

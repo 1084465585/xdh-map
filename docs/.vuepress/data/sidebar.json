@@ -17,7 +17,8 @@
         "heat",
         "echarts",
         "mask",
-        "geo-layer"
+        "geo-layer",
+        "group"
       ]
     }
   ],

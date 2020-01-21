@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: xdh-map-rectangle</title>
+    <title>JSDoc: Module: xdh-map-group</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: xdh-map-rectangle</h1>
+    <h1 class="page-title">Module: xdh-map-group</h1>
 
     
 
@@ -38,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>矩形覆盖物</p></div>
+            <div class="description"><p>聚合坐标组组件</p></div>
         
 
         
@@ -87,7 +87,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="packages_rectangle_src_rectangle.vue.html">packages/rectangle/src/rectangle.vue</a>, <a href="packages_rectangle_src_rectangle.vue.html#line3">line 3</a>
+        <a href="packages_group_src_group.vue.html">packages/group/src/group.vue</a>, <a href="packages_group_src_group.vue.html#line3">line 3</a>
     </li></ul></dd>
     
 
@@ -144,7 +144,7 @@
 
 
 <div class="description">
-    <p>参数属性</p>
+    <p>参数选项</p>
 </div>
 
 
@@ -171,6 +171,8 @@
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -181,94 +183,7 @@
 
         <tr>
             
-                <td class="name"><code>position</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>矩形左上角经纬度</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>width</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>宽度经纬度距离</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>height</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>高度经纬度距离</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>zIndex</code></td>
+                <td class="name"><code>range</code></td>
             
 
             <td class="type">
@@ -291,15 +206,58 @@
             
 
             
+                <td class="default">
+                
+                    100
+                
+                </td>
+            
 
-            <td class="description last"><p>渲染层级</p></td>
+            <td class="description last"><p>定义群组的半径范围（单位px）</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>fill</code></td>
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    []
+                
+                </td>
+            
+
+            <td class="description last"><p>所有点的数据</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>coorProp</code></td>
             
 
             <td class="type">
@@ -322,21 +280,27 @@
             
 
             
+                <td class="default">
+                
+                    'position'
+                
+                </td>
+            
 
-            <td class="description last"><p>填充颜色</p></td>
+            <td class="description last"><p>点数据中 坐标的字段名</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>cursor</code></td>
+                <td class="name"><code>groupsSet</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">function</span>
 
 
             
@@ -353,349 +317,14 @@
             
 
             
-
-            <td class="description last"><p>鼠标经过时形状</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>strokeWidth</code></td>
-            
-
-            <td class="type">
-            
+                <td class="default">
                 
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
+                    function
                 
                 </td>
             
 
-            
-
-            <td class="description last"><p>边框厚度</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>strokeColor</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>边框颜色</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>strokeLineCap</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>虚线样式</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>strokeLineJoin</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>虚线样式</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>strokeLineDash</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>虚线样式</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>strokeLineDashOffset</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>strokeMiterLimit</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>text</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>文本内容</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>color</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>文本颜色</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>font</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>字体大小，如 20px</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>background</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>字体背景颜色</p></td>
+            <td class="description last"><p>对 分组后的 组列表数据进行修饰的函数（参数 groupList, 返回加工后的groupList）</p></td>
         </tr>
 
     
@@ -734,7 +363,162 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="packages_rectangle_src_rectangle.vue.html">packages/rectangle/src/rectangle.vue</a>, <a href="packages_rectangle_src_rectangle.vue.html#line13">line 13</a>
+        <a href="packages_group_src_group.vue.html">packages/group/src/group.vue</a>, <a href="packages_group_src_group.vue.html#line23">line 23</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~slots"><span class="type-signature">(inner) </span>slots<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>插槽</p>
+</div>
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>group</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>表示群的展示</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>point</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>表示点的展示</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="packages_group_src_group.vue.html">packages/group/src/group.vue</a>, <a href="packages_group_src_group.vue.html#line9">line 9</a>
     </li></ul></dd>
     
 
