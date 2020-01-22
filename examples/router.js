@@ -168,18 +168,14 @@ const router = new Router({
             path: 'area-select',
             component: () => import('./views/area-select')
           },
+          {
+            path: 'group',
+            component: () => import('./views/group')
+          },
           // -----------测试用页面---------
           {
             path: 'mytest/test',
             component: () => import('./views/mytest/test')
-          },
-          {
-            path: 'mytest/test2',
-            component: () => import('./views/mytest/test2')
-          },
-          {
-            path: 'mytest/test3',
-            component: () => import('./views/mytest/test3')
           }
         ]
       }
