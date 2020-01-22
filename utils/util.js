@@ -165,7 +165,7 @@ const _clot = function(points, distance, arr = [], prop = 'position') {
     _clot(_points, distance, arr)
   }
 }
-export const pointClot = function(points, distance, prop, info = {}) {
+export const pointClot = function(points, distance, prop) {
   let arr = []
   _clot(points, distance, arr, prop)
   return arr.map((item) => {

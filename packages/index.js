@@ -128,7 +128,7 @@ export const AreaSelectClass = AreaSelect
 export default {
   version: '1.1.15',
   install,
-  parseStyle,
+  parseStyle, 
   Map,
   Text,
   Rectangle,

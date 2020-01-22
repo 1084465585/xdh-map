@@ -24,9 +24,7 @@
   /deep/ .iconfont.icon-locus{
     font-size: 40px;
     color: red;
-  }
-  
-
+  } 
 } 
  
  
@@ -76,7 +74,11 @@ export default {
       })
       this.$nextTick(() => {
         group.detailShow = true
-        this.$refs.map.zoomAt(group.area, {maxZoom: 12})
+        if (group.points.length === 1) {
+          this.$refs.map.moveTo(group.points[0].position)
+        } else {
+          this.$refs.map.zoomAt(group.area, {maxZoom: 10})
+        }
       }) 
        
     },

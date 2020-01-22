@@ -88,7 +88,7 @@ export default {
         if (group.points.length === 1) {
           this.$refs.map.moveTo(group.points[0].position)
         } else {
-          this.$refs.map.zoomAt(group.area, {maxZoom: 12})
+          this.$refs.map.zoomAt(group.area, {maxZoom: 10})
         }
         
       }) 
