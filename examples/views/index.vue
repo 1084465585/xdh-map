@@ -13,7 +13,7 @@
     <button @click="zoomOut">zoomOut</button>
     <button @click="zoomTo">zoomTo</button>
     坐标： <span>{{coordinate}}</span>
-    <example>
+    <example style="height: 550px">
       <xdh-map ref="map"
                type="Baidu"
                :zoom="10"

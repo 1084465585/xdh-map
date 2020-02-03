@@ -10,28 +10,14 @@
 
 ```html
 <template>
+  <div style="height: 500px;">
   <xdh-map>
-    <xdh-map-zoom
-      placement="left-top"
-      theme="dark"
-      :margin="[10]"
-    ></xdh-map-zoom>
-    <xdh-map-zoom
-      placement="left-bottom"
-      theme="light"
-      :margin="[10]"
-    ></xdh-map-zoom>
-    <xdh-map-zoom
-      placement="right-top"
-      theme="dark"
-      :margin="[10]"
-    ></xdh-map-zoom>
-    <xdh-map-zoom
-      placement="right-bottom"
-      theme="light"
-      :margin="[10]"
-    ></xdh-map-zoom>
+    <xdh-map-zoom placement="left-top"></xdh-map-zoom>
+    <xdh-map-zoom placement="right-top" theme="dark" :slider="true"></xdh-map-zoom>
+    <xdh-map-zoom placement="left-bottom" slider="inside"></xdh-map-zoom>
+    <xdh-map-zoom placement="right-bottom" theme="dark" :slider="true" horizontal></xdh-map-zoom>
   </xdh-map>
+  </div>
 </template>
 
 <script>

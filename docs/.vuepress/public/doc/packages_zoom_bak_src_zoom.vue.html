@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: packages/html/src/html.vue</title>
+    <title>JSDoc: Source: packages/zoom_bak/src/zoom.vue</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: packages/html/src/html.vue</h1>
+    <h1 class="page-title">Source: packages/zoom_bak/src/zoom.vue</h1>
 
     
 
@@ -26,144 +26,58 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>&lt;!--
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-06-02 20:57:42
- * @LastEditTime: 2019-09-22 12:38:10
- * @LastEditors: Please set LastEditors
- -->
-&lt;template>
-  &lt;div class="xdh-map-html" v-on="overlayListeners()">
-    &lt;slot>&lt;/slot>
-  &lt;/div>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;xdh-map-placement class="xdh-map-zoom" v-bind="$props">
+    &lt;span class="xdh-map-zoom__btn" @click="zoomIn">&lt;i class="iconfont icon-add">&lt;/i>&lt;/span>
+    &lt;span class="xdh-map-zoom__split">&lt;/span>
+    &lt;span class="xdh-map-zoom__btn" @click="zoomOut">&lt;i class="iconfont icon-remove">&lt;/i>&lt;/span>
+  &lt;/xdh-map-placement>
 &lt;/template>
 
 &lt;script>
-/**
- * HTML覆盖物组件
- * @module xdh-map-html
- */
-import { mapReady, getParent } from 'utils/util'
-import Overlay from 'ol/Overlay'
-import { convertToWgs84 } from 'utils/convert'
-
-/**
- * 插槽
- * @member slots
- * @property {string} [default] 默认插槽，定义 html 内容
- */
-
-export default {
-  name: 'XdhMapHtml',
   /**
-   * 参数属性
-   * @member props
-   * @property {string} [positioning] 经纬度对齐位置，默认 center-center
-   * @property {number[]} position 经纬度
-   * @property {number[]} [offset] 位置偏移
-   * @property {boolean} [stopEvent] 是否阻止时间冒泡，默认 true
-   * @property {boolean} [insertFirst]
-   * @property {string} [className]
-   * @property {string} [visible] 切换显示隐藏（作用于html元素的 父级overlay）
+   * 缩放控件
    */
-  props: {
-    positioning: {
-      type: String,
-      default: 'center-center',
-      validator(val) {
-        return [
-          'bottom-left',
-          'bottom-center',
-          'bottom-right',
-          'center-left',
-          'center-center',
-          'center-right',
-          'top-left',
-          'top-center',
-          'top-right'
-        ].includes(val)
-      }
-    },
-    // 显示位置
-    position: Array,
-    // 位置偏移
-    offset: Array,
-    // 是否阻止时间冒泡，默认 true
-    stopEvent: {
-      type: Boolean,
-      default: true
-    },
-    insertFirst: Boolean,
-    // CSS class name
-    className: String,
-    // 切换显示隐藏
-    visible: Boolean,
-    // OverlayId
-    id: String
-  },
-  inject: ['coordType'],
-  data() {
-    return {
-      parentNode: null,
-      overlay: null
-    }
-  },
-  watch: {
-    position() {
-      this.show()
-    },
-    visible(val) {
-      if (this.parentNode) {
-        this.parentNode.style.display = val ? 'block' : 'none'
-      }
-    }
-  },
-  methods: {
-    addOverlay(map) {
-      const options = this.$props
-      options.element = this.$el
-      this.overlay = new Overlay(
-        Object.assign({}, options, {
-          position: convertToWgs84(this.coordType, this.position)
-        })
-      )
-      map.addOverlay(this.overlay)
-      this.$nextTick(() => {
-        this.parentNode = this.$el.parentNode
-      })
-    },
-    show(position) {
-      let pos = position || this.position
-      this.overlay &amp;&amp;
-        this.overlay.setPosition(convertToWgs84(this.coordType, pos))
-    },
-    hide() {
-      this.overlay &amp;&amp; this.overlay.setPosition(null)
-    },
-    overlayListeners() {
-      let vm = this
-      let obj = Object.assign({}, vm.$listeners)
-      for (let key in obj) {
-        obj[key] = obj[key].bind(vm, vm, vm.overlay, ...arguments)
-      }
-      return obj
-    }
-  },
-  created() {
-    this.parent = getParent.call(this)
-  },
-  mounted() {
-    mapReady.call(this, this.addOverlay)
+  import XdhMapPlacement from '../../placement'
+  import {getParent} from 'utils/util'
 
-    
-  },
-  beforeDestroy() {
-    if (this.overlay &amp;&amp; this.parent) {
-      this.parent.map.removeOverlay(this.overlay)
+  export default {
+    name: 'XdhMapZoom',
+    components: {
+      XdhMapPlacement
+    },
+    /**
+     * 参数属性
+     * @member props
+     * @property {string} [placement] 停泊位置，可选值'left-top', 'center-top', 'right-top'，'left-center', 'center-center', 'right-center''left-bottom', 'center-bottom', 'right-bottom'
+     * @property {number} [zIndex=1] 层级
+     * @property {number[]} [margin] 外边距
+     * @property {string[]} [theme] 主题 可选值 'default', 'light', 'dark'
+     */
+    props: {
+      ...XdhMapPlacement.props,
+      theme: {
+        type: String,
+        default: 'light'
+      }
+    },
+    methods: {
+      zoomIn() {
+        if (this.parent) {
+          this.parent.zoomIn()
+        }
+      },
+      zoomOut() {
+        if (this.parent) {
+          this.parent.zoomOut()
+        }
+      }
+    },
+    created() {
+      // 获取地图组件实例
+      this.parent = getParent.call(this)
     }
   }
-}
 &lt;/script>
 </code></pre>
         </article>

@@ -1,27 +1,20 @@
 <template>
   <example>
     <div class="warp"  >
-      <xdh-map ref="map" type="Baidu"  :zoom="12" :center="target" @ready="mapReady" @click="mapClickHandle" @precompose="composeHandle"> 
-         <xdh-map-geo-layer :state="state" :with-layer="false" :draw-define="drawDefineFn" @click="featureClick"  @mouseEnter="hoverHandle" @mouseLeave="hoverOutHandle"
-      ></xdh-map-geo-layer> 
-      </xdh-map>
-    </div>  
+        <xdh-map slot="map" ref="map" id="map3"  :zoom="12" :center="target" @ready="mapReady" > </xdh-map>
+      
+    </div>
+
+   <div class="xdh-zoom-tools is-dark show-slider-inside" ref="test"></div>
   </example>
 </template>
 
-<script>
-  // import GeoJSON from 'ol/format/GeoJSON';
-  // import VectorLayer from 'ol/layer/Vector';
-  // import VectorSource from 'ol/source/Vector';
-
-  import {parseStyle} from '../../../packages'
-  // import china from '../../data/china.json'
-
-  const data = require('./1571536803162.json')
-  
-  
+<script> 
  
   
+ import './xdh-zoom-tools.scss'; 
+ import {ZoomSlider, Zoom} from 'ol/control'
+ import Control from 'ol/control/Control'; 
   
   export default {
     
@@ -29,21 +22,8 @@
       return {
         map: null,
         view: null, 
-        fill: null,
-        state: data,
-        layerProps: {title: 'myLayer'},
-        style: parseStyle({
-          className: 'Style',
-          fill: {
-            className: 'Fill',
-            color: 'transparent'
-          },
-          stroke: {
-            className: 'Stroke',
-            color: 'red',
-            width: 3
-          }
-        }),
+        fill: null, 
+        
         target: [113.38542938232422, 23.040218353271484]
        
       }
@@ -52,45 +32,36 @@
        
     },
     methods: {
-      composeHandle(e) {
-        // console.log('mapCompose', e)
-        let context = e.context
-        // console.log(context)
-        context.shadowOffsetX = 0
-        context.shadowOffsetY = 0
-        context.shadowBlur = 10;
-        context.shadowColor = 'blue'
-      },
+       
       mapReady(map) {
         this.map = map
-      },
-      precomposeHandle(e) {
-        let context = e.context
-        // console.log(context)
-        context.shadowOffsetX = 0
-        context.shadowOffsetY = 0
-        context.shadowBlur = 10;
-        context.shadowColor = 'blue'
-      },
-      mapClickHandle(e) {
-        console.log(e)
-      },
-      featureClick(e) {
-        console.log('feature', e)
-      },
-      
-      drawDefineFn(feature) {
-        feature.setStyle(this.style)
-      },
-      hoverHandle() {
-        console.log('in')
-      },
-      hoverOutHandle() {
-        console.log('out')
+        // let test = document.createElement('DIV')
+        // test.className = 'xdh-zoom-tools'
+        let control = new Control({ 
+          element: this.$refs.test
+        })
+        console.log(control)
+        var zoomslider = new ZoomSlider({
+          target: this.$refs.test,
+          className: 'xdh-zoom-slider'
+        });
+        var zoom = new Zoom({
+          target: this.$refs.test,
+          className: 'xdh-zoom'
+        })
+         
+        // c.addControl(zoomslider);
+        zoomslider.setTarget(this.$refs.test)
+        this.map.addControl(control);
+        this.map.addControl(zoom);
+        this.map.addControl(zoomslider);
+
+       
       }
+      
     },
     created() {
-      console.log(this.data)
+      
     },
     mounted() {
     }
@@ -105,4 +76,22 @@
   // background: black;
   border:1px solid red;
 }
+
+.zoom-warp{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px;
+  border: 1px solid red;
+}
+
+ 
+.xdh-zoom-tools{
+  position: absolute;
+  bottom: 10px;
+  right: 10px; 
+  // padding: 5px;
+}
+ 
+ 
 </style>

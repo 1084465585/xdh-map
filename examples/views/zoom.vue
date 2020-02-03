@@ -1,10 +1,10 @@
 <template>
-  <example>
-    <xdh-map>
-      <xdh-map-zoom placement="left-top" theme="dark" :margin="[10]"></xdh-map-zoom>
-      <xdh-map-zoom placement="left-bottom" theme="light" :margin="[10]"></xdh-map-zoom>
-      <xdh-map-zoom placement="right-top" theme="dark" :margin="[10]"></xdh-map-zoom>
-      <xdh-map-zoom placement="right-bottom" theme="light" :margin="[10]"></xdh-map-zoom>
+  <example> 
+    <xdh-map :zoom.sync="zoom" @ready="mapReady">
+      <xdh-map-zoom placement="left-top"></xdh-map-zoom>
+      <xdh-map-zoom placement="right-top" theme="dark" :slider="true"></xdh-map-zoom> 
+      <xdh-map-zoom placement="left-bottom" slider="inside"></xdh-map-zoom>
+      <xdh-map-zoom placement="right-bottom" theme="dark" :slider="true" horizontal></xdh-map-zoom>  
     </xdh-map>
   </example>
 
@@ -12,6 +12,25 @@
 
 <script>
   export default {
+    data() {
+      return {
+        zoom: 8,
+        view: null
+      }
+    },
+    methods: {
+      test() {
+        this.zoom = 10
+      },
+      mapReady(map) {
+        this.view = map.getView()
+        console.log('view', this.view)
+
+        this.view.on('change', (e) => {
+          console.log('change', e)
+        })
+      }
+    }
   }
 </script>
 

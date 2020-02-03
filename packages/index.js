@@ -16,7 +16,7 @@ import Placement from './placement'
 import Pointer from './pointer'
 import Image from './image'
 import Overview from './overview'
-import Zoom from './zoom'
+
 import Scale from './scale'
 import Html from './html'
 import Icon from './icon'
@@ -37,6 +37,7 @@ import Panel from './tools/panel'
 import Dialog from './tools/dialog'
 import Drawdown from './tools/drawdown'
 import Warp from './tools/warp'
+import Zoom from './zoom'
 
 import Drag from '../utils/interactions/drag'
 import AreaSelect from '../utils/interactions/area-select'
@@ -53,7 +54,6 @@ const components = [
   Pointer,
   Image,
   Overview,
-  Zoom,
   Scale,
   Html,
   Icon,
@@ -70,6 +70,7 @@ const components = [
   Geo,
   Geolayer,
   Group,
+  Zoom,
   // ---纯html组件----
   Panel,
   Dialog,
@@ -97,7 +98,6 @@ export const XdhMapLine = Line
 export const XdhMapPlacement = Placement
 export const XdhMapPointer = Pointer
 export const XdhMapOverview = Overview
-export const XdhMapZoom = Zoom
 export const XdhMapScale = Scale
 export const XdhMapImage = Image
 export const XdhMapHtml = Html
@@ -115,6 +115,7 @@ export const XdhMapMask = Mask
 export const XdhMapGeo = Geo
 export const XdhMapGeoLayer = Geolayer
 export const XdhMapGroup = Group
+export const XdhMapZoom = Zoom
 // ---------------
 export const XdhMapPanel = Panel
 export const XdhMapDialog = Dialog

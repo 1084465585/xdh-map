@@ -1,0 +1,23 @@
+@import "vars";
+
+.xdh-map-zoom {
+  &__btn {
+    padding: 2px 5px;
+    cursor: pointer;
+    display: block;
+    &:hover {
+      color: $--primary-color;
+    }
+  }
+  &__split {
+    width: 24px;
+    height: 1px;
+    display: block;
+    margin: auto;
+    background: rgba(150, 150, 150, 0.3);
+  }
+
+  i {
+    font-size: 24px;
+  }
+}

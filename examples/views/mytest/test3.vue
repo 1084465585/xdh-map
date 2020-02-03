@@ -1,56 +1,25 @@
 <template>
-  <example>
-    <div style="height: 400px">
-      <xdh-map ref="map" type="Baidu" :zoom="zoom" :center="target" @ready="mapReady" >
-
-        <xdh-map-group v-if="textArray.length" :data="textArray" coor-prop="position"  @on-groupInit="groupsInit"
-          :groups-set="groupSet" :rang="range" :coorProp="coorProp"
-        >
-          <template  slot="group" slot-scope="scope">
-            <xdh-map-html :visible="!scope.group.detailShow" :position="scope.group.center" @click="groupPointClick(scope.group, scope.data)">
-              <div class="group"  >{{scope.group.name}}</div>
-            </xdh-map-html>
-          </template>
-          <template slot="point" slot-scope="scope">
-            <xdh-map-html :position="scope.point.position" >
-              <div class="point" ></div>
-            </xdh-map-html>
-            <!-- <xdh-map-text  v-bind="scope.point" ></xdh-map-text> -->
-          </template>
-          
-        </xdh-map-group>
-        
-      </xdh-map>
-    </div>  
-    <button @click="showAllClick(true)">show all</button> <button @click="showAllClick(false)">hide</button>
-    
+  <example> 
+    <xdh-map ref="map"  :zoom="zoom" :center="target" @ready="mapReady" > 
+    </xdh-map>  
   </example>
 </template>
 <style scoped lang="scss">
-.group{
-  padding: 0 5px;
-  // width: 40px; 
-  height: 40px; 
-  background: red; 
-  line-height: 40px;
-  text-align: center;
-  
-}
-.point{
-  width: 20px; 
-  height: 20px; 
-  background: blue; 
-  border-radius: 50%;
-}
+ 
 </style>
 
 <script>  
+import Point from 'ol/geom/Point';
+import Feature from 'ol/Feature'; 
+import {easeOut} from 'ol/easing'; 
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import {getVectorContext} from 'ol/render';
+import {parseStyle} from '../../../packages'
+// import {unByKey} from 'ol/Observable';
 const random = function(x, y) {
   return (y - x) * Math.random() + x
-} 
-const RANGE = 300
-const COOR_PORP = 'position'
-const TOTAL = 80
+}
 export default {
   
   data() {
@@ -59,13 +28,10 @@ export default {
       map: null,
       view: null,  
       zoom: 7,
-      
-      range: RANGE,
-      coorProp: COOR_PORP,
-      
-      total: TOTAL,
-      textArray: [],
-      groups: []
+
+      source: null,
+      vectorLayer: null,
+      points: []
        
     }
   },
@@ -75,78 +41,113 @@ export default {
   methods: {
     mapReady(map) {
       this.map = map
-      this.view = this.map.getView()
+      this.view = this.map.getView() 
       
-      this.view.on('change', this.viewChangeHandle)
-    },  
-    groupPointClick(group, groups) {
-      groups.forEach((group) => {
-        group.detailShow = false
+      this.source = new VectorSource({})
+      this.vectorLayer = new VectorLayer({
+        source: this.source
       })
-      this.$nextTick(() => {
-        group.detailShow = true
-        if (group.points.length === 1) {
-          this.$refs.map.moveTo(group.points[0].position)
-        } else {
-          this.$refs.map.zoomAt(group.area, {maxZoom: 10})
-        }
+      this.map.addLayer(this.vectorLayer) 
+
+      console.log(this.points)
+
+      
+      this.points.forEach((point) => {
+
+        let geom = new Point(point.position);
+        let feature = new Feature(geom);
+        setTimeout(() => {  
+          this.source.addFeature(feature)
+        }, Math.random() * 2000)
+      })
+       
+      
+      
+
+      this.source.on('addfeature', (e) => { 
+        let feature = e.feature
+        this.start = new Date().getTime();
+        this.listenerKey = this.vectorLayer.on('postrender', e => {
+         
+          this.runAnimate(e, feature) 
+        }) 
+      });
+    },
+    runAnimate(e, feature) {
+      let vectorContext = getVectorContext(e);
+      let frameState = e.frameState;
+      let flashGeom = feature.getGeometry().clone();
+      let elapsed = frameState.time - this.start;  
+      this._animate(vectorContext, flashGeom, elapsed, '0, 255, 0') 
+      
+        this._animate(vectorContext, flashGeom, elapsed, '0, 0, 250')
+      
+       
+      
+      if (elapsed > 1500) {
+        this.start = new Date().getTime(); 
+        let elapsed = frameState.time - this.start; 
+        this._animate(vectorContext, flashGeom, elapsed, '0, 255, 0')
+        this._animate(vectorContext, flashGeom, elapsed, '0, 0, 250')
         
-      }) 
-    }, 
-    groupSet(groups) {
-      return groups.map((item, index) => {
-        return {
-          ...item,
-          name: `组${index}(${item.points.length})`
-        }
-      })
-    },
-    groupsInit(groups) {
-      this.groups = groups
-      // console.log(this.groups)
-    },
-    showAllClick(flag) {
-      this.groups.forEach((group) => {
-        group.detailShow = flag
-      })
-    },
-    viewChangeHandle(e) {
-      if (this.timer) {
-        clearTimeout(this.timer)
+        // unByKey(this.listenerKey)
+        // return
       }
-      this.timer = setTimeout(() => { 
-        if (e.target.getZoom() < this.zoom) {
-          console.log(e.target.getZoom(), this.zoom)
-          this.groups.forEach((group) => {
-            group.detailShow = false
-          })
-        }
-      }, 500)
+
+      // tell OpenLayers to continue postrender animation
+      this.map.render();
+    },
+    _animate(vectorContext, flashGeom, elapsed, color = '255, 0, 0') { 
       
-    },  
-    createTexts() {
-      let texts = []
-      for (let i = 0; i < this.total; i++) { 
-        texts.push({
-          position: [random(107, 119), random(20.8, 25.2)],
-          text: `${i}`,
-          font: '12px',
-          background: '#fff',
-          strokeColor: 'red',
-          padding: [5, 5, 5, 5],
-          color: 'blue'
+      let elapsedRatio = elapsed / 1500 
+      let radius = easeOut(elapsedRatio) * 25 + 3; 
+      let opacity = easeOut(1 - elapsedRatio * 1.9)
+      const _style = function (color) {
+        return parseStyle({
+          className: 'Style',
+          image: {
+            className: 'Circle',
+            radius: radius,
+            fill: {
+              className: 'Fill',
+              color: `rgba(${color}, ${opacity})`
+            } 
+          }
         })
       }
-      return texts
+      // vectorContext.setStyle(_style());
+      // vectorContext.drawGeometry(flashGeom);
+      // setTimeout(() => {
+      //   vectorContext.setStyle(_style('0, 0, 0')); 
+      //   vectorContext.drawGeometry(flashGeom) 
+      // }, 200) 
+      vectorContext.setStyle(_style(color));  
+      vectorContext.drawGeometry(flashGeom) 
+       
+    },
+
+    createPoints(total) {
+      let points = []
+      for (let i = 0; i < total; i++) {
+        points.push({
+          position: [random(107, 119), random(20.8, 25.2)]
+        })
+      }
+      return points
     } 
     
     
   },
-  created() { 
-    this.textArray = this.createTexts()
+  created() {
+    
+    
+
+    this.points = this.createPoints(2)
   },
   mounted() {
-     
+    /*
+    
+    */
   },
   beforeDestroy() {
      

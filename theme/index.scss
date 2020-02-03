@@ -8,7 +8,7 @@
 @import "overview";
 @import "scale";
 @import "./scatter";
-@import "./zoom";
+// @import "./zoom";
 @import "./measure";
 @import "./tooltip";
 @import "./drawdown";
@@ -23,7 +23,6 @@
   height: 100%;
   position: relative;
   box-sizing: border-box;
-
 }
 
 .clearfix {

@@ -1,6 +1,7 @@
 @import './_vars.scss';
 
 .xdh-map-overview {
+ 
   box-shadow: $--shadow-base;
   transition: all 0.3s;
   .ol-overviewmap, .ol-overviewmap-map {
@@ -67,5 +68,5 @@
       top: 10px;
     }
   }
-
+  
 }

@@ -1,4 +1,4 @@
-import {Atlas, AtlasManager, Circle, Fill, Icon, IconImage, Image, RegularShape, Stroke, Style, Text} from 'ol/style'
+import {Circle, Fill, Icon, IconImage, Image, RegularShape, Stroke, Style, Text} from 'ol/style' // Atlas, AtlasManager, 
 
 /**
  * style json对象解析，通过传入json格式数据解析成Style实例
@@ -45,7 +45,7 @@ import {Atlas, AtlasManager, Circle, Fill, Icon, IconImage, Image, RegularShape,
  *  })
  */
 
-const StyleMap = {Atlas, AtlasManager, Circle, Fill, Icon, IconImage, Image, RegularShape, Stroke, Style, Text}
+const StyleMap = {Circle, Fill, Icon, IconImage, Image, RegularShape, Stroke, Style, Text} // Atlas, AtlasManager, 
 
 export function parse(options) {
   if (options && options.className && StyleMap[options.className]) {
