@@ -32,3 +32,32 @@
 ```
 
 :::
+
+## zoom-panel
+
+:::demo
+
+```html
+<template>
+  <div style="height: 500px;">
+  <xdh-map>
+    <xdh-map-zoom-panel placement="left"></xdh-map-zoom-panel>
+    <xdh-map-zoom-panel placement="top"></xdh-map-zoom-panel>
+    <xdh-map-zoom-panel placement="bottom"></xdh-map-zoom-panel>
+    <xdh-map-zoom-panel placement="right"></xdh-map-zoom-panel>
+  </xdh-map>
+  </div>
+</template>
+
+<script>
+  import { XdhMap, XdhMapZoomPanel } from 'xdh-map';
+  export default {
+    components: {
+      XdhMap,
+      XdhMapZoomPanel
+    }
+  };
+</script>
+```
+
+:::

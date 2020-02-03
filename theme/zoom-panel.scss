@@ -1,0 +1,112 @@
+.ol-viewport, .ol-unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+.ol-control {
+  position: absolute;
+  border-radius: 4px;
+  padding: 2px;
+  button {
+    display: block;
+    margin: 1px;
+    padding: 0;
+    color: white;
+    font-size: 1.14em;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    height: 1.375em;
+    width: 1.375em;
+    line-height: .4em; 
+    border: none;
+    border-radius: 2px;
+    outline:none;
+    cursor: pointer;
+    &::-moz-focus-inner {
+      border: none;
+      padding: 0;
+    }
+  }
+}
+
+.xdh-zoom-panel{
+  .ol-control {
+    position: relative;
+  }
+  
+  .xdh-zoom{
+    // border: 1px solid red;
+    .xdh-zoom-in, .xdh-zoom-out{ 
+      border-radius: 50%;
+      box-shadow: 0 0 5px 1px rgba(95, 100, 119, 0.6);
+    } 
+    .xdh-zoom-in, .xdh-zoom-out{
+      color: #5f6477;
+      background-color: rgba(255, 255, 255, 1);
+    }
+  }
+
+  .xdh-zoom-slider{
+    position: absolute;
+    // margin-top: 3px; 
+    // height: 5px;
+    background-color: rgba(150, 150, 150, 0.8);
+    button {
+      position: relative;
+      height: 16px;
+      width: 16px;
+      // margin-top: -6px;
+      border-radius: 50%;
+      box-shadow: 0 0 5px 1px rgba(95, 100, 119, 0.6);
+    }
+    .xdh-zoom-slider-thumb {
+      background-color: rgba(255, 255, 255, 0.9); 
+    }
+    a.xdh-zoom-slider-handle:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  &.top, &.bottom{
+    .xdh-zoom-out{
+      position: absolute;
+      right: 0px;
+      top: 0px; 
+    } 
+    .xdh-zoom-slider{
+      width: calc(100% - 90px);
+      left: 45px;
+      top: 12px;
+      margin-top: 3px; 
+      height: 5px;
+      button {
+        margin-top: -6px;
+      }
+    }
+  }
+  &.left, &.right{
+    .xdh-zoom{
+      height: 100%;
+    }
+    .xdh-zoom-out{
+      position: absolute;
+      // left: 0px;
+      bottom: 0px;  
+    }
+    .xdh-zoom-slider{
+      height: calc(100% - 90px);
+      top: 45px;
+      left: 16px;
+      // margin-left: 3px; 
+      width: 5px;
+      button {
+        margin-left: -5px;
+      }
+    }
+  } 
+}
+

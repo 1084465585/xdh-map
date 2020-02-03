@@ -1,10 +1,11 @@
 <template>
   <example> 
     <xdh-map :zoom.sync="zoom" @ready="mapReady">
-      <xdh-map-zoom placement="left-top"></xdh-map-zoom>
+      <xdh-map-zoom-panel placement="right"></xdh-map-zoom-panel>
+      <!-- <xdh-map-zoom placement="left-top"></xdh-map-zoom>
       <xdh-map-zoom placement="right-top" theme="dark" :slider="true"></xdh-map-zoom> 
       <xdh-map-zoom placement="left-bottom" slider="inside"></xdh-map-zoom>
-      <xdh-map-zoom placement="right-bottom" theme="dark" :slider="true" horizontal></xdh-map-zoom>  
+      <xdh-map-zoom placement="right-bottom" theme="dark" :slider="true" horizontal></xdh-map-zoom>   -->
     </xdh-map>
   </example>
 
@@ -24,11 +25,6 @@
       },
       mapReady(map) {
         this.view = map.getView()
-        console.log('view', this.view)
-
-        this.view.on('change', (e) => {
-          console.log('change', e)
-        })
       }
     }
   }
