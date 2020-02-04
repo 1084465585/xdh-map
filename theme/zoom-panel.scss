@@ -1,3 +1,4 @@
+@import './_vars.scss';
 .ol-viewport, .ol-unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -7,9 +8,9 @@
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 .ol-control {
-  position: absolute;
-  border-radius: 4px;
-  padding: 2px;
+  // position: absolute;
+  // border-radius: 4px;
+  // padding: 2px;
   button {
     display: block;
     margin: 1px;
@@ -36,38 +37,36 @@
 .xdh-zoom-panel{
   .ol-control {
     position: relative;
+    border-radius: 4px;
   }
   
   .xdh-zoom{
     // border: 1px solid red;
     .xdh-zoom-in, .xdh-zoom-out{ 
       border-radius: 50%;
-      box-shadow: 0 0 5px 1px rgba(95, 100, 119, 0.6);
+      box-shadow: $--zoom-panel-btn-shadow;
     } 
     .xdh-zoom-in, .xdh-zoom-out{
-      color: #5f6477;
-      background-color: rgba(255, 255, 255, 1);
+      color: $--zoom-panel-btn-color;
+      background-color: $--zoom-panel-btn-bg;
     }
   }
 
   .xdh-zoom-slider{
     position: absolute;
-    // margin-top: 3px; 
-    // height: 5px;
-    background-color: rgba(150, 150, 150, 0.8);
+    background-color: $--zoom-panel-slider-bg;
     button {
       position: relative;
       height: 16px;
       width: 16px;
-      // margin-top: -6px;
       border-radius: 50%;
-      box-shadow: 0 0 5px 1px rgba(95, 100, 119, 0.6);
+      box-shadow: $--zoom-panel-btn-shadow;
     }
     .xdh-zoom-slider-thumb {
-      background-color: rgba(255, 255, 255, 0.9); 
+      background-color: $--zoom-panel-slider-btn-bg;
     }
     a.xdh-zoom-slider-handle:hover {
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: $--zoom-panel-slider-btn-bg;
     }
   }
 

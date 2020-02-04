@@ -51,3 +51,19 @@ $--dialog-light-color: #5f6477;
 $--dialog-dark-color: #ddd;
 $--dialog-title-bg-light: rgba(243, 235, 235, 0.9); // #ddd;
 $--dialog-title-bg-dark: rgba(0, 0, 0, .9);
+
+$--zoom-bg: rgba(150, 150, 150, 0.6); 
+$--zoom-btn-bg-light: rgba(255, 255, 255, 1);
+$--zoom-btn-color-light: #5f6477;
+$--zoom-slider-bg-light: rgba(150, 150, 150, 0.3);
+$--zoom-slider-btn-bg-light: rgba(255, 255, 255, 0.9); 
+$--zoom-btn-bg-dark: rgba(0, 0, 0, 0.9);
+$--zoom-btn-color-dark: #ddd;
+$--zoom-slider-bg-dark: rgba(150, 150, 150, 0.6); 
+$--zoom-slider-btn-bg-dark: rgba(0, 0, 0, 0.9);
+
+$--zoom-panel-btn-shadow: 0 0 5px 1px rgba(95, 100, 119, 0.6);
+$--zoom-panel-btn-bg: rgba(255, 255, 255, 1);
+$--zoom-panel-btn-color: #5f6477;
+$--zoom-panel-slider-bg: rgba(150, 150, 150, 0.8);
+$--zoom-panel-slider-btn-bg: rgba(255, 255, 255, 0.9); 

@@ -12,6 +12,7 @@
    * 鹰眼控件
    * @module xdh-map-overview
    */
+  // import '../../../theme/ol.css'
   import {OverviewMap} from 'ol/control.js'
   import View from 'ol/View'
   import XdhMapPlacement from '../../placement'
