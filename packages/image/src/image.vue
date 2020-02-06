@@ -60,9 +60,15 @@
     mixins: [FeatureMixin, BaseMixin, StrokeMixin, TextMixin, factoryMixin, CleanMixin],
     props: props,
     watch: {
-      radius() {
-        this.update()
-      }
+      anchor(value) { this.redraw() },
+      crossOrigin(value) { this.redraw() },
+      offset(value) { this.redraw() },
+      opacity(value) { this.redraw() },
+      scale(value) { this.redraw() },
+      rotateWithView(value) { this.redraw() },
+      rotation(value) { this.redraw() },
+      src(value) { this.redraw() }
+      // radius(value) { this.redraw() }
     },
     methods: {
       createStyle() {

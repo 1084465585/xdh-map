@@ -181,6 +181,27 @@ export const pointClot = function(points, distance, prop) {
   })
 }
 
+export const svgToImg = function(fontClass, size, color, fontFamily = 'IconFont') {
+  let canvas = document.createElement('CANVAS')
+  canvas.width = size
+  canvas.height = size
+  let ctx = canvas.getContext('2d')
+
+  let span = document.createElement('SPAN')
+  span.className = fontClass
+  document.body.appendChild(span) 
+  let content = window.getComputedStyle(span, '::before').content
+
+  ctx.fillStyle = color;
+  ctx.font = `${size - 2}px ${fontFamily}`;
+
+  ctx.textAlign = 'center'
+  ctx.fillText(content, size / 2, size - 4);
+  let img = canvas.toDataURL('base64')
+  document.body.removeChild(span)
+  return img
+}
+
 export const olExtent = Extent
 
 export const olSphere = Sphere
