@@ -15,6 +15,7 @@ import { parse } from 'utils/style'
 import { Draw, Modify } from 'ol/interaction.js'
 import CleanMixin from 'utils/mixins/clean'
 import { convertFromWgs84 } from 'utils/convert'
+import smooth from 'chaikin-smooth';
 /**
  * 参数属性
  * @member props
@@ -71,7 +72,18 @@ const vueProps = {
 
   freehand: Boolean,
   // Wrap the world horizontally on the sketch overlay.
-  wrapX: Boolean
+  wrapX: Boolean,
+
+  smooth: Number
+}
+
+const makeSmooth = function(path, numIterations) {
+  numIterations = Math.min(Math.max(numIterations, 1), 10);
+  while (numIterations > 0) {
+    path = smooth(path);
+    numIterations--;
+  }
+  return path;
 }
 
 export default {
@@ -170,6 +182,10 @@ export default {
       this.$emit('modifystart', e)
     },
     handleDraw(e) {
+      //  && (this.smooth && this.smooth >= 2)
+      if (this.type === 'LineString') {
+        this._smothLine(e.feature)
+      }
       let featureClone
       if (this.coordType !== 'WGS84') {
         let originCoord = [],
@@ -192,6 +208,7 @@ export default {
       e.convert = {
         feature: featureClone
       }
+      
       this.features.push(e.feature)
       /**
        * 画图结束时触发
@@ -199,6 +216,12 @@ export default {
        * @param {object} e 事件对象
        */
       this.$emit('drawend', e)
+    },
+    _smothLine(feature) {
+      let geometry = feature.getGeometry()
+      let coords = geometry.getCoordinates()
+      let smoothened = makeSmooth(coords, this.smooth)
+      geometry.setCoordinates(smoothened)  
     },
     /**
      * 清除已画的图形

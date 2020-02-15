@@ -175,7 +175,7 @@ const router = new Router({
           // -----------测试用页面---------
           {
             path: 'mytest/test',
-            component: () => import('./views/mytest/test')
+            component: () => import('./views/mytest/test4')
           }
         ]
       }
