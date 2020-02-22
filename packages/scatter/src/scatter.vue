@@ -7,13 +7,14 @@
    * 水波涟漪动画组件
    * @module xdh-map-scatter
    */
- 
-  import {getParent} from 'utils/util'
+  import {mapReady, getParent} from 'utils/util' 
   import CleanMixin from 'utils/mixins/clean'
   import Feature from 'ol/Feature'
   import {parseStyle} from '../../../packages'
   import {easeOut} from 'ol/easing'; 
   import Point from 'ol/geom/Point'
+  import {pointerMove} from 'ol/events/condition.js'
+  import Select from 'ol/interaction/Select.js'
 
   const DURATION = 1200
 
@@ -37,10 +38,10 @@
         type: Number,
         default: 10
       },
-      // outer: {
-      //   type: Number,
-      //   default: 10
-      // },
+      outer: {
+        type: Number,
+        default: 20
+      },
       position: {
         type: Array,
         default: () => { return [0, 0] }
@@ -48,9 +49,10 @@
     },
     data() {
       return {
+        map: null,
+        parent: null,
         now: null, 
         scater: null,
-        outer: 10,
         // out1: null,
         // out2: null,
         // out3: null, 
@@ -62,6 +64,12 @@
       
     },
     methods: {
+      ready(map) {
+        this.map = map
+         
+        this.createPoint()
+      
+      },
       createPoint() {
         this.scatter = new Feature({
           geometry: new Point(this.position)
@@ -102,7 +110,7 @@
         
         this.animateStart()
          
-
+        this.bindEvents()
       },
       animateStart() {
         this.now = new Date().getTime();
@@ -115,8 +123,8 @@
         let elapsed = current - this.now
         let elapsedRatio = elapsed / DURATION
         
-        let radius1 = this.inner + easeOut(elapsedRatio) * this.outer
-        let opacity1 = easeOut(elapsedRatio) // * 2
+        let radius1 = this.inner + (elapsedRatio * this.outer)
+        let opacity1 = easeOut(elapsedRatio)
 
         // let radius2 = this.inner / 2 + easeOut(elapsedRatio) * (this.outer + this.inner / 2)
         // let opacity2 = easeOut(elapsedRatio) * 1
@@ -124,16 +132,16 @@
         // let radius3 = easeOut(elapsedRatio) * (this.outer + this.inner / 2)
         // let opacity3 = easeOut(elapsedRatio) * 0.9
 
-        let radius4 = easeOut(elapsedRatio) * (this.outer + this.inner + 5)
-        let opacity4 = easeOut(elapsedRatio)
+        // let radius4 = elapsedRatio * (this.outer + this.inner + 5)
+        // let opacity4 = easeOut(elapsedRatio)
         
          
         const _style1 = this._outerStyle(radius1, opacity1) 
         // const _style2 = this._outerStyle(radius2, opacity2)
         // const _style3 = this._outerStyle(radius3, opacity3)
-        const _style4 = this._outerStyle(radius4, opacity4)
+        // const _style4 = this._outerStyle(radius4, opacity4)
         
-        this.scatter.setStyle([this.coreStyle, _style1, _style4]) // _style2, _style3, _style4
+        this.scatter.setStyle([this.coreStyle, _style1]) // _style2, _style3, _style4
         if (elapsed > DURATION) { 
           this.now = new Date().getTime() 
         } 
@@ -147,13 +155,56 @@
             radius: radius,
             fill: {
               className: 'Fill',
-              color: 'transparent' // `rgba(255, 0, 0, ${(1 - opacity) * 0.6})`
+              color: `rgba(${this.color}, ${(1 - opacity) * 0.6})`
             },
             stroke: {
               className: 'Stroke',
-              color: `rgba(${this.color}, ${1 - opacity})`, // 
+              color: `rgba(${this.color}, ${1 - opacity})`, 
               width: 2
             } 
+          }
+        })
+      },
+      bindEvents() {
+        let obj = Object.assign({}, this.$listeners)
+        // console.log('listen', obj)
+        for (let key in obj) {
+          if (key === 'mouseLeave' || key === 'mouseEnter' || key === 'pointermove') {
+            // if (key === 'mouseEnter') {
+            //   this.parent.$el.style.cursor = 'pointer'
+            // } else if (key === 'mouseLeave') {
+            //   this.parent.$el.style.cursor = 'auto'
+            // }
+            return
+          } else {
+            this.parent._bind(key, this.scatter, obj[key], this._uid)
+          }
+        }
+
+        this.select = new Select({condition: pointerMove})
+        this.map.addInteraction(this.select)
+        this.select.on('select', (e) => {
+          if (e.selected.length) {
+            this.$nextTick(() => {
+              /**
+               * 鼠标进入某个feature时触发
+               * @event mouseEnter
+               * @param {Object} event
+               * @param {ol/Feature} feature
+               */
+              this.$emit('mouseEnter', e, e.selected[0])
+              this.parent.$el.style.cursor = 'pointer'
+            })
+          }
+          if (e.deselected.length) {
+            /**
+               * 鼠标离开某个feature时触发
+               * @event mouseEnter
+               * @param {Object} event
+               * @param {ol/Feature} feature
+               */
+            this.$emit('mouseLeave', e, e.deselected[0])
+            this.parent.$el.style.cursor = 'auto'
           }
         })
       }
@@ -162,9 +213,7 @@
       this.parent = getParent.call(this)
     },
     mounted() {
-      this.$nextTick(() => {
-        this.createPoint()
-      })
+      mapReady.call(this, this.ready)
       
     }
   }

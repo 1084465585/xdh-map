@@ -1,7 +1,7 @@
 <template>
   <example>
     <xdh-map >
-      <xdh-map-scatter v-for="(item, index) in arr" :key="index" :position="item.position" :inner="item.inner" :color="item.color" ></xdh-map-scatter>
+      <xdh-map-scatter v-for="(item, index) in arr" :key="index" :position="item.position" :inner="item.inner" :color="item.color" @click="scatterClick"></xdh-map-scatter>
        <!-- <xdh-map-scatter :position="[120, 30]" :outer="20"></xdh-map-scatter> -->
     </xdh-map>
   </example>
@@ -32,7 +32,10 @@ const random = function (start, end) {
           })
         }
         return arr
-      }  
+      },
+      scatterClick(e) {
+        console.log('scater e', e)
+      } 
 
     },
     created() {
