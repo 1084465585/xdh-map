@@ -205,3 +205,58 @@ export const svgToImg = function(fontClass, size, color, fontFamily = 'IconFont'
 export const olExtent = Extent
 
 export const olSphere = Sphere
+
+// --------------曲线点生成函数-----------------
+// 阶乘
+const factorial = function (num) {
+  if (num <= 1) {
+      return 1;
+  } else {
+      return num * factorial(num - 1);
+  }
+}
+
+/*
+ * 生成贝塞尔曲线插值点
+ * @para n {number} 控制点数量
+ * @para arrPoints {array} 控制点坐标集合
+ */ 
+export const createBezierCurvePoints = function (n, arrPoints) {
+  var Ptx = 0;
+  var Pty = 0;
+
+  var arrbline = [];
+  for (var t = 0; t < 1; t = t + 0.01) {
+    Ptx = 0;
+    Pty = 0;
+    for (var i = 0; i <= n; i++) {
+      Ptx += (factorial(n) / (factorial(i) * factorial(n - i))) * Math.pow((1 - t), n - i) * Math.pow(t, i) * arrPoints[i][0];
+      Pty += (factorial(n) / (factorial(i) * factorial(n - i))) * Math.pow((1 - t), n - i) * Math.pow(t, i) * arrPoints[i][1];
+    }
+
+    arrbline.push([Ptx, Pty]);
+  }
+  return arrbline;
+} 
+
+export const createCurve = function (start, end, dir) {
+  let centerLon = start[0] + (end[0] - start[0]) / 2
+  let centerLat = start[1] + (end[1] - start[1]) / 2
+  let newCenterLon, newCenterLat
+  if (end[0] - start[0] === 0) {
+    newCenterLon = centerLon + dir
+    newCenterLat = centerLat
+  } else if (end[1] - start[1] === 0) {
+    newCenterLon = centerLon
+    newCenterLat = centerLat + dir
+  } else if (end[1] - start[1] === end[0] - start[0]) {
+    newCenterLon = centerLon + dir
+    newCenterLat = centerLat - dir
+  } else {
+    newCenterLon = centerLon + dir
+    newCenterLat = centerLat + dir
+  } 
+  let newCenter = [newCenterLon, newCenterLat]
+  // console.log('line', [start, newCenter, end], centerLon, centerLat)
+  return createBezierCurvePoints(2, [start, newCenter, end]) 
+}

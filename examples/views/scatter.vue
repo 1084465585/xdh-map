@@ -15,7 +15,7 @@ const random = function (start, end) {
     data() {
       return {
         arr: [],
-        total: 20
+        total: 400
       }
     },
     methods: {

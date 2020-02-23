@@ -42,6 +42,7 @@ import ZoomPanel from './zoom/panel'
 
 import Drag from '../utils/interactions/drag'
 import AreaSelect from '../utils/interactions/area-select'
+import * as utils from '../utils/util'
 import '../theme/index.scss'
 
 const components = [
@@ -127,12 +128,14 @@ export const XdhMapWarp = Warp
 export const parseStyle = parse
 export const DragClass = Drag
 export const AreaSelectClass = AreaSelect
+export const mapUtils = utils
 
 
 export default {
   version: '1.1.15',
   install,
-  parseStyle, 
+  parseStyle,
+  mapUtils,  
   Map,
   Text,
   Rectangle,

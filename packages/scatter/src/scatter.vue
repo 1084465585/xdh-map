@@ -13,10 +13,12 @@
   import {parseStyle} from '../../../packages'
   import {easeOut} from 'ol/easing'; 
   import Point from 'ol/geom/Point'
-  import {pointerMove} from 'ol/events/condition.js'
-  import Select from 'ol/interaction/Select.js'
+  // import {pointerMove} from 'ol/events/condition.js'
+  // import Select from 'ol/interaction/Select.js'
 
-  const DURATION = 1200
+  const DURATION = function (start, end) {
+    return start + Math.round((end - start) * Math.random())
+  }
 
   export default {
     name: 'XdhMapScatter',
@@ -53,11 +55,8 @@
         parent: null,
         now: null, 
         scater: null,
-        // out1: null,
-        // out2: null,
-        // out3: null, 
-
-        coreStyle: null
+        coreStyle: null,
+        duration: DURATION(1000, 2000) // 1200
       }
     },
     computed: {
@@ -121,7 +120,7 @@
       expand() {
         let current = new Date().getTime()
         let elapsed = current - this.now
-        let elapsedRatio = elapsed / DURATION
+        let elapsedRatio = elapsed / this.duration
         
         let radius1 = this.inner + (elapsedRatio * this.outer)
         let opacity1 = easeOut(elapsedRatio)
@@ -142,7 +141,7 @@
         // const _style4 = this._outerStyle(radius4, opacity4)
         
         this.scatter.setStyle([this.coreStyle, _style1]) // _style2, _style3, _style4
-        if (elapsed > DURATION) { 
+        if (elapsed > this.duration) { 
           this.now = new Date().getTime() 
         } 
         window.requestAnimationFrame(this.expand)
@@ -181,32 +180,32 @@
           }
         }
 
-        this.select = new Select({condition: pointerMove})
-        this.map.addInteraction(this.select)
-        this.select.on('select', (e) => {
-          if (e.selected.length) {
-            this.$nextTick(() => {
-              /**
-               * 鼠标进入某个feature时触发
-               * @event mouseEnter
-               * @param {Object} event
-               * @param {ol/Feature} feature
-               */
-              this.$emit('mouseEnter', e, e.selected[0])
-              this.parent.$el.style.cursor = 'pointer'
-            })
-          }
-          if (e.deselected.length) {
-            /**
-               * 鼠标离开某个feature时触发
-               * @event mouseEnter
-               * @param {Object} event
-               * @param {ol/Feature} feature
-               */
-            this.$emit('mouseLeave', e, e.deselected[0])
-            this.parent.$el.style.cursor = 'auto'
-          }
-        })
+        // this.select = new Select({condition: pointerMove})
+        // this.map.addInteraction(this.select)
+        // this.select.on('select', (e) => {
+        //   if (e.selected.length) {
+        //     this.parent.$el.style.cursor = 'pointer'
+        //     this.$nextTick(() => {
+        //       /**
+        //        * 鼠标进入某个feature时触发
+        //        * @event mouseEnter
+        //        * @param {Object} event
+        //        * @param {ol/Feature} feature
+        //        */
+        //       this.$emit('mouseEnter', e, e.selected[0])
+        //     })
+        //   }
+        //   if (e.deselected.length) {
+        //     /**
+        //        * 鼠标离开某个feature时触发
+        //        * @event mouseEnter
+        //        * @param {Object} event
+        //        * @param {ol/Feature} feature
+        //        */
+        //     this.$emit('mouseLeave', e, e.deselected[0])
+        //     this.parent.$el.style.cursor = 'auto'
+        //   }
+        // })
       }
     },
     created() {

@@ -1,6 +1,16 @@
 <template>
   <example> 
-    <xdh-map ref="map"  :zoom="zoom" :center="target" @ready="mapReady" > 
+    <xdh-map ref="map"  :zoom="zoom" :center="target" @ready="mapReady"  > 
+      
+
+      <xdh-map-line v-for="(item, index) in lines" ref="line" :key="`line_${index}`"
+                      :routes="item"
+                      :arrow="false"
+                      :arrow-each="false"
+                      stroke-color="red"
+                      :stroke-width="1" ></xdh-map-line>
+
+      <xdh-map-scatter v-for="(item, index) in scatters" :key="`point_${index}`" :position="item.position" :inner="item.inner" :color="item.color" ></xdh-map-scatter>
     </xdh-map>  
   </example>
 </template>
@@ -8,30 +18,38 @@
  
 </style>
 
-<script>  
-import Point from 'ol/geom/Point';
-import Feature from 'ol/Feature'; 
-import {easeOut} from 'ol/easing'; 
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import {getVectorContext} from 'ol/render';
-import {parseStyle} from '../../../packages'
-// import {unByKey} from 'ol/Observable';
-const random = function(x, y) {
-  return (y - x) * Math.random() + x
+<script>
+// import LineString from 'ol/geom/LineString'   
+// import Feature from 'ol/Feature'
+import {parseStyle, mapUtils} from '../../../packages'
+
+const random = function (start, end) {
+  return start + Math.round((end - start) * Math.random())
 }
+const lineStyle = parseStyle({
+  className: 'Style',
+  stroke: {
+    className: 'Stroke',
+    width: 1,
+    color: 'skyblue'
+  }
+})
 export default {
   
   data() {
     return {
-      target: [113, 23],
+      target: [120, 30],
       map: null,
       view: null,  
       zoom: 7,
 
-      source: null,
-      vectorLayer: null,
-      points: []
+      total: 30,
+      lineStyle: lineStyle,
+
+      arrow: require('../../../sources/arrows/black.png'),
+      lines: [],
+      scatters: [],
+      routes: []
        
     }
   },
@@ -42,112 +60,41 @@ export default {
     mapReady(map) {
       this.map = map
       this.view = this.map.getView() 
-      
-      this.source = new VectorSource({})
-      this.vectorLayer = new VectorLayer({
-        source: this.source
-      })
-      this.map.addLayer(this.vectorLayer) 
-
-      console.log(this.points)
-
-      
-      this.points.forEach((point) => {
-
-        let geom = new Point(point.position);
-        let feature = new Feature(geom);
-        setTimeout(() => {  
-          this.source.addFeature(feature)
-        }, Math.random() * 2000)
-      })
        
-      
-      
-
-      this.source.on('addfeature', (e) => { 
-        let feature = e.feature
-        this.start = new Date().getTime();
-        this.listenerKey = this.vectorLayer.on('postrender', e => {
-         
-          this.runAnimate(e, feature) 
-        }) 
-      });
     },
-    runAnimate(e, feature) {
-      let vectorContext = getVectorContext(e);
-      let frameState = e.frameState;
-      let flashGeom = feature.getGeometry().clone();
-      let elapsed = frameState.time - this.start;  
-      this._animate(vectorContext, flashGeom, elapsed, '0, 255, 0') 
-      
-        this._animate(vectorContext, flashGeom, elapsed, '0, 0, 250')
-      
-       
-      
-      if (elapsed > 1500) {
-        this.start = new Date().getTime(); 
-        let elapsed = frameState.time - this.start; 
-        this._animate(vectorContext, flashGeom, elapsed, '0, 255, 0')
-        this._animate(vectorContext, flashGeom, elapsed, '0, 0, 250')
-        
-        // unByKey(this.listenerKey)
-        // return
-      }
-
-      // tell OpenLayers to continue postrender animation
-      this.map.render();
-    },
-    _animate(vectorContext, flashGeom, elapsed, color = '255, 0, 0') { 
-      
-      let elapsedRatio = elapsed / 1500 
-      let radius = easeOut(elapsedRatio) * 25 + 3; 
-      let opacity = easeOut(1 - elapsedRatio * 1.9)
-      const _style = function (color) {
-        return parseStyle({
-          className: 'Style',
-          image: {
-            className: 'Circle',
-            radius: radius,
-            fill: {
-              className: 'Fill',
-              color: `rgba(${color}, ${opacity})`
-            } 
-          }
+    createScatter() {
+      let arr = []
+      for (let i = 0; i < this.total; i++) {
+        arr.push({
+          position: [120 + (1 - Math.random()), 30 + (1 - Math.random())],
+          inner: random(5, 20),
+          color: `${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)}`
         })
       }
-      // vectorContext.setStyle(_style());
-      // vectorContext.drawGeometry(flashGeom);
-      // setTimeout(() => {
-      //   vectorContext.setStyle(_style('0, 0, 0')); 
-      //   vectorContext.drawGeometry(flashGeom) 
-      // }, 200) 
-      vectorContext.setStyle(_style(color));  
-      vectorContext.drawGeometry(flashGeom) 
-       
-    },
-
-    createPoints(total) {
-      let points = []
-      for (let i = 0; i < total; i++) {
-        points.push({
-          position: [random(107, 119), random(20.8, 25.2)]
-        })
-      }
-      return points
-    } 
-    
-    
+      return arr
+    }
   },
-  created() {
-    
-    
-
-    this.points = this.createPoints(2)
+  created() { 
+    console.log(mapUtils)
+     
   },
   mounted() {
-    /*
+    this.scatters = this.createScatter()
     
-    */
+    let pos = this.scatters.map((item) => {
+      return item.position
+    })
+    // console.log(pos)
+    this.lines = pos.reduce((total, item, index) => {
+      let start = pos[0]
+      if (index > 0) {
+        let line = [start, item] // mapUtils.createCurve(start, item, -0.5);
+        total.push(line)
+      }
+      return total
+    }, [])
+   
+    
   },
   beforeDestroy() {
      
