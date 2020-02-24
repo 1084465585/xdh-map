@@ -128,6 +128,9 @@
       <dd>
         <router-link to="/area-select">区域选择</router-link>
       </dd>
+      <dd>
+        <router-link to="/cruve">曲线函数</router-link>
+      </dd>
     </dl>
     <div class="copyright">Powered by XDH FE Team.</div>
   </div>

@@ -197,11 +197,11 @@
         //   }
         //   if (e.deselected.length) {
         //     /**
-        //        * 鼠标离开某个feature时触发
-        //        * @event mouseEnter
-        //        * @param {Object} event
-        //        * @param {ol/Feature} feature
-        //        */
+        //      * 鼠标离开某个feature时触发
+        //      * @event mouseEnter
+        //      * @param {Object} event
+        //      * @param {ol/Feature} feature
+        //      */
         //     this.$emit('mouseLeave', e, e.deselected[0])
         //     this.parent.$el.style.cursor = 'auto'
         //   }

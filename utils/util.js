@@ -249,7 +249,7 @@ export const createCurve = function (start, end, dir) {
   } else if (end[1] - start[1] === 0) {
     newCenterLon = centerLon
     newCenterLat = centerLat + dir
-  } else if (end[1] - start[1] === end[0] - start[0]) {
+  } else if (end[1] - start[1] === end[0] - start[0] || end[0] - start[0] === end[1] - start[1]) {
     newCenterLon = centerLon + dir
     newCenterLat = centerLat - dir
   } else {

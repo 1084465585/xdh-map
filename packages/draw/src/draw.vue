@@ -10,12 +10,11 @@
 import Collection from 'ol/Collection'
 // import Polygon from 'ol/geom/Polygon'
 // import Feature from 'ol/Feature'
-import { getParent, mapReady } from 'utils/util'
+import { getParent, mapReady, createBezierCurvePoints } from 'utils/util'
 import { parse } from 'utils/style'
 import { Draw, Modify } from 'ol/interaction.js'
 import CleanMixin from 'utils/mixins/clean'
 import { convertFromWgs84 } from 'utils/convert'
-import smooth from 'chaikin-smooth';
 /**
  * 参数属性
  * @member props
@@ -74,16 +73,15 @@ const vueProps = {
   // Wrap the world horizontally on the sketch overlay.
   wrapX: Boolean,
 
-  smooth: Number
+  smooth: Boolean
 }
 
-const makeSmooth = function(path, numIterations) {
-  numIterations = Math.min(Math.max(numIterations, 1), 10);
-  while (numIterations > 0) {
-    path = smooth(path);
-    numIterations--;
+const makeSmooth = function(path) {
+  if (path.length > 2) {
+    return createBezierCurvePoints(path.length - 1, path)
+  } else {
+    return path
   }
-  return path;
 }
 
 export default {
@@ -183,7 +181,7 @@ export default {
     },
     handleDraw(e) {
       //  && (this.smooth && this.smooth >= 2)
-      if (this.type === 'LineString') {
+      if (this.type === 'LineString' && this.smooth) {
         this._smothLine(e.feature)
       }
       let featureClone
@@ -220,7 +218,7 @@ export default {
     _smothLine(feature) {
       let geometry = feature.getGeometry()
       let coords = geometry.getCoordinates()
-      let smoothened = makeSmooth(coords, this.smooth)
+      let smoothened = makeSmooth(coords)
       geometry.setCoordinates(smoothened)  
     },
     /**

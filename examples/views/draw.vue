@@ -9,7 +9,7 @@
         <button @click="finish">完成</button>
         <button @click="clear">清除</button>
       </xdh-map-placement>
-      <xdh-map-draw ref="line" @drawend="drawend" @drawstart="drawstart"></xdh-map-draw>
+      <xdh-map-draw ref="line" @drawend="drawend" @drawstart="drawstart" :smooth="true"></xdh-map-draw>
       <xdh-map-draw ref="circle" type="Circle" @drawend="drawend" @drawstart="drawstart"></xdh-map-draw>
       <xdh-map-draw ref="polygon" type="Polygon" @drawend="drawend" @drawstart="drawstart"></xdh-map-draw>
     </xdh-map>

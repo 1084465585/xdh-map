@@ -172,10 +172,18 @@ const router = new Router({
             path: 'group',
             component: () => import('./views/group')
           },
+          {
+            path: 'cruve',
+            component: () => import('./views/cruve')
+          },
           // -----------测试用页面---------
           {
             path: 'mytest/test',
             component: () => import('./views/mytest/test3')
+          },
+          {
+            path: 'mytest/test2',
+            component: () => import('./views/mytest/test2')
           }
         ]
       }
