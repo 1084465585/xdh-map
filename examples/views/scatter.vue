@@ -1,26 +1,40 @@
 <template>
   <example>
-    <xdh-map >
-      <xdh-map-scatter v-for="(item, index) in arr" :key="index" :position="item.position" :inner="item.inner" :color="item.color" @click="scatterClick"></xdh-map-scatter>
-       <!-- <xdh-map-scatter :position="[120, 30]" :outer="20"></xdh-map-scatter> -->
+    <xdh-map ref="map" @ready="mapReady">
+      <!-- <xdh-map-scatter v-for="(item, index) in arr" :key="index" :position="item.position" :inner="item.inner" :color="item.color" @click="scatterClick"></xdh-map-scatter> --> 
     </xdh-map>
   </example>
 </template>
 
-<script> 
+<script>
+import {pointerMove} from 'ol/events/condition.js'
+import Select from 'ol/interaction/Select.js' 
 const random = function (start, end) {
   return start + Math.round((end - start) * Math.random())
 }
   export default {
     data() {
       return {
+        map: null,
         arr: [],
         total: 400
       }
     },
     methods: {
-      test(e) {
-        console.log(e)
+      mapReady(map) {
+        this.map = map
+
+        this.select = new Select({condition: pointerMove})
+        this.map.addInteraction(this.select)
+
+        this.select.on('select', (e) => {
+          if (e.selected.length) {
+            this.$refs.map.$el.style.cursor = 'pointer'
+          }
+          if (e.deselected.length) {
+            this.$refs.map.$el.style.cursor = 'auto'
+          }
+        })
       },
       createTexts() {
         let arr = []

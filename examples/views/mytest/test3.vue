@@ -3,14 +3,21 @@
     <xdh-map ref="map"  :zoom="zoom" :center="target" @ready="mapReady"  > 
       <xdh-map-scatter v-for="(item, index) in scatters" :key="`point_${index}`" :position="item.position" :inner="item.inner" :color="item.color" @click="scatterClick"></xdh-map-scatter>
 
-      <!-- <xdh-map-line v-for="(item, index) in lines" ref="line" :key="`line_${index}`"
+      <xdh-map-track v-for="(item, index) in linesData" ref="line" :key="`track_${index}`"  :routes="item" :steps="10" @move="handleMove(index, ...arguments)" ></xdh-map-track>
+
+      <xdh-map-line v-for="(item, index) in linesData" ref="line" :key="`line_${index}`"
                       :routes="item"
                       :arrow="false"
                       :arrow-each="false"
                       stroke-color="red"
-                      :stroke-width="1" ></xdh-map-line> -->
+                       :z-index="100"
+                      :stroke-width="1" ></xdh-map-line>
 
       
+      <xdh-map-circle v-for="(value, key) in positions" :position="value" :key="`point_${key}`"
+                        fill="blue"
+                        :z-index="101"
+                        :radius="0.005"></xdh-map-circle>                
     </xdh-map>  
   </example>
 </template>
@@ -19,10 +26,10 @@
 </style>
 
 <script>
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import LineString from 'ol/geom/LineString'   
-import Feature from 'ol/Feature'
+// import VectorLayer from 'ol/layer/Vector';
+// import VectorSource from 'ol/source/Vector';
+// import LineString from 'ol/geom/LineString'   
+// import Feature from 'ol/Feature'
 import {parseStyle, mapUtils} from '../../../packages'
 
 const random = function (start, end) {
@@ -45,15 +52,14 @@ export default {
       view: null,  
       zoom: 7,
 
-      total: 30,
+      total: 20,
       lineStyle: lineStyle,
-
-      // arrow: require('../../../sources/arrows/black.png'),
+ 
       scatters: [],
-      
       linesData: [],
-      lines: [],
-      vectorLayer: null
+      positions: [],
+      car: require('../../../sources/track/car-small.png')
+      
        
        
     }
@@ -68,8 +74,7 @@ export default {
       this.scatters = this.createScatter() 
       setTimeout(() => {
         this.createLines()
-        this.createLineLayer()
-        this.map.addLayer(this.vectorLayer)
+      
       }, 500)
       
     },
@@ -96,25 +101,18 @@ export default {
         }
         return total
       }, [])
-      this.lines = this.linesData.map((item) => {
-        let lineGeo = new LineString(item)
-        let lineFeature = new Feature({
-          geometry: lineGeo
-        })
-        lineFeature.setStyle([lineStyle])
-        return lineFeature
-      })
-       
-    },
-    createLineLayer() {
-      let source = new VectorSource({
-        features: this.lines
-      })
 
-      this.vectorLayer = new VectorLayer({
-        source: source
-      }) 
+      this.positions = this.linesData.reduce((total, item, index) => {
+        total[index] = item[0]
+        return total
+      }, {})
+      
     },
+    handleMove(key, routes, index) {
+      // if (index % 100 === 0) {
+        this.positions[key] = routes[index]
+      // }
+    }, 
     scatterClick(e) {
       console.log(e)
     }
