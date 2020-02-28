@@ -129,6 +129,10 @@ const router = new Router({
             component: () => import('./views/flight.vue')
           },
           {
+            path: 'flight-ol',
+            component: () => import('./views/flight-ol.vue')
+          },
+          {
             path: 'measure',
             component: () => import('./views/measure.vue')
           },
@@ -179,7 +183,7 @@ const router = new Router({
           // -----------测试用页面---------
           {
             path: 'mytest/test',
-            component: () => import('./views/mytest/test3')
+            component: () => import('./views/mytest/test')
           },
           {
             path: 'mytest/test2',

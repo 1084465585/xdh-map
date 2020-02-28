@@ -61,21 +61,14 @@
       ]
     }
   ],
-  "/performance/": [
+  "/case/": [
     {
-      "title": "性能测试",
+      "title": "案例",
       "collapsable": false,
       "children": [
-        "text"
-      ]
-    }
-  ],
-  "/geo-edit/": [
-    {
-      "title": "geo编辑器",
-      "collapsable": false,
-      "children": [
-        "geo-edit"
+        "geo-edit",
+        "performance",
+        "openlayer-flight"
       ]
     }
   ],

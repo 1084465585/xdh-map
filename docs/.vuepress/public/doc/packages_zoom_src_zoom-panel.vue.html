@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: packages/heat/src/heat.vue</title>
+    <title>JSDoc: Source: packages/zoom/src/zoom-panel.vue</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: packages/heat/src/heat.vue</h1>
+    <h1 class="page-title">Source: packages/zoom/src/zoom-panel.vue</h1>
 
     
 
@@ -27,160 +27,115 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>&lt;template>
-  &lt;div>&lt;/div>
+&lt;div :class="classNames" ref="target">
+&lt;/div>
 &lt;/template>
+&lt;style lang="scss" scope>
+.xdh-zoom-panel{
+  box-sizing: border-box;
+  position: absolute;
+  background: rgba(255,255,255,0.8);
+  border-radius: 5px;
+  box-shadow: 0 0 4px 1px rgba(95, 100, 119, 0.3);
+  &amp;.bottom, &amp;.top{
+    padding: 5px 10px; 
+    width: 400px;
+    left: calc((100% - 400px) / 2);
+  }
+  &amp;.top{
+    top: 10px; 
+  }
+  &amp;.bottom{
+    bottom: 10px; 
+  }
+  &amp;.left, &amp;.right{
+    padding: 10px 5px;
+    height: 400px;
+    top: calc((100% - 400px) / 2); 
+  }
+  &amp;.left{
+    left: 10px; 
+  }
+  &amp;.right{
+    right: 10px; 
+  }
+}
 
+&lt;/style>
 &lt;script>
-
-  /**
-   * 热力图覆盖物组件
-   * @module xdh-map-heat
-   */
-
-  import Feature from 'ol/Feature'
-  import Point from 'ol/geom/Point'
-  import Vector from 'ol/source/Vector'
-  import Heatmap from 'ol/layer/Heatmap'
-  import CleanMixin from 'utils/mixins/clean'
-  import factory from 'utils/mixins/factory'
-  import {getParent, mapReady} from 'utils/util'
-import { convertToWgs84 } from 'utils/convert'
-  /**
-   * 参数选项
+/**
+ * 缩放控件
+ * @module xdh-map-zoom-panel
+ */
+import '../../../theme/zoom-panel.scss';
+import {ZoomSlider, Zoom} from 'ol/control'
+import Control from 'ol/control/Control';
+import {getParent} from 'utils/util'
+export default {
+  name: 'XdhMapZoomPanel',
+   /**
+   * 参数属性
    * @member props
-   * @property {number} [opacity=1] 透明度
-   * @property {boolean} [visible=true] 是否可见
-   * @property {number} [zIndex] 层级,图层渲染的z-index。在渲染时，将按照Z-index然后按位置对层进行排序
-   * @property {number} [minResolution]  此图层可见的最小分辨率（包括）
-   * @property {number} [maxResolution] 此图层可见的最小分辨率（包括）
-   * @property {string[]} [gradient] 热图的颜色渐变，指定为CSS颜色字符串数组
-   * @property {number}  [radius=8] 半径大小（以像素为单位）
-   * @property {number} [blur=15] 模糊大小（以像素为单位）
-   * @property {number} [shadow=250] 阴影大小，以像素为单
-   * @property {string|Function} [weight=weight] 用于权重的要素属性或从要素返回权重的函数。重量值的范围应为0到1（外部的值将被限制在该范围内）
-   * @property {object[]} data 数据对象数组，对象属性包含：lon（经度）、lat（维度）、weight（权重）
-   * @property {object} [prop] 数据对象字段映射
+   * @property {string} [placement] 停泊位置，可选值'left', 'top', 'bottom', 'right'
    */
-
-  const options = {
-    // 不透明度（0,1）
-    opacity: {
-      type: Number,
-      default: 1
-    },
-    // 是否能见
-    visible: {
-      type: Boolean,
-      default: true
-    },
-    // 图层渲染的z-index。在渲染时，将按照Z-index然后按位置对层进行排序
-    zIndex: Number,
-    // 此图层可见的最小分辨率（包括）
-    minResolution: Number,
-    // 最低分辨率（不包括在内），此层将在该分辨率下可见
-    maxResolution: Number,
-    // 热图的颜色渐变，指定为CSS颜色字符串数组
-    gradient: {
-      type: Array,
-      default() {
-        return ['#00f', '#0ff', '#0f0', '#ff0', '#f00']
+  props: {
+    // 停泊位置
+    placement: {
+      type: String,
+      default: 'bottom',
+      validator(val) {
+        return [
+          'left', 'top', 'bottom', 'right'
+        ].includes(val)
       }
-    },
-    // 半径大小（以像素为单位）
-    radius: {
-      type: Number,
-      default: 8
-    },
-    // 模糊大小（以像素为单位）
-    blur: {
-      type: Number,
-      default: 15
-    },
-    // 阴影大小，以像素为单
-    shadow: {
-      type: Number,
-      default: 250
-    },
-    // 用于权重的要素属性或从要素返回权重的函数。重量值的范围应为0到1（外部的值将被限制在该范围内）。
-    weight: {
-      type: [String, Function],
-      default: 'weight'
     }
-  }
-
-  const factoryMixin = factory(options)
-
-  export default {
-    name: 'XdhMapHeat',
-    mixins: [CleanMixin, factoryMixin],
-    props: {
-      ...factoryMixin.props,
-      data: {
-        type: Array,
-        default() {
-          return []
-        }
-      },
-      prop: {
-        type: Object,
-        default() {
-          return {
-            lon: 'lon',
-            lat: 'lat',
-            // 权重值，取 0 ~ 1
-            weight: 'weight'
-          }
-        }
-      }
-    },
-    watch: {
-      data() {
-        this.removeLayer()
-        this.draw()
-      }
-    },
-    inject: ['coordType'],
-    methods: {
-      draw() {
-        if (!this.parent) return
-        const features = this.createFeatures()
-        const source = new Vector()
-        source.addFeatures(features)
-        this.layer = new Heatmap({
-          source: source,
-          ...this.styleFactory()
-        })
-        this.parent.map.addLayer(this.layer)
-      },
-      createFeatures() {
-        const prop = this.prop
-        return this.data.map(item => {
-          return new Feature({
-            // 根据坐标类型对坐标进行转换
-            geometry: new Point(convertToWgs84(this.coordType, [item[prop.lon], item[prop.lat]])),
-            weight: item[prop.weight] || 1
-          })
-        })
-      },
-      removeLayer() {
-        if (this.parent &amp;&amp; this.layer) {
-          this.layer.disposeInternal()
-          this.parent.map.removeLayer(this.layer)
-        }
-      }
-    },
-    created() {
-      this.parent = getParent.call(this)
-      mapReady.call(this, this.draw)
-
-    },
-    beforeDestroy() {
-      this.removeLayer()
+  },
+  data() {
+    return {
+      parent: null,
+      map: null
     }
+  },
+  computed: {
+    classNames() {
+      let defaultName = 'xdh-zoom-panel' 
+      let output = [defaultName, this.placement]
+      
+      return output
+    }
+  },
+  methods: {
+    zoomInit() {
+      this.map = this.parent.map
+       
+      let control = new Control({ 
+        element: this.$refs.target
+      }) 
+      let zoomslider = new ZoomSlider({
+        target: this.$refs.target,
+        className: 'xdh-zoom-slider'
+      });
+      let zoom = new Zoom({
+        target: this.$refs.target,
+        className: 'xdh-zoom'
+      })
+      zoomslider.setTarget(this.$refs.target)
+      this.map.addControl(control);
+      this.map.addControl(zoom);
+      this.map.addControl(zoomslider);
+    }
+  },
+  created() {
+    // 获取地图组件实例
+    this.parent = getParent.call(this)
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.zoomInit()
+    })
   }
-&lt;/script>
-
-</code></pre>
+}
+&lt;/script></code></pre>
         </article>
     </section>
 

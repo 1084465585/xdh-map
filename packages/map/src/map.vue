@@ -230,7 +230,14 @@ export default {
         return this.vectorLayer
       }
       let vectorSource = new VectorSource()
-      feature && vectorSource.addFeature(feature)
+      if (feature) {
+        if (Array.isArray(feature)) {
+          vectorSource.addFeatures(feature)
+        } else {
+          vectorSource.addFeature(feature)
+        }
+      }
+      // feature && vectorSource.addFeature(feature)
       this.vectorLayer = new VectorLayer({
         source: vectorSource
       })
@@ -246,7 +253,11 @@ export default {
       // 共享矢量图层，把所有图形就加入同一个图层
       if (this.vectorLayer) {
         const source = this.vectorLayer.getSource()
-        source.addFeature(feature)
+        if (Array.isArray(feature)) {
+          source.addFeatures(feature)
+        } else {
+          source.addFeature(feature)
+        }
       } else {
         this.createVectorLayer(feature)
       }

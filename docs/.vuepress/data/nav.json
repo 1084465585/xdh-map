@@ -20,16 +20,12 @@
     "link": "/animate/track"
   },
   {
-    "text": "性能测试",
-    "link": "/performance/text"
-  },
-  {
     "text": "其他",
     "link": "/other/drag-object"
   },
   {
-    "text": "geo编辑器",
-    "link": "/geo-edit/geo-edit"
+    "text": "地图案例",
+    "link": "/case/geo-edit"
   },
   {
     "text": "API文档",

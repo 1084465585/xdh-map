@@ -112,6 +112,9 @@
         <router-link to="/flight">Flight</router-link>
       </dd>
       <dd>
+        <router-link to="/flight-ol">Flight in ol</router-link>
+      </dd>
+      <dd>
         <router-link to="/measure">Measure</router-link>
       </dd>
       <dt>性能测试</dt>

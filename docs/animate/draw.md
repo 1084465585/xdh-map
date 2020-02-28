@@ -12,7 +12,8 @@
 <template>
   <xdh-map coord-type="BD09">
     <xdh-map-placement placement="right-top" :margin="[10]" theme="light" >
-      <button @click="drawLine">画线</button>
+      <button @click="isCruve = !isCruve">抛物线</button>
+      <button @click="drawLine">画线<em v-show="isCruve">(抛物线)</em></button>
       <button @click="drawCircle">画圆</button>
       <button @click="drawPolygon">多边形</button>
       <button @click="modify">修改</button>
@@ -24,6 +25,7 @@
       type="LineString"
       @drawend="drawend"
       @drawstart="drawstart"
+      :smooth="isCruve"
     ></xdh-map-draw>
     <xdh-map-draw
       ref="circle"
@@ -49,6 +51,11 @@
       XdhMap,
       XdhMapDraw,
       XdhMapPlacement
+    },
+    data() {
+      return {
+        isCruve: false
+      }
     },
     methods: {
       drawLine() {
