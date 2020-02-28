@@ -42,24 +42,22 @@
         type: Number,
         default: 1
       }
-      /*  
-      color: {
-        type: String,
-        default: '255, 0, 0'
-      },
-      inner: {
-        type: Number,
-        default: 10
-      },
-      outer: {
-        type: Number,
-        default: 20
-      },
-      position: {
-        type: Array,
-        default: () => { return [0, 0] }
-      }
-      */
+      // color: {
+      //   type: String,
+      //   default: '255, 0, 0'
+      // },
+      // inner: {
+      //   type: Number,
+      //   default: 10
+      // },
+      // outer: {
+      //   type: Number,
+      //   default: 20
+      // },
+      // position: {
+      //   type: Array,
+      //   default: () => { return [0, 0] }
+      // }
     },
     data() {
       return {

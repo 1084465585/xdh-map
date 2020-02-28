@@ -29,8 +29,7 @@
 import Point from 'ol/geom/Point'  
 import Feature from 'ol/Feature'
 import CITYS from 'demo-data/citys'
-import {XdhMap, XdhMapScatter, XdhMapLine} from 'xdh-map'
-import {parseStyle, mapUtils} from '../../../packages/index.js'
+import {XdhMap, XdhMapScatter, XdhMapLine, parseStyle, mapUtils} from 'xdh-map'
 const BJData = [
   [{
     name: '北京'
