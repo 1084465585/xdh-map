@@ -31,6 +31,7 @@
      * @property {number} data.outer // 散点扩散范围
      * @property {array} data.position // 散点位置
      * @property {color} data.color // 散点颜色值（rgb）
+     * @property {zIndex} zIndex // 层级
      */
     props: {
       data: {
