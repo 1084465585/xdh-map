@@ -60,13 +60,15 @@ function createBaiduLayer(config) {
         return Math.pow(2, 18 - x)
       })
   });
+  // https://github.com/openlayers/openlayers/releases/tag/v6.0.0
+  // New internal tile coordinates
   let source = new TileImage({
     projection: projection,
     tileGrid: tileGrid,
     tileUrlFunction: function (tileCoord) {
       const z = tileCoord[0];
       const x = tileCoord[1];
-      const y = tileCoord[2];
+      const y = -tileCoord[2] - 1;
       const index = Math.ceil(Math.random() * 5)
       return config.server.replace(/{x}/g, x)
         .replace(/{y}/g, y)

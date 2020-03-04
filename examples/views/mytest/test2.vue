@@ -1,44 +1,26 @@
 <template>
   <example>
-    <div style="height: 400px">
-      <xdh-map ref="map"  type="Baidu" :zoom="zoom" :center="target" @ready="mapReady"    > 
-        <template v-for="(group, index) in groupList">
-          <xdh-map-icon :visible="!group.detailShow" class="main-point" :key="`main_${index}`" icon="iconfont icon-locus" :position="group.center" @click="mainPointClick(group)"></xdh-map-icon>
-          <template v-if="group.detailShow">
-            <xdh-map-text  v-for="(point, i) in group.points"
-                      :key="`text_${index}_${i}`"
-                      v-bind="point"
-            ></xdh-map-text>
-          </template>
-          
-        </template>
-        
-      </xdh-map>
-    </div> 
-    
-    
+    <div style="height: 400px" id="map" class="map">
+      
+    </div>  
   </example>
 </template>
 <style scoped lang="scss">
-.main-point{
-  /deep/ .iconfont.icon-locus{
-    font-size: 40px;
-    color: red;
-  } 
-} 
  
  
 </style>
-<script> 
-import {getScale, pointClot} from 'utils/util'
-const random = function(x, y) {
-  return (y - x) * Math.random() + x
-}
-const RANGE = 400
-const COOR_PORP = 'position'
-const TOTAL = 80
+<script>
+import 'ol/ol.css';
+import Map from 'ol/Map';
+import View from 'ol/View'; 
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ'
+// import OSM from 'ol/source/OSM'; 
 
-// zoomLayer = [7, 8, 9, 10]
+import TileGrid from 'ol/tilegrid/TileGrid'
+import {get as getProj} from 'ol/proj'
+import TileImage from 'ol/source/TileImage'
+
 export default {
   
   data() {
@@ -46,67 +28,65 @@ export default {
       map: null,
       view: null,  
       zoom: 7,
-      target: [113, 23],
-      
-      
-      total: TOTAL,
-      textArray: [],
-      groupList: []
-       
+      target: [113, 23]
     }
   },
   computed: {
       
   },
-  methods: {
-    mapReady(map, mapComp) {
-      this.map = map
-      this.view = this.map.getView() 
- 
-      let scale = getScale(map, mapComp) 
-      this.groupList = pointClot(this.textArray, scale * RANGE, COOR_PORP) 
-      console.log(this.groupList)
-    },
-    
-    mainPointClick(group) {
-      this.groupList.forEach((group) => {
-        group.detailShow = false
-      })
-      this.$nextTick(() => {
-        group.detailShow = true
-        if (group.points.length === 1) {
-          this.$refs.map.moveTo(group.points[0].position)
-        } else {
-          this.$refs.map.zoomAt(group.area, {maxZoom: 10})
-        }
-      }) 
-       
-    },
-   
-     
-    createTexts() {
-      let texts = []
-      for (let i = 0; i < this.total; i++) {
-        texts.push({
-          position: [random(107, 119), random(20.8, 25.2)],
-          text: `${i}`,
-          font: '12px',
-          background: '#fff',
-          strokeColor: 'red',
-          padding: [5, 5, 5, 5],
-          color: 'blue'
-        })
-      }
-      return texts
-    } 
+  methods: { 
     
     
   },
   created() { 
-    this.textArray = this.createTexts()
+   
   },
   mounted() {
-     
+    const projection = getProj('EPSG:4326') //   
+    console.log('projection', projection)
+    const tileGrid = new TileGrid({
+      origin: [0, 0],
+      resolutions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+      .map(function (x) {
+        return Math.pow(2, 18 - x)
+      })
+    })
+    const source = new TileImage({
+      // projection: projection,
+      extent: projection.getExtent(),
+      tileGrid: tileGrid,
+      tileUrlFunction: function (tileCoord) {
+        let z = tileCoord[0];
+        let x = tileCoord[1];
+        let y = -tileCoord[2];
+        const index = Math.ceil(Math.random() * 5)
+        if (x < 0) {
+          x = 'M' + (-x);
+        }
+        if (y < 0) {
+          y = 'M' + (-y);
+        } 
+        return `http://online${index}.map.bdimg.com/onlinelabel/?qt=tile&x=${x}&y=${y}&z=${z}&styles=pl&udt=20160426&scaler=1&p=0`
+      }
+    })
+    
+
+    let source2 = new XYZ({
+      url: 'http://maponline1.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20200225'
+    })
+console.log(source2)
+    var tileLayer = new TileLayer({
+      source: source
+    });
+
+    new Map({
+      layers: [tileLayer],
+      target: 'map',
+      view: new View({
+        center: [113.38542938232422, 23.040218353271484],
+        zoom: 2
+      })
+    });
   },
   beforeDestroy() {
      

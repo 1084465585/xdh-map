@@ -23,6 +23,12 @@
   height: 100%;
   position: relative;
   box-sizing: border-box;
+  /deep/ .ol-overlaycontainer, /deep/ .ol-overlaycontainer-stopevent {
+    pointer-events: none;
+  }
+  /deep/ .ol-overlaycontainer > *, /deep/ .ol-overlaycontainer-stopevent > * {
+    pointer-events: auto;
+  }
 }
 
 .clearfix {

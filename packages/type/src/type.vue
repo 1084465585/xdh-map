@@ -63,7 +63,9 @@
       change(item) {
         if ((this.selected || {}).name !== item.name) {
           this.selected = item
+          console.log(item.name)
           this.parent.changeType(item.name)
+          
           /**
            * 图层切换时触发
            * @event change

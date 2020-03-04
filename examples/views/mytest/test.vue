@@ -1,6 +1,6 @@
 <template>
   <example class="flex"> 
-    <xdh-map ref="map" id="map3"  :zoom="12" :center="target" @ready="mapReady" > 
+    <xdh-map ref="map" type="Baidu" id="map3"  :zoom="12" :center="target" @ready="mapReady" > 
      <xdh-map-placement>
         <button @click="startAnimation">start</button>
       </xdh-map-placement>

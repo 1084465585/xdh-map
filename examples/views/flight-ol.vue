@@ -1,6 +1,6 @@
 <template>
   <example> 
-    <xdh-map ref="map"  :zoom="zoom" :center="target" @ready="mapReady"  > 
+    <xdh-map ref="map" type="Baidu" :zoom="zoom" :center="target" @ready="mapReady"  > 
       <xdh-map-scatter v-if="scatters.length" :data="scatters" :z-index="4"></xdh-map-scatter>
 
       <xdh-map-line  v-for="(item, index) in linesData" 

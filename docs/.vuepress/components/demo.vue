@@ -94,14 +94,14 @@
     border-radius: 3px;
     background: #fafafa;
     margin: 1rem 0 3rem 0;
-
+    
     &__preview {
       padding: 2px;
       background: #fff;
       border-bottom: 1px solid #eaecef;
       border-radius: 3px 3px 0 0;
       position: relative;
-
+      height: 400px;
       &.full-screen {
         width: 100%;
         height: 100%;

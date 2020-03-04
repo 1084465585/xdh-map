@@ -18,7 +18,7 @@
       stroke-color="red"
       :stroke-width="6"
       :stroke-line-dash="[20]"
-      :stroke-line-cap="square"
+      stroke-line-cap="square"
     ></xdh-map-circle>  
   </xdh-map>
 </template>
