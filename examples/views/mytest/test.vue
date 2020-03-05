@@ -1,9 +1,14 @@
 <template>
   <example class="flex"> 
-    <xdh-map ref="map" type="Baidu" id="map3"  :zoom="12" :center="target" @ready="mapReady" > 
-     <xdh-map-placement>
-        <button @click="startAnimation">start</button>
+    <xdh-map ref="map" type="Baidu" id="map3"  :zoom="9" :center="target" @ready="mapReady"  > 
+      <xdh-map-placement>
+        <button @click="drawPoint">画点</button> 
+        <button @click="drawModify">编辑</button> 
+        <button @click="drawFinish">完成</button>
+        <button @click="drawClear">清除</button>
       </xdh-map-placement>
+
+      <xdh-map-draw-arc ref="arcDraw"></xdh-map-draw-arc>
     </xdh-map>
  
    
@@ -12,17 +17,18 @@
 </template>
 
 <script> 
-import Feature from 'ol/Feature'
-// import VectorContext from 'ol/render/VectorContext';
+
 import {parseStyle} from '../../../packages'
+import Feature from 'ol/Feature'
 import LineString from 'ol/geom/LineString'
-import Circle from 'ol/geom/Circle'
-import Point from 'ol/geom/Point'
+import * as PlotUtils from '../../../utils/plot-utils'
+ 
+// import Point from 'ol/geom/Point'
 
-import {Vector as VectorLayer} from 'ol/layer';
-import VectorSource from 'ol/source/Vector';
+// import {Vector as VectorLayer} from 'ol/layer';
+// import VectorSource from 'ol/source/Vector';
 
-import {path} from './route'
+ 
 const pathStyle = parseStyle({
   className: 'Style',
   fill: {
@@ -36,29 +42,17 @@ const pathStyle = parseStyle({
   }
 })
 
-const pointStyle = parseStyle({
-  className: 'Style',
-  fill: {
-    className: 'Fill',
-    color: 'rgba(0,0,0,1)'
-  }
-  
-})
+ 
 export default {
   
   data() {
     return {
-      path: path,
+      path: [[113, 23], [112.4, 23.4], [112.4, 23.9]],
       map: null,
       view: null,  
-      target: [113.38542938232422, 23.040218353271484],
+      target: [113, 23],
 
-      point: null,
-      route: null,
-      vectorLayer: null,
-      animating: false,
-      now: null,
-      speed: 3
+      style: pathStyle
     }
   },
   computed: {
@@ -69,117 +63,74 @@ export default {
     mapReady(map) {
       this.map = map
       this.view = this.map.getView()
-      this.registerRoute()
-
-      this.createPoint()
+     
+      // this.setArc()
     },
-    registerRoute() {
-      
-      this.route = new Feature({
-        type: 'route',
-        geometry: new LineString(this.path)
-      })
-       
-      this.route.setStyle(pathStyle)
-
-      this.point = new Feature({
-        type: 'point',
-        geometry: new Circle(this.path[0], 0.01)
+    addLine() {
+      let arcLine = this.setArc() 
+      let geo = new LineString(arcLine)
+      // console.log(geo)
+      let feature = new Feature({
+        geometry: geo
       })
 
-      this.point.setStyle(pointStyle)
- 
-      this.vectorLayer = new VectorLayer({
-        source: new VectorSource({
-          features: [this.route, this.point]
-        })
-      })
-      this.map.addLayer(this.vectorLayer)
-      
+      this.$refs.map.addFeature(feature)
     },
-    startAnimation() {
-      if (this.animating) {
-        this.stopAnimation(false);
+
+    setArc() {
+      let [pnt1, pnt2, pnt3, startAngle, endAngle] = [this.path[0], this.path[1], this.path[2], null, null]
+
+      let center = PlotUtils.getCircleCenterOfThreePoints(pnt1, pnt2, pnt3)
+      let radius = PlotUtils.MathDistance(pnt1, center)
+      let angle1 = PlotUtils.getAzimuth(pnt1, center)
+      let angle2 = PlotUtils.getAzimuth(pnt2, center)  
+
+      if (PlotUtils.isClockWise(pnt1, pnt2, pnt3)) {
+        startAngle = angle2
+        endAngle = angle1
       } else {
-      
-        this.animating = true;
-        this.now = new Date().getTime(); 
-      
-       
-        // this.point.setStyle(null); 
-        this.view.setCenter(this.target);
-       
-         
-        // this.vectorLayer.on('postcompose', this.moveFeature);
-        // this.map.render(); 
-        window.requestAnimationFrame(this.moveFeature)
+        startAngle = angle1
+        endAngle = angle2
       }
-    },
-    moveFeature(e) { 
-      // let vectorContext = e.context
-      // let frameState = e.frameState; 
-      let current = new Date().getTime()
-      if (this.animating) {
-        let elapsedTime = current - this.now;
-         
-        let index = Math.round(this.speed * elapsedTime / 1000);
-
-        if (index >= this.path.length) {
-          this.stopAnimation(true);
-          return;
-        }
-        this.point.getGeometry().setCenter(this.path[index])  
-      } 
-      window.requestAnimationFrame(this.moveFeature)
-      // this.map.render();
-    },
-    stopAnimation(end) {
-      this.animating = false
-      let coord = end ? this.path[this.path.length - 1] : this.path[0]
-      this.point.getGeometry().setCenter(coord)
-      // this.vectorLayer.un('postcompose', this.moveFeature); 
-    },
-
-    createPoint() {
-      let scater = new Feature({
-        geometry: new Point(this.target)
-      })
-      let out1 = new Feature({
-        geometry: new Point(this.target)
-      })
-      let coreStyle = parseStyle({
-        className: 'Style',
-        image: {
-          className: 'Circle',
-          radius: 8,
-          fill: {
-            className: 'Fill',
-            color: 'red'
-          }
-        } 
-      })
-
-      let out1Style = parseStyle({
-        className: 'Style',
-        image: {
-          className: 'Circle',
-          radius: 10,
-          fill: {
-            className: 'Fill',
-            color: 'transparent'
-          },
-          stroke: {
-            className: 'Stroke',
-            color: 'red',
-            width: 1
-          }
-        } 
-      })
        
-      scater.setStyle(coreStyle)
-      out1.setStyle(out1Style)
-      this.$refs.map.addFeature(scater)
-      this.$refs.map.addFeature(out1)
+      return PlotUtils.getArcPoints(center, radius, startAngle, endAngle)
+    },
+    
+    clickHandle(e) {
+      console.log(e)
+    },
+
+    drawPoint() {
+      this.$refs.arcDraw.draw()
+    },
+    drawFinish() {
+      this.$refs.arcDraw.finish()
+    },
+    drawModify() {
+      this.$refs.arcDraw.modify()
+    },
+    drawClear() {
+      this.$refs.arcDraw.clear()
+    },
+    drawend(e) {
+
+      console.log('drawend', e, this.$refs.pointDraw)
+    
+    
+      // this.map.on('pointermove', this.listenPointMove)
+        // this.$refs.pointDraw.finish()
+        // this.map.un('pointermove', this.listenPointMove)
+    },
+    listenPointMove(e) {
+      console.log(e.coordinate)
+    },
+    drawstart(e) {
+      let coords = e.feature.getGeometry().getCoordinates()
+      console.log('drawstart', coords)
+      if (coords.length === 3) {
+        this.$refs.pointDraw.finish()
+      }
+
     }
      
     

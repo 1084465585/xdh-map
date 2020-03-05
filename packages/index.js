@@ -26,6 +26,7 @@ import Echarts from './echarts'
 import Track from './track'
 import Type from './type'
 import Draw from './draw'
+
 import Scatter from './scatter'
 import Measure from './measure'
 import Tooltip from './tooltip'
@@ -33,6 +34,8 @@ import Mask from './mask'
 import Geo from './geo'
 import Geolayer from './geolayer'
 import Group from './group'
+
+// html工具
 import Panel from './tools/panel'
 import Dialog from './tools/dialog'
 import Drawdown from './tools/drawdown'
@@ -40,8 +43,13 @@ import Warp from './tools/warp'
 import Zoom from './zoom'
 import ZoomPanel from './zoom/panel'
 
+// 交互插件
 import Drag from '../utils/interactions/drag'
 import AreaSelect from '../utils/interactions/area-select'
+
+// 特殊图形绘制
+import DrawArc from './drawArc'
+
 import * as utils from '../utils/util'
 import '../theme/index.scss'
 
@@ -78,7 +86,9 @@ const components = [
   Panel,
   Dialog,
   Drawdown,
-  Warp
+  Warp,
+  // -----特殊图形绘制------
+  DrawArc
 ]
 
 const install = function (Vue) {
@@ -125,6 +135,9 @@ export const XdhMapPanel = Panel
 export const XdhMapDialog = Dialog
 export const XdhMapDrawdown = Drawdown
 export const XdhMapWarp = Warp
+// ----------------
+export const XdhMapDrawArc = DrawArc
+
 export const parseStyle = parse
 export const DragClass = Drag
 export const AreaSelectClass = AreaSelect
@@ -169,7 +182,9 @@ export default {
   Drawdown,
   Warp,
   Drag,
-  AreaSelect
+  AreaSelect,
+
+  DrawArc
 }
 
 
