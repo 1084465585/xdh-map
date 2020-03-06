@@ -55,6 +55,7 @@
       "children": [
         "track",
         "draw",
+        "drawArc",
         "scatter",
         "flight",
         "measure"

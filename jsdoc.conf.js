@@ -9,6 +9,7 @@ module.exports = {
       'utils',
       'README.md'
     ],
+    'exclude': ['utils/plot-utils.js'],
     includePattern: '\\.(vue|js)$'
   },
   plugins: [

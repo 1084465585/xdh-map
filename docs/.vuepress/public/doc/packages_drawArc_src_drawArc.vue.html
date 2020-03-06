@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: packages/drawArc/src/drawArc.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: packages/drawArc/src/drawArc.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;div> &lt;/div>
+&lt;/template>
+
+&lt;script>
+  /**
+   * 地图弧线描绘控件
+   * @module xdh-map-draw-arc
+   */
+  import Collection from 'ol/Collection'
+  import CleanMixin from 'utils/mixins/clean'
+  import { Draw, Modify } from 'ol/interaction.js'
+  import { getParent, mapReady } from 'utils/util'
+  import Feature from 'ol/Feature'
+  import Point from 'ol/geom/Point'
+  import LineString from 'ol/geom/LineString'
+  import { getArcLine } from 'utils/plot-utils'
+  import {parseStyle} from '../../../packages'
+  const pointStyle = function (color) {
+    return parseStyle({
+      className: 'Style',
+      zIndex: 2,
+      image: {
+        className: 'Circle',
+        radius: 5,
+        stroke: {
+          className: 'Stroke',
+          width: 2,
+          color: 'red'
+        },
+        fill: {
+          className: 'Fill',
+          color: color
+        }
+      } 
+    })
+  }
+  
+
+  export default {
+    name: 'XdhMapDrawArc',
+    mixins: [CleanMixin],
+    components: { 
+    },
+    /**
+     * 参数属性 
+     * @member props
+     * @property {Number} [dragVertexDelay=500] Delay in milliseconds after pointerdown before the current vertex can be dragged to its exact position.
+     * @property {Number} [snapTolerance=12] Pixel distance for snapping to the drawing finish.
+     * @property {Object} [lineStyle]
+     * @property {Boolean} [freehand]
+     * @property {Boolean} [wrapX]
+     */
+    props: {
+      // Delay in milliseconds after pointerdown before the current vertex can be dragged to its exact position.
+      dragVertexDelay: {
+        type: Number,
+        default: 500
+      },
+      // Pixel distance for snapping to the drawing finish.
+      snapTolerance: {
+        type: Number,
+        default: 12
+      },
+      wrapX: Boolean,
+      lineStyle: null
+
+    },
+    data() {
+      return {
+        parent: null,
+        map: null,
+        source: null,
+        currentArcLine: null,
+        currentFeature: null,
+        pointStyle: pointStyle('white'),
+
+        features: [], 
+
+       
+        tempPoints: [],
+        allPoints: [],
+
+        isDraw: false,
+        isModify: false,
+
+        drawer: null
+      }
+    },
+    computed: {
+      
+    },
+    methods: {
+      ready(map) {
+        this.map = map
+      },
+      // 创建画弧交互
+      draw() {
+        if (!this.map || !this.parent) return
+        if (this.isDraw) return
+        if (!this.source) {
+          const layer = this.parent.createVectorLayer()
+          this.source = layer.getSource() 
+        }
+        
+        this.isDraw = true
+        
+        this.drawer = new Draw({
+          source: this.source,
+          type: 'Point',
+          style: null,
+          ...this.$props
+        })
+        this.map.addInteraction(this.drawer) 
+        this.drawer.on('drawend', this.handleDraw)
+      },
+      // 每个点画完后回调 
+      handleDraw(e) { 
+        // console.log('drawPoint', e)
+        let point = e.feature  
+        e.feature.setProperties({'type': 'removable'})
+        this.map.on('pointermove', this.drawPointerMove) 
+        this.tempPoints.push(point) 
+
+        if (this.tempPoints.length === 3) {
+          this.collectData()
+          this.stopDraw()
+        } 
+        
+        if (this.tempPoints.length === 1) {
+          let start = this.tempPoints[0].getGeometry().getCoordinates()
+          this.addLine(start, start)
+        } 
+      }, 
+      // 画点过程中 
+      drawPointerMove(e) { 
+        if (this.tempPoints.length === 1) {
+          let start = this.tempPoints[0].getGeometry().getCoordinates()
+          this.currentArcLine.setCoordinates([start, e.coordinate])
+        } else if (this.tempPoints.length === 2) {
+          let start = this.tempPoints[0].getGeometry().getCoordinates()
+          let end = this.tempPoints[1].getGeometry().getCoordinates()
+          let inside = e.coordinate
+          let archLine = this.getArcLine(start, end, inside)
+          this.currentArcLine.setCoordinates(archLine)
+        } 
+      }, 
+      // 收集弧线feature 数据
+      collectData() {
+        let coorLength = this.currentFeature.getGeometry().getCoordinates().length
+        if (coorLength &lt;= 2) {
+          this.currentFeature.setProperties({'type': 'removable'})
+          return
+        } 
+        let id = `arc${new Date().getTime()}` 
+        this.currentFeature.setId(id) 
+        this.features.push(this.currentFeature) 
+        this.$emit('drawend', this.currentFeature, this.features)
+      },
+      // 暂停 当前弧线 绘制
+      stopDraw() { 
+        this.map.un('pointermove', this.drawPointerMove)  
+        this.currentArcLine = null
+        this.currentFeature = null
+        this.tempPoints = []
+        // console.log('tempP', this.tempPoints, this.features) 
+      },
+
+      // 结束 绘制 弧形
+      finishDraw() {
+        // console.log('isFinish')
+        let features = this.source.getFeatures()
+        features.forEach((p) => { 
+          let props = p.getProperties('type')
+          if (props.type === 'removable') {
+            this.source.removeFeature(p)
+          }
+        })  
+
+        this.drawer.un('drawend', this.handleDraw)
+        this.map.removeInteraction(this.drawer)
+        this.drawer = null 
+ 
+
+        this.currentArcLine = null
+        this.currentFeature = null
+        this.tempPoints = []
+        this.isDraw = false
+ 
+      },
+       
+
+      // 开始创建编辑交互
+      modify() {
+        if (!this.features.length) return
+        if (this.isModify) return
+        this.finish()
+        this.$nextTick(() => {
+          this.isModify = true
+          this.createModify()
+        })
+      },
+
+      // 将所有 弧形 的作用点 创建 Modify() 交互对象
+      createModify() {
+        let allPoints = []
+        this.features.forEach((feature) => {
+          let id = feature.getId()
+          let coords = feature.getGeometry().getCoordinates()
+          // console.log('coords', coords) 
+          let length = coords.length
+          let handleCoords = [coords[0], coords[length - 1], coords[Math.floor(length / 2)]]
+          
+          
+          let points = handleCoords.map((coord, index) => {
+            let p = this.addPoint(coord)
+            p.setId(`${id}_${index + 1}`)
+            p.setProperties({'type': 'handlePoint'})
+            return p
+          })
+          allPoints = allPoints.concat(points)
+        })
+        
+        this.allPoints = allPoints
+        this.drawer = new Modify({
+          features: new Collection(allPoints),
+          style: null,
+          wrapX: this.wrapX
+        })
+        this.drawer.on('modifystart', this.handleModifyStart)
+        this.drawer.on('modifyend', this.handleModifyEnd)
+        this.map.addInteraction(this.drawer)
+      },
+
+      // 修改开始 点击 事件 回调函数
+      handleModifyStart(e) {
+         
+        let dragFeature = e.target.dragSegments_.length ? e.target.dragSegments_[0][0].feature : null
+     
+        if (!dragFeature) return
+        // console.log(dragFeature)
+        let arcId = dragFeature.getId().split('_')[0]
+        this.currentFeature = this.features.find((item) => {
+          return item.getId() === arcId
+        })
+        this.tempPoints = e.features.getArray().reduce((total, item) => {
+          let mainId = item.getId().split('_')[0]
+          if (mainId === arcId) {
+            total.push(item)
+          } 
+          return total
+        }, [])
+        
+        // console.log(this.currentFeature, this.tempPoints)
+        this.modifyPointerMoveProxy = this.modifyPointerMove.bind(this, dragFeature)
+        this.map.on('pointermove', this.modifyPointerMoveProxy)
+
+      }, 
+
+      // 修改过程中 鼠标移动 回调函数
+      modifyPointerMove(dragFeature, e) {
+        let index = dragFeature.getId().split('_')[1]
+        let pointCoor = this.tempPoints.map((item) => {
+          return item.getGeometry().getCoordinates()
+        })
+        // console.log(index)
+        let points 
+        if (index === '1') {
+          points = [e.coordinate, pointCoor[1], pointCoor[2]] 
+        } else if (index === '2') {
+          points = [pointCoor[0], e.coordinate, pointCoor[2]]  
+        } else if (index === '3') {
+          points = [pointCoor[0], pointCoor[1], e.coordinate]   
+        }
+        let path = this.getArcLine(...points) 
+        this.currentFeature.getGeometry().setCoordinates(path)
+      },
+
+      // 修改过程中 鼠标放开后 回调函数
+      handleModifyEnd(e) {
+        this.map.un('pointermove', this.modifyPointerMoveProxy)
+      },
+
+      // 结束修改
+      finishModify() {
+        this.allPoints.forEach((p) => {
+          this.source.removeFeature(p)
+        }) 
+        this.drawer.un('modifystart', this.handleModifyStart)
+        this.drawer.un('modifyend', this.handleModifyEnd)
+        this.map.removeInteraction(this.drawer) 
+        this.drawer = null
+        this.currentFeature = null
+        this.tempPoints = []
+        this.allPoints = []
+        this.isModify = false
+      },
+
+      // 结束当前 绘制 / 编辑 状态
+      finish() { 
+        if (this.isDraw) {
+          this.stopDraw()
+          this.finishDraw()
+        }
+        if (this.isModify) {
+          this.finishModify()
+        }
+      }, 
+
+      clear() {
+        if (this.isModify || this.isDraw) {
+          this.finish()
+        }
+        this.features.forEach((f) => {
+          this.source.removeFeature(f)
+        })
+        this.features = []
+      },
+
+      addPoint(coor) {
+        let feature = new Feature({
+          geometry: new Point(coor)
+        }) 
+        feature.setStyle(this.pointStyle)
+        this.source.addFeature(feature) 
+        return feature
+      },  
+      addLine(start, end) { 
+        this.currentArcLine = new LineString([start, end])
+        this.currentFeature = new Feature({
+          geometry: this.currentArcLine
+        })
+        this.currentFeature.setStyle(this.lineStyle) 
+        this.source.addFeature(this.currentFeature) 
+      },
+      getArcLine(p1, p2, p3) {
+        return getArcLine(p1, p2, p3)
+        
+      } 
+    },
+    created() {
+      this.parent = getParent.call(this)
+      mapReady.call(this, this.ready)
+    },
+    beforeDestroy() {
+      if (this.map) {
+        this.finish()
+        this.clear()
+      }
+    }
+  }
+&lt;/script>
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-xdh-map.html">xdh-map</a></li><li><a href="module-xdh-map-circle.html">xdh-map-circle</a></li><li><a href="module-xdh-map-dialog.html">xdh-map-dialog</a></li><li><a href="module-xdh-map-draw.html">xdh-map-draw</a></li><li><a href="module-xdh-map-draw-arc.html">xdh-map-draw-arc</a></li><li><a href="module-xdh-map-drawdown.html">xdh-map-drawdown</a></li><li><a href="module-xdh-map-echarts.html">xdh-map-echarts</a></li><li><a href="module-xdh-map-geo-layer.html">xdh-map-geo-layer</a></li><li><a href="module-xdh-map-group.html">xdh-map-group</a></li><li><a href="module-xdh-map-heat.html">xdh-map-heat</a></li><li><a href="module-xdh-map-html.html">xdh-map-html</a></li><li><a href="module-xdh-map-icon.html">xdh-map-icon</a></li><li><a href="module-xdh-map-image.html">xdh-map-image</a></li><li><a href="module-xdh-map-line.html">xdh-map-line</a></li><li><a href="module-xdh-map-mask.html">xdh-map-mask</a></li><li><a href="module-xdh-map-measure.html">xdh-map-measure</a></li><li><a href="module-xdh-map-overview.html">xdh-map-overview</a></li><li><a href="module-xdh-map-panel.html">xdh-map-panel</a></li><li><a href="module-xdh-map-placement.html">xdh-map-placement</a></li><li><a href="module-xdh-map-pointer.html">xdh-map-pointer</a></li><li><a href="module-xdh-map-polygon.html">xdh-map-polygon</a></li><li><a href="module-xdh-map-popup.html">xdh-map-popup</a></li><li><a href="module-xdh-map-rectangle.html">xdh-map-rectangle</a></li><li><a href="module-xdh-map-scatter.html">xdh-map-scatter</a></li><li><a href="module-xdh-map-text.html">xdh-map-text</a></li><li><a href="module-xdh-map-track.html">xdh-map-track</a></li><li><a href="module-xdh-map-type.html">xdh-map-type</a></li><li><a href="module-xdh-map-warp.html">xdh-map-warp</a></li><li><a href="module-xdh-map-zoom.html">xdh-map-zoom</a></li><li><a href="module-xdh-map-zoom-panel.html">xdh-map-zoom-panel</a></li></ul><h3>Classes</h3><ul><li><a href="ol.interaction.areaSelect.html">areaSelect</a></li><li><a href="ol.interaction.drag.html">drag</a></li><li><a href="ol.source.TileSuperMapRest.html">TileSuperMapRest</a></li></ul><h3>Events</h3><ul><li><a href="module-xdh-map-type.html#~event:change">change</a></li><li><a href="module-xdh-map.html#~event:changeType">changeType</a></li><li><a href="module-xdh-map-pointer.html#~event:copy">copy</a></li><li><a href="module-xdh-map-draw.html#~event:drawend">drawend</a></li><li><a href="module-xdh-map-draw.html#~event:drawstart">drawstart</a></li><li><a href="module-xdh-map-draw.html#~event:modifyend">modifyend</a></li><li><a href="module-xdh-map-draw.html#~event:modifystart">modifystart</a></li><li><a href="module-xdh-map-geo-layer.html#~event:mouseEnter">mouseEnter</a></li><li><a href="module-xdh-map-track.html#~event:move">move</a></li><li><a href="global.html#event:on-boxEnd">on-boxEnd</a></li><li><a href="global.html#event:on-boxStart">on-boxStart</a></li><li><a href="global.html#event:on-dragDown">on-dragDown</a></li><li><a href="global.html#event:on-dragMove">on-dragMove</a></li><li><a href="global.html#event:on-dragUp">on-dragUp</a></li><li><a href="module-xdh-map-measure.html#~event:on-measureEnd">on-measureEnd</a></li><li><a href="module-xdh-map-drawdown.html#~event:on-toggle">on-toggle</a></li><li><a href="module-xdh-map.html#~event:ready">ready</a></li><li><a href="module-xdh-map-track.html#~event:start">start</a></li><li><a href="module-xdh-map-track.html#~event:stop">stop</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bd09ToGcj02">bd09ToGcj02</a></li><li><a href="global.html#bd09ToGps84">bd09ToGps84</a></li><li><a href="global.html#bd09ToWgs84">bd09ToWgs84</a></li><li><a href="global.html#capitalize">capitalize</a></li><li><a href="global.html#convertToWgs84">convertToWgs84</a></li><li><a href="global.html#createLayer">createLayer</a></li><li><a href="global.html#createTdtLayer">createTdtLayer</a></li><li><a href="global.html#D2R">D2R</a></li><li><a href="global.html#featureStyleRender">featureStyleRender</a></li><li><a href="global.html#gcj02ToBd09">gcj02ToBd09</a></li><li><a href="global.html#gcj02ToWgs84">gcj02ToWgs84</a></li><li><a href="global.html#gcjToGps84">gcjToGps84</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getParent">getParent</a></li><li><a href="global.html#gps84ToGcj02">gps84ToGcj02</a></li><li><a href="global.html#keyMap">keyMap</a></li><li><a href="global.html#LAYERS">LAYERS</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#mixProps">mixProps</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#outOfChina">outOfChina</a></li><li><a href="global.html#pi">pi</a></li><li><a href="global.html#prefix">prefix</a></li><li><a href="global.html#props">props</a></li><li><a href="global.html#set">set</a></li><li><a href="global.html#StyleMap">StyleMap</a></li><li><a href="global.html#wgs84ToBd09">wgs84ToBd09</a></li><li><a href="global.html#wgs84ToGcj02">wgs84ToGcj02</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Fri Mar 06 2020 18:09:19 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

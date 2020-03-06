@@ -106,6 +106,9 @@
         <router-link to="/draw">Draw</router-link>
       </dd>
       <dd>
+        <router-link to="/arc-draw">ArcDraw(圆弧绘制)</router-link>
+      </dd>
+      <dd>
         <router-link to="/scatter">Scatter</router-link>
       </dd>
       <dd>

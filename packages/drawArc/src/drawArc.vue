@@ -4,7 +4,7 @@
 
 <script>
   /**
-   * 地图图层类型切换控件
+   * 地图弧线描绘控件
    * @module xdh-map-draw-arc
    */
   import Collection from 'ol/Collection'
@@ -14,10 +14,7 @@
   import Feature from 'ol/Feature'
   import Point from 'ol/geom/Point'
   import LineString from 'ol/geom/LineString'
-  import { 
-    // getCircleCenterOfThreePoints, MathDistance, getAzimuth, isClockWise, getArcPoints 
-    getArcLine
-  } from 'utils/plot-utils'
+  import { getArcLine } from 'utils/plot-utils'
   import {parseStyle} from '../../../packages'
   const pointStyle = function (color) {
     return parseStyle({
@@ -47,6 +44,12 @@
     },
     /**
      * 参数属性 
+     * @member props
+     * @property {Number} [dragVertexDelay=500] Delay in milliseconds after pointerdown before the current vertex can be dragged to its exact position.
+     * @property {Number} [snapTolerance=12] Pixel distance for snapping to the drawing finish.
+     * @property {Object} [lineStyle]
+     * @property {Boolean} [freehand]
+     * @property {Boolean} [wrapX]
      */
     props: {
       // Delay in milliseconds after pointerdown before the current vertex can be dragged to its exact position.

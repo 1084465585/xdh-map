@@ -51,6 +51,7 @@ import AreaSelect from '../utils/interactions/area-select'
 import DrawArc from './drawArc'
 
 import * as utils from '../utils/util'
+import * as plotutils from '../utils/plot-utils'
 import '../theme/index.scss'
 
 const components = [
@@ -142,13 +143,15 @@ export const parseStyle = parse
 export const DragClass = Drag
 export const AreaSelectClass = AreaSelect
 export const mapUtils = utils
+export const plotUtils = plotutils
 
 
 export default {
   version: '1.1.15',
   install,
   parseStyle,
-  mapUtils,  
+  mapUtils,
+  plotUtils,  
   Map,
   Text,
   Rectangle,

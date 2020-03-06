@@ -180,6 +180,10 @@ const router = new Router({
             path: 'cruve',
             component: () => import('./views/cruve')
           },
+          {
+            path: 'arc-draw',
+            component: () => import('./views/arc-draw')
+          },
           // -----------测试用页面---------
           {
             path: 'mytest/test',
