@@ -8,7 +8,7 @@
         <button @click="drawClear">清除</button>
       </xdh-map-placement>
 
-      <xdh-map-draw-arc ref="arcDraw"></xdh-map-draw-arc>
+      <xdh-map-draw-arc ref="arcDraw" @drawend="handleDrawEnd" :line-style="style"></xdh-map-draw-arc>
     </xdh-map>
  
    
@@ -19,10 +19,7 @@
 <script> 
 
 import {parseStyle} from '../../../packages'
-import Feature from 'ol/Feature'
-import LineString from 'ol/geom/LineString'
-import * as PlotUtils from '../../../utils/plot-utils'
- 
+
 // import Point from 'ol/geom/Point'
 
 // import {Vector as VectorLayer} from 'ol/layer';
@@ -52,7 +49,8 @@ export default {
       view: null,  
       target: [113, 23],
 
-      style: pathStyle
+      style: pathStyle,
+      arr: []
     }
   },
   computed: {
@@ -66,39 +64,11 @@ export default {
      
       // this.setArc()
     },
-    addLine() {
-      let arcLine = this.setArc() 
-      let geo = new LineString(arcLine)
-      // console.log(geo)
-      let feature = new Feature({
-        geometry: geo
-      })
-
-      this.$refs.map.addFeature(feature)
-    },
-
-    setArc() {
-      let [pnt1, pnt2, pnt3, startAngle, endAngle] = [this.path[0], this.path[1], this.path[2], null, null]
-
-      let center = PlotUtils.getCircleCenterOfThreePoints(pnt1, pnt2, pnt3)
-      let radius = PlotUtils.MathDistance(pnt1, center)
-      let angle1 = PlotUtils.getAzimuth(pnt1, center)
-      let angle2 = PlotUtils.getAzimuth(pnt2, center)  
-
-      if (PlotUtils.isClockWise(pnt1, pnt2, pnt3)) {
-        startAngle = angle2
-        endAngle = angle1
-      } else {
-        startAngle = angle1
-        endAngle = angle2
-      }
-       
-      return PlotUtils.getArcPoints(center, radius, startAngle, endAngle)
+    handleDrawEnd(arc, arcs) {
+      console.log(arc)
     },
     
-    clickHandle(e) {
-      console.log(e)
-    },
+    
 
     drawPoint() {
       this.$refs.arcDraw.draw()
@@ -107,7 +77,7 @@ export default {
       this.$refs.arcDraw.finish()
     },
     drawModify() {
-      this.$refs.arcDraw.modify()
+      this.$refs.arcDraw.edit()
     },
     drawClear() {
       this.$refs.arcDraw.clear()

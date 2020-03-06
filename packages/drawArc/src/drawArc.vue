@@ -1,5 +1,5 @@
 <template>
-  <xdh-map-draw ref="pointDraw" type="Point" @drawend="drawend" @drawstart="drawstart" @modifystart="handleModifyStart" @modifyend="handleModifyEnd"></xdh-map-draw>
+  <div> </div>
 </template>
 
 <script>
@@ -7,138 +7,289 @@
    * 地图图层类型切换控件
    * @module xdh-map-draw-arc
    */
-
-  import XdhMapDraw from 'packages/draw'
+  import Collection from 'ol/Collection'
+  import CleanMixin from 'utils/mixins/clean'
+  import { Modify } from 'ol/interaction.js'
   import { getParent, mapReady } from 'utils/util'
   import Feature from 'ol/Feature'
+  import Point from 'ol/geom/Point'
   import LineString from 'ol/geom/LineString'
   import { getCircleCenterOfThreePoints, MathDistance, getAzimuth, isClockWise, getArcPoints } from 'utils/plot-utils'
+  import {parseStyle} from '../../../packages'
+  const pointStyle = function (color) {
+    return parseStyle({
+      className: 'Style',
+      zIndex: 2,
+      image: {
+        className: 'Circle',
+        radius: 5,
+        stroke: {
+          className: 'Stroke',
+          width: 2,
+          color: 'red'
+        },
+        fill: {
+          className: 'Fill',
+          color: color
+        }
+      } 
+    })
+  }
+  const pointHideStyle = function () {
+    return parseStyle({
+      className: 'Style', 
+      image: {
+        className: 'Circle',
+        radius: 0,
+        fill: {
+          className: 'Fill',
+          color: 'transparent'
+        }
+      } 
+    })
+  }
 
   export default {
     name: 'XdhMapDrawArc',
-    components: {
-      XdhMapDraw
+    mixins: [CleanMixin],
+    components: { 
     },
     /**
      * 参数属性 
      */
     props: {
-      ...XdhMapDraw.props
-      // 线的Style描述JSON
-      // lineStyle: Object
+      // Delay in milliseconds after pointerdown before the current vertex can be dragged to its exact position.
+      dragVertexDelay: {
+        type: Number,
+        default: 500
+      },
+      // Pixel distance for snapping to the drawing finish.
+      snapTolerance: {
+        type: Number,
+        default: 12
+      },
+      wrapX: Boolean,
+      lineStyle: null
+
     },
     data() {
       return {
         parent: null,
         map: null,
+        source: null,
         currentArcLine: null,
         currentFeature: null,
-        currentStart: [],
-        currentEnd: [],
-        features: []
+        pointStyle: pointStyle('white'),
+
+        featuresData: [], 
+
+       
+        tempPoints: [],
+        allPoints: [],
+
+        isDraw: false
+        // isModify: false
       }
     },
     computed: {
-       
+      features() {
+        return this.featuresData.map((item) => {
+          return item.line
+        })
+      } 
     },
     methods: {
       ready(map) {
         this.map = map
       },
       draw() {
-        this.$refs.pointDraw.draw()
-      },
-      finish() {
-        this.$refs.pointDraw.finish()
-      },
-      clear() {
-        this.$refs.pointDraw.clear()
-      },
-      drawend(e) {  
+        if (!this.map || !this.parent) return
+        if (!this.source) {
+          const layer = this.parent.createVectorLayer()
+          this.source = layer.getSource() 
+        }
         
-        let length = this.$refs.pointDraw.features.length
-        // e.feature.setId(`arcPoint_${new Date().getTime()}_${length - 1}`)
-        if ((length % 2 === 0 && length < 3) || length % 3 === 2) {
-          this.currentStart = this.$refs.pointDraw.features[length - 2].getGeometry().getCoordinates()
-          this.currentEnd = this.$refs.pointDraw.features[length - 1].getGeometry().getCoordinates()
-          // console.log(this.currentStart, this.currentEnd)
-          this.addLine(this.currentStart, this.currentEnd)
-          this.map.on('pointermove', this.listenPointMove)
-        }
-        if (length % 3 === 0) { 
-          this.$refs.pointDraw.finish()
-          this.map.un('pointermove', this.listenPointMove)
-          this.features.push(this.currentFeature)
-          this.clearCurrent()
-          // console.log(this.features)
-        }
-        this.$refs.pointDraw.features[length - 1].setId(`arcPoint_${new Date().getTime()}_${length - 1}`)
+        this.isDraw = true
+        this.map.on('click', this.handleDraw)  
+        
       },
-      modify() {
-        this.$refs.pointDraw.modify()
+      addPoint(coor) {
+        let feature = new Feature({
+          geometry: new Point(coor)
+        }) 
+        feature.setStyle(this.pointStyle)
+        this.source.addFeature(feature)
+        
+        return feature
       },
+      handleDraw(e) {
+        let point = this.addPoint(e.coordinate)
+        this.map.on('pointermove', this.listenPointerMove) 
+        this.tempPoints.push(point) 
 
-      listenPointMove(e) { 
-        this.addLine(this.currentStart, e.coordinate, this.currentEnd)
+        if (this.tempPoints.length === 3) {
+          this.finish()
+        } 
+        
+        if (this.tempPoints.length === 1) {
+          let start = this.tempPoints[0].getGeometry().getCoordinates()
+          this.addLine(start, start)
+        } 
+         
       },
       
-      drawstart(e) {
-      },
-
-      handleModifyEnd(e) {
-        // console.log(e)
-        let points = e.features.getArray()  
-        console.log(points)
-        if (e.target.dragSegments_[0][0] && e.target.dragSegments_[0][0].feature) {
-          let editPoint = e.target.dragSegments_[0][0].feature
-          let pointCoor = editPoint.getGeometry().getCoordinates()
-          let _index = parseInt(editPoint.getId().split('_')[2])
-          let index = Math.floor(_index / 3)
-          let offset = (_index + 1) % 3
-          // console.log(index, offset)
-          let start
-          let end
-          let inside 
-          if (offset === 0) { // inside 
-            console.log('handle inside', points[_index - 2], points[_index - 1])
-            inside = pointCoor
-            start = points[_index - 2].getGeometry().getCoordinates()
-            end = points[_index - 1].getGeometry().getCoordinates() 
-          } else if(offset === 1) { // start
-           console.log('handle start', offset, _index)
-            inside = points[_index + 2].getGeometry().getCoordinates()
-            start = pointCoor
-            end = points[_index + 1].getGeometry().getCoordinates()
-          } else if (offset === 2) { // end 
-           console.log('handle end', offset, _index)
-            inside = points[_index + 1].getGeometry().getCoordinates()
-            start = points[_index - 1].getGeometry().getCoordinates()
-            end = pointCoor
-          }
-         
-          let path = this.getArcLine(start, end, inside)
-          // console.log(this.features, this.features[index], index, start, inside, end)
-          this.features[index].getGeometry().setCoordinates(path)  
-           
-        }
-
-      },
-      handleModifyStart(e) {
-
-      },
-
-      addLine(start, end, inside) { 
-        if (!this.currentFeature) {
-          this.currentArcLine = new LineString([start, end])
-          this.currentFeature = new Feature({
-            geometry: this.currentArcLine
-          })
-         
-          this.parent.addFeature(this.currentFeature) 
+      finish() {
+        this.isDraw = false 
+        
+        if (this.tempPoints.length === 3) {
+          this.collectFeature()
         } else {
-          let arcLine = this.getArcLine(start, inside, end)
-          this.currentArcLine.setCoordinates(arcLine)
+           this.tempPoints.forEach((p) => {
+            this.source.removeFeature(p)
+          })
+          this.source.removeFeature(this.currentFeature)
+        }
+        
+         this.currentArcLine = null
+        this.currentFeature = null
+        this.tempPoints = []
+        
+        this.map.un('pointermove', this.listenPointerMove)
+        this.map.un('click', this.handleDraw) 
+     
+      },
+      
+      collectFeature() {
+        let id = `arc${new Date().getTime()}`
+        let obj = {id: id}
+        this.currentFeature.setId(id)
+        obj.line = this.currentFeature
+
+        const hideStyle = pointHideStyle()
+        this.tempPoints.forEach((p, index) => {
+          p.setId(`${id}_${index + 1}`) 
+          p.setStyle(hideStyle) 
+        })
+
+        obj.points = this.tempPoints.concat([])
+        this.featuresData.push(obj)  
+
+        this.$emit('drawend', obj.line, obj, this.features, this.featuresData) 
+      },
+      edit() {
+        this.isModify = true
+        let allPoints = []
+        this.featuresData.forEach((data) => {
+          data.points.forEach((p) => {
+            p.setStyle(this.pointStyle)
+
+            allPoints.push(p)
+          })
+
+        })
+        console.log(allPoints)
+        
+        this.drawer = new Modify({
+          features: new Collection(allPoints),
+          style: null,
+          wrapX: this.wrapX
+        })
+        this.drawer.on('modifystart', this.handleModifyStart)
+        this.drawer.on('modifyend', this.handleModifyEnd)
+        this.map.addInteraction(this.drawer)
+      }, 
+      handleModifyStart(e) {
+        
+        let dragFeature = e.target.dragSegments_.length ? e.target.dragSegments_[0][0].feature : null
+     
+        if (!dragFeature) return
+        
+        let {line, startP, endP, insideP, index} = {...this.getRelateFeatures(dragFeature)}
+        
+        this.modifyPointerMoveProxy = this.modifyPointerMove.bind(this, line, startP, endP, insideP, index)
+        this.map.on('pointermove', this.modifyPointerMoveProxy)
+      },
+      handleModifyEnd(e) {
+         this.map.un('pointermove', this.modifyPointerMoveProxy)
+      },
+      getRelateFeatures(dragFeature) {
+        
+        let arcId = dragFeature.getId().split('_')[0]
+        let index = dragFeature.getId().split('_')[1]
+        let target = this.featuresData.find((data) => {
+          return data.id === arcId
+        })
+        let startP
+        let endP
+        let insideP
+        if (index === '1') {
+          startP = dragFeature
+          endP = target.points[1]
+          insideP = target.points[2]
+        } else if (index === '2') {
+          startP = target.points[0]
+          endP = dragFeature
+          insideP = target.points[2]
+        } else if (index === '3') {
+          startP = target.points[0]
+          endP = target.points[1]
+          insideP = dragFeature 
+        }
+        // console.log(arcId, target, startP, endP, insideP)
+        return {
+          line: target.line, 
+          startP: startP, 
+          endP: endP, 
+          insideP: insideP,
+          index: index
+        }
+      },
+      modify(feature) {
+         
+      },
+      clear() {
+         
+      },
+       
+      listenPointerMove(e) { 
+        if (this.tempPoints.length === 1) {
+          let start = this.tempPoints[0].getGeometry().getCoordinates()
+          this.currentArcLine.setCoordinates([start, e.coordinate])
+        } else if (this.tempPoints.length === 2) {
+          let start = this.tempPoints[0].getGeometry().getCoordinates()
+          let end = this.tempPoints[1].getGeometry().getCoordinates()
+          let inside = e.coordinate
+          let archLine = this.getArcLine(start, end, inside)
+          this.currentArcLine.setCoordinates(archLine)
         } 
+      },
+      modifyPointerMove(line, startP, endP, insideP, index, e) {
+        console.log('modify', arguments)
+        let start = startP.getGeometry().getCoordinates()
+        let end = endP.getGeometry().getCoordinates()
+        let inside = insideP.getGeometry().getCoordinates()
+        // let move = e.coordinate
+        let points 
+        if (index === '1') {
+          points = [e.coordinate, end, inside] 
+        } else if (index === '2') {
+          points = [start, e.coordinate, inside] 
+        } else if (index === '3') {
+          points = [start, end, e.coordinate]  
+        }
+        let path = this.getArcLine(...points)
+        // line.getGeomerty().setCoordinates(path) 
+        line.getGeometry().setCoordinates(path)
+
+      }, 
+
+      addLine(start, end) { 
+        this.currentArcLine = new LineString([start, end])
+        this.currentFeature = new Feature({
+          geometry: this.currentArcLine
+        })
+        this.currentFeature.setStyle(this.lineStyle) 
+        this.source.addFeature(this.currentFeature) 
       },
       getArcLine(p1, p2, p3) {
         let [pnt1, pnt2, pnt3, startAngle, endAngle] = [p1, p2, p3, null, null]
@@ -157,23 +308,17 @@
         }
         
         return getArcPoints(center, radius, startAngle, endAngle)
-      },
-      clearCurrent() {
-        this.currentArcLine = null
-        this.currentFeature = null
-        this.currentStart = []
-        this.currentEnd = []
-      }
+      } 
     },
     created() {
       this.parent = getParent.call(this)
       mapReady.call(this, this.ready)
     },
     beforeDestroy() {
-      if (this.map) {
-        this.finish()
-        this.clear()
-      }
+      // if (this.map) {
+      //   this.finish()
+      //   this.clear()
+      // }
     }
   }
 </script>
