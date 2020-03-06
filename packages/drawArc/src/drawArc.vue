@@ -9,12 +9,15 @@
    */
   import Collection from 'ol/Collection'
   import CleanMixin from 'utils/mixins/clean'
-  import { Modify } from 'ol/interaction.js'
+  import { Draw, Modify } from 'ol/interaction.js'
   import { getParent, mapReady } from 'utils/util'
   import Feature from 'ol/Feature'
   import Point from 'ol/geom/Point'
   import LineString from 'ol/geom/LineString'
-  import { getCircleCenterOfThreePoints, MathDistance, getAzimuth, isClockWise, getArcPoints } from 'utils/plot-utils'
+  import { 
+    // getCircleCenterOfThreePoints, MathDistance, getAzimuth, isClockWise, getArcPoints 
+    getArcLine
+  } from 'utils/plot-utils'
   import {parseStyle} from '../../../packages'
   const pointStyle = function (color) {
     return parseStyle({
@@ -35,19 +38,7 @@
       } 
     })
   }
-  const pointHideStyle = function () {
-    return parseStyle({
-      className: 'Style', 
-      image: {
-        className: 'Circle',
-        radius: 0,
-        fill: {
-          className: 'Fill',
-          color: 'transparent'
-        }
-      } 
-    })
-  }
+  
 
   export default {
     name: 'XdhMapDrawArc',
@@ -81,177 +72,65 @@
         currentFeature: null,
         pointStyle: pointStyle('white'),
 
-        featuresData: [], 
+        features: [], 
 
        
         tempPoints: [],
         allPoints: [],
 
-        isDraw: false
-        // isModify: false
+        isDraw: false,
+        isModify: false,
+
+        drawer: null
       }
     },
     computed: {
-      features() {
-        return this.featuresData.map((item) => {
-          return item.line
-        })
-      } 
+      
     },
     methods: {
       ready(map) {
         this.map = map
       },
+      // 创建画弧交互
       draw() {
         if (!this.map || !this.parent) return
+        if (this.isDraw) return
         if (!this.source) {
           const layer = this.parent.createVectorLayer()
           this.source = layer.getSource() 
         }
         
         this.isDraw = true
-        this.map.on('click', this.handleDraw)  
         
+        this.drawer = new Draw({
+          source: this.source,
+          type: 'Point',
+          style: null,
+          ...this.$props
+        })
+        this.map.addInteraction(this.drawer) 
+        this.drawer.on('drawend', this.handleDraw)
       },
-      addPoint(coor) {
-        let feature = new Feature({
-          geometry: new Point(coor)
-        }) 
-        feature.setStyle(this.pointStyle)
-        this.source.addFeature(feature)
-        
-        return feature
-      },
-      handleDraw(e) {
-        let point = this.addPoint(e.coordinate)
-        this.map.on('pointermove', this.listenPointerMove) 
+      // 每个点画完后回调 
+      handleDraw(e) { 
+        // console.log('drawPoint', e)
+        let point = e.feature  
+        e.feature.setProperties({'type': 'removable'})
+        this.map.on('pointermove', this.drawPointerMove) 
         this.tempPoints.push(point) 
 
         if (this.tempPoints.length === 3) {
-          this.finish()
+          this.collectData()
+          this.stopDraw()
         } 
         
         if (this.tempPoints.length === 1) {
           let start = this.tempPoints[0].getGeometry().getCoordinates()
           this.addLine(start, start)
         } 
-         
-      },
-      
-      finish() {
-        this.isDraw = false 
-        
-        if (this.tempPoints.length === 3) {
-          this.collectFeature()
-        } else {
-           this.tempPoints.forEach((p) => {
-            this.source.removeFeature(p)
-          })
-          this.source.removeFeature(this.currentFeature)
-        }
-        
-         this.currentArcLine = null
-        this.currentFeature = null
-        this.tempPoints = []
-        
-        this.map.un('pointermove', this.listenPointerMove)
-        this.map.un('click', this.handleDraw) 
-     
-      },
-      
-      collectFeature() {
-        let id = `arc${new Date().getTime()}`
-        let obj = {id: id}
-        this.currentFeature.setId(id)
-        obj.line = this.currentFeature
-
-        const hideStyle = pointHideStyle()
-        this.tempPoints.forEach((p, index) => {
-          p.setId(`${id}_${index + 1}`) 
-          p.setStyle(hideStyle) 
-        })
-
-        obj.points = this.tempPoints.concat([])
-        this.featuresData.push(obj)  
-
-        this.$emit('drawend', obj.line, obj, this.features, this.featuresData) 
-      },
-      edit() {
-        this.isModify = true
-        let allPoints = []
-        this.featuresData.forEach((data) => {
-          data.points.forEach((p) => {
-            p.setStyle(this.pointStyle)
-
-            allPoints.push(p)
-          })
-
-        })
-        console.log(allPoints)
-        
-        this.drawer = new Modify({
-          features: new Collection(allPoints),
-          style: null,
-          wrapX: this.wrapX
-        })
-        this.drawer.on('modifystart', this.handleModifyStart)
-        this.drawer.on('modifyend', this.handleModifyEnd)
-        this.map.addInteraction(this.drawer)
       }, 
-      handleModifyStart(e) {
-        
-        let dragFeature = e.target.dragSegments_.length ? e.target.dragSegments_[0][0].feature : null
-     
-        if (!dragFeature) return
-        
-        let {line, startP, endP, insideP, index} = {...this.getRelateFeatures(dragFeature)}
-        
-        this.modifyPointerMoveProxy = this.modifyPointerMove.bind(this, line, startP, endP, insideP, index)
-        this.map.on('pointermove', this.modifyPointerMoveProxy)
-      },
-      handleModifyEnd(e) {
-         this.map.un('pointermove', this.modifyPointerMoveProxy)
-      },
-      getRelateFeatures(dragFeature) {
-        
-        let arcId = dragFeature.getId().split('_')[0]
-        let index = dragFeature.getId().split('_')[1]
-        let target = this.featuresData.find((data) => {
-          return data.id === arcId
-        })
-        let startP
-        let endP
-        let insideP
-        if (index === '1') {
-          startP = dragFeature
-          endP = target.points[1]
-          insideP = target.points[2]
-        } else if (index === '2') {
-          startP = target.points[0]
-          endP = dragFeature
-          insideP = target.points[2]
-        } else if (index === '3') {
-          startP = target.points[0]
-          endP = target.points[1]
-          insideP = dragFeature 
-        }
-        // console.log(arcId, target, startP, endP, insideP)
-        return {
-          line: target.line, 
-          startP: startP, 
-          endP: endP, 
-          insideP: insideP,
-          index: index
-        }
-      },
-      modify(feature) {
-         
-      },
-      clear() {
-         
-      },
-       
-      listenPointerMove(e) { 
+      // 画点过程中 
+      drawPointerMove(e) { 
         if (this.tempPoints.length === 1) {
           let start = this.tempPoints[0].getGeometry().getCoordinates()
           this.currentArcLine.setCoordinates([start, e.coordinate])
@@ -262,27 +141,187 @@
           let archLine = this.getArcLine(start, end, inside)
           this.currentArcLine.setCoordinates(archLine)
         } 
+      }, 
+      // 收集弧线feature 数据
+      collectData() {
+        let coorLength = this.currentFeature.getGeometry().getCoordinates().length
+        if (coorLength <= 2) {
+          this.currentFeature.setProperties({'type': 'removable'})
+          return
+        } 
+        let id = `arc${new Date().getTime()}` 
+        this.currentFeature.setId(id) 
+        this.features.push(this.currentFeature) 
+        this.$emit('drawend', this.currentFeature, this.features)
       },
-      modifyPointerMove(line, startP, endP, insideP, index, e) {
-        console.log('modify', arguments)
-        let start = startP.getGeometry().getCoordinates()
-        let end = endP.getGeometry().getCoordinates()
-        let inside = insideP.getGeometry().getCoordinates()
-        // let move = e.coordinate
-        let points 
-        if (index === '1') {
-          points = [e.coordinate, end, inside] 
-        } else if (index === '2') {
-          points = [start, e.coordinate, inside] 
-        } else if (index === '3') {
-          points = [start, end, e.coordinate]  
-        }
-        let path = this.getArcLine(...points)
-        // line.getGeomerty().setCoordinates(path) 
-        line.getGeometry().setCoordinates(path)
+      // 暂停 当前弧线 绘制
+      stopDraw() { 
+        this.map.un('pointermove', this.drawPointerMove)  
+        this.currentArcLine = null
+        this.currentFeature = null
+        this.tempPoints = []
+        // console.log('tempP', this.tempPoints, this.features) 
+      },
+
+      // 结束 绘制 弧形
+      finishDraw() {
+        // console.log('isFinish')
+        let features = this.source.getFeatures()
+        features.forEach((p) => { 
+          let props = p.getProperties('type')
+          if (props.type === 'removable') {
+            this.source.removeFeature(p)
+          }
+        })  
+
+        this.drawer.un('drawend', this.handleDraw)
+        this.map.removeInteraction(this.drawer)
+        this.drawer = null 
+ 
+
+        this.currentArcLine = null
+        this.currentFeature = null
+        this.tempPoints = []
+        this.isDraw = false
+ 
+      },
+       
+
+      // 开始创建编辑交互
+      modify() {
+        if (!this.features.length) return
+        if (this.isModify) return
+        this.finish()
+        this.$nextTick(() => {
+          this.isModify = true
+          this.createModify()
+        })
+      },
+
+      // 将所有 弧形 的作用点 创建 Modify() 交互对象
+      createModify() {
+        let allPoints = []
+        this.features.forEach((feature) => {
+          let id = feature.getId()
+          let coords = feature.getGeometry().getCoordinates()
+          // console.log('coords', coords) 
+          let length = coords.length
+          let handleCoords = [coords[0], coords[length - 1], coords[Math.floor(length / 2)]]
+          
+          
+          let points = handleCoords.map((coord, index) => {
+            let p = this.addPoint(coord)
+            p.setId(`${id}_${index + 1}`)
+            p.setProperties({'type': 'handlePoint'})
+            return p
+          })
+          allPoints = allPoints.concat(points)
+        })
+        
+        this.allPoints = allPoints
+        this.drawer = new Modify({
+          features: new Collection(allPoints),
+          style: null,
+          wrapX: this.wrapX
+        })
+        this.drawer.on('modifystart', this.handleModifyStart)
+        this.drawer.on('modifyend', this.handleModifyEnd)
+        this.map.addInteraction(this.drawer)
+      },
+
+      // 修改开始 点击 事件 回调函数
+      handleModifyStart(e) {
+         
+        let dragFeature = e.target.dragSegments_.length ? e.target.dragSegments_[0][0].feature : null
+     
+        if (!dragFeature) return
+        // console.log(dragFeature)
+        let arcId = dragFeature.getId().split('_')[0]
+        this.currentFeature = this.features.find((item) => {
+          return item.getId() === arcId
+        })
+        this.tempPoints = e.features.getArray().reduce((total, item) => {
+          let mainId = item.getId().split('_')[0]
+          if (mainId === arcId) {
+            total.push(item)
+          } 
+          return total
+        }, [])
+        
+        // console.log(this.currentFeature, this.tempPoints)
+        this.modifyPointerMoveProxy = this.modifyPointerMove.bind(this, dragFeature)
+        this.map.on('pointermove', this.modifyPointerMoveProxy)
 
       }, 
 
+      // 修改过程中 鼠标移动 回调函数
+      modifyPointerMove(dragFeature, e) {
+        let index = dragFeature.getId().split('_')[1]
+        let pointCoor = this.tempPoints.map((item) => {
+          return item.getGeometry().getCoordinates()
+        })
+        // console.log(index)
+        let points 
+        if (index === '1') {
+          points = [e.coordinate, pointCoor[1], pointCoor[2]] 
+        } else if (index === '2') {
+          points = [pointCoor[0], e.coordinate, pointCoor[2]]  
+        } else if (index === '3') {
+          points = [pointCoor[0], pointCoor[1], e.coordinate]   
+        }
+        let path = this.getArcLine(...points) 
+        this.currentFeature.getGeometry().setCoordinates(path)
+      },
+
+      // 修改过程中 鼠标放开后 回调函数
+      handleModifyEnd(e) {
+        this.map.un('pointermove', this.modifyPointerMoveProxy)
+      },
+
+      // 结束修改
+      finishModify() {
+        this.allPoints.forEach((p) => {
+          this.source.removeFeature(p)
+        }) 
+        this.drawer.un('modifystart', this.handleModifyStart)
+        this.drawer.un('modifyend', this.handleModifyEnd)
+        this.map.removeInteraction(this.drawer) 
+        this.drawer = null
+        this.currentFeature = null
+        this.tempPoints = []
+        this.allPoints = []
+        this.isModify = false
+      },
+
+      // 结束当前 绘制 / 编辑 状态
+      finish() { 
+        if (this.isDraw) {
+          this.stopDraw()
+          this.finishDraw()
+        }
+        if (this.isModify) {
+          this.finishModify()
+        }
+      }, 
+
+      clear() {
+        if (this.isModify || this.isDraw) {
+          this.finish()
+        }
+        this.features.forEach((f) => {
+          this.source.removeFeature(f)
+        })
+        this.features = []
+      },
+
+      addPoint(coor) {
+        let feature = new Feature({
+          geometry: new Point(coor)
+        }) 
+        feature.setStyle(this.pointStyle)
+        this.source.addFeature(feature) 
+        return feature
+      },  
       addLine(start, end) { 
         this.currentArcLine = new LineString([start, end])
         this.currentFeature = new Feature({
@@ -292,22 +331,8 @@
         this.source.addFeature(this.currentFeature) 
       },
       getArcLine(p1, p2, p3) {
-        let [pnt1, pnt2, pnt3, startAngle, endAngle] = [p1, p2, p3, null, null]
-
-        let center = getCircleCenterOfThreePoints(pnt1, pnt2, pnt3)
-        let radius = MathDistance(pnt1, center)
-        let angle1 = getAzimuth(pnt1, center)
-        let angle2 = getAzimuth(pnt2, center)  
-
-        if (isClockWise(pnt1, pnt2, pnt3)) {
-          startAngle = angle2
-          endAngle = angle1
-        } else {
-          startAngle = angle1
-          endAngle = angle2
-        }
+        return getArcLine(p1, p2, p3)
         
-        return getArcPoints(center, radius, startAngle, endAngle)
       } 
     },
     created() {
@@ -315,10 +340,10 @@
       mapReady.call(this, this.ready)
     },
     beforeDestroy() {
-      // if (this.map) {
-      //   this.finish()
-      //   this.clear()
-      // }
+      if (this.map) {
+        this.finish()
+        this.clear()
+      }
     }
   }
 </script>

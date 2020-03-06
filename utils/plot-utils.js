@@ -226,6 +226,33 @@ export const getArcPoints = (center, radius, startAngle, endAngle) => {
 }
 
 /**
+ * 简化版弧形点数生成函数
+ * @param center
+ * @param radius
+ * @param startAngle
+ * @param endAngle
+ * @returns {null}
+ */
+export const getArcLine = function (start, end, inside) {
+  let [pnt1, pnt2, pnt3, startAngle, endAngle] = [start, end, inside, null, null]
+
+  let center = getCircleCenterOfThreePoints(pnt1, pnt2, pnt3)
+  let radius = MathDistance(pnt1, center)
+  let angle1 = getAzimuth(pnt1, center)
+  let angle2 = getAzimuth(pnt2, center)  
+
+  if (isClockWise(pnt1, pnt2, pnt3)) {
+    startAngle = angle2
+    endAngle = angle1
+  } else {
+    startAngle = angle1
+    endAngle = angle2
+  }
+  
+  return getArcPoints(center, radius, startAngle, endAngle)
+} 
+
+/**
  * getBisectorNormals
  * @param t
  * @param pnt1

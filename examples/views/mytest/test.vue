@@ -1,9 +1,9 @@
 <template>
   <example class="flex"> 
-    <xdh-map ref="map" type="Baidu" id="map3"  :zoom="9" :center="target" @ready="mapReady"  > 
+    <xdh-map ref="map" type="Baidu" id="map3"  :zoom="9" :center="target" @ready="mapReady"   > 
       <xdh-map-placement>
-        <button @click="drawPoint">画点</button> 
-        <button @click="drawModify">编辑</button> 
+        <button @click="drawPoint">开始</button> 
+        <button @click="drawModify">编辑</button>
         <button @click="drawFinish">完成</button>
         <button @click="drawClear">清除</button>
       </xdh-map-placement>
@@ -35,7 +35,7 @@ const pathStyle = parseStyle({
   stroke: {
     className: 'Stroke',
     color: 'red',
-    width: 4
+    width: 2
   }
 })
 
@@ -65,7 +65,9 @@ export default {
       // this.setArc()
     },
     handleDrawEnd(arc, arcs) {
-      console.log(arc)
+      // console.log(arc)
+      this.arr.push(arc)
+      console.log('arr', this.arr)
     },
     
     
@@ -77,20 +79,12 @@ export default {
       this.$refs.arcDraw.finish()
     },
     drawModify() {
-      this.$refs.arcDraw.edit()
+      this.$refs.arcDraw.modify()
     },
     drawClear() {
       this.$refs.arcDraw.clear()
     },
-    drawend(e) {
-
-      console.log('drawend', e, this.$refs.pointDraw)
     
-    
-      // this.map.on('pointermove', this.listenPointMove)
-        // this.$refs.pointDraw.finish()
-        // this.map.un('pointermove', this.listenPointMove)
-    },
     listenPointMove(e) {
       console.log(e.coordinate)
     },
