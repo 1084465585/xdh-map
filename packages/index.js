@@ -42,6 +42,7 @@ import Drawdown from './tools/drawdown'
 import Warp from './tools/warp'
 import Zoom from './zoom'
 import ZoomPanel from './zoom/panel'
+import DrawPanel from './drawPanel'
 
 // 交互插件
 import Drag from '../utils/interactions/drag'
@@ -83,6 +84,7 @@ const components = [
   Group,
   Zoom,
   ZoomPanel,
+  DrawPanel,
   // ---纯html组件----
   Panel,
   Dialog,
@@ -131,6 +133,7 @@ export const XdhMapGeoLayer = Geolayer
 export const XdhMapGroup = Group
 export const XdhMapZoom = Zoom
 export const XdhMapZoomPanel = ZoomPanel
+export const XdhMapDrawPanel = DrawPanel
 // ---------------
 export const XdhMapPanel = Panel
 export const XdhMapDialog = Dialog
@@ -163,6 +166,8 @@ export default {
   Overview,
   Zoom,
   ZoomPanel,
+  XdhMapDrawPanel,
+
   Scale,
   Image,
   Html,

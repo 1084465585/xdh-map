@@ -107,10 +107,10 @@ export default {
       if (!this.map || !this.parent) return
 
       const layer = this.parent.createVectorLayer()
-      const source = layer.getSource()
+      this.source = layer.getSource()
 
       this.drawer = new Draw({
-        source: source,
+        source: this.source,
         style: this.createStyle(),
         ...this.$props
       })

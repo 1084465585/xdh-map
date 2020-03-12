@@ -19,7 +19,7 @@
   },
   "main": "lib/xdhmap.common.js",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "node --max_old_space_size=4096 node_modules/@vue/cli-service/bin/vue-cli-service.js serve",
     "dev": "npm run serve -- --open",
     "build": "vue-cli-service build && npm run jsdoc",
     "lint": "vue-cli-service lint",
@@ -55,6 +55,7 @@
     "eslint-plugin-vue": "^5.0.0",
     "jsdoc": "^3.6.2",
     "node-sass": "^4.12.0",
+    "ol-plot": "^3.0.0",
     "sass-loader": "^7.1.0",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",

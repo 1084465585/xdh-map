@@ -3,6 +3,9 @@
     <div style="height: 400px" id="map" class="map">
       
     </div>  
+    <div>
+      <button @click="test">test</button>
+    </div>
   </example>
 </template>
 <style scoped lang="scss">
@@ -13,13 +16,12 @@
 import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View'; 
-import TileLayer from 'ol/layer/Tile';
-import XYZ from 'ol/source/XYZ'
-// import OSM from 'ol/source/OSM'; 
-
+import TileLayer from 'ol/layer/Tile'; 
 import TileGrid from 'ol/tilegrid/TileGrid'
 import {get as getProj} from 'ol/proj'
 import TileImage from 'ol/source/TileImage'
+
+import OlPlot from 'ol-plot'
 
 export default {
   
@@ -28,14 +30,17 @@ export default {
       map: null,
       view: null,  
       zoom: 7,
-      target: [113, 23]
+      target: [113, 23],
+      plot: null
     }
   },
   computed: {
       
   },
   methods: { 
-    
+    test() {
+      this.plot.plotDraw.active('Circle')
+    }
     
   },
   created() { 
@@ -68,18 +73,13 @@ export default {
         } 
         return `http://online${index}.map.bdimg.com/onlinelabel/?qt=tile&x=${x}&y=${y}&z=${z}&styles=pl&udt=20160426&scaler=1&p=0`
       }
-    })
+    }) 
     
-
-    let source2 = new XYZ({
-      url: 'http://maponline1.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20200225'
-    })
-console.log(source2)
     var tileLayer = new TileLayer({
       source: source
     });
 
-    new Map({
+    let map = new Map({
       layers: [tileLayer],
       target: 'map',
       view: new View({
@@ -87,6 +87,15 @@ console.log(source2)
         zoom: 2
       })
     });
+
+    this.plot = new OlPlot(map, {
+      zoomToExtent: true
+    }) 
+
+    this.plot.plotDraw.on('drawEnd', (e) => {
+      let feature = e.feature
+      this.plot.plotEdit.activate(feature)
+    })
   },
   beforeDestroy() {
      

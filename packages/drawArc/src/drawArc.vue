@@ -123,7 +123,7 @@
         this.tempPoints.push(point) 
 
         if (this.tempPoints.length === 3) {
-          this.collectData()
+          this.collectData(e)
           this.stopDraw()
         } 
         
@@ -146,7 +146,8 @@
         } 
       }, 
       // 收集弧线feature 数据
-      collectData() {
+      collectData(e) {
+        console.log(e)
         let coorLength = this.currentFeature.getGeometry().getCoordinates().length
         if (coorLength <= 2) {
           this.currentFeature.setProperties({'type': 'removable'})
@@ -155,7 +156,9 @@
         let id = `arc${new Date().getTime()}` 
         this.currentFeature.setId(id) 
         this.features.push(this.currentFeature) 
-        this.$emit('drawend', this.currentFeature, this.features)
+        e.feature = this.currentFeature
+        e.features = this.features
+        this.$emit('drawend', e)
       },
       // 暂停 当前弧线 绘制
       stopDraw() { 
