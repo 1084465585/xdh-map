@@ -1,10 +1,10 @@
 <template>
   <example class="flex"> 
-    <xdh-map ref="map" type="Baidu" id="map3"  :zoom="9" :center="target" @ready="mapReady" @click="handleClick" > 
-      <xdh-map-draw-panel :types="buttons" ></xdh-map-draw-panel>
+    <xdh-map ref="map" type="Baidu" id="map3"  :zoom="9" :center="target" @ready="mapReady" @dblclick="a" > 
+      <xdh-map-draw-panel ref="drawPanel" :types="buttons" @on-draw="isDraw = true" @on-draw-finish="isDraw = false"></xdh-map-draw-panel>
        
     </xdh-map>
- 
+    <button @click="test">finish draw {{isDraw ? '*' : ''}}</button>
    
  
   </example>
@@ -73,14 +73,17 @@ export default {
         // {type: 'Circle', name: '圈'},
         // {type: 'FreeHandLine', name: '自由'},
         // {type: 'RectAngle', name: '方形'}
-      ]
+      ],
+      isDraw: false
     }
   },
   computed: {
       
   },
   methods: {
-      
+    a(e) {
+      console.log(e)
+    },  
     mapReady(map) {
       this.map = map
       this.view = this.map.getView()
@@ -91,6 +94,9 @@ export default {
     handleClick(e) {
       let feature = this.$refs.map.getFeatureAtPixel(e.pixel)
       feature && console.log(feature) 
+    },
+    test() {
+      this.$refs.drawPanel.finishDraw()
     } 
   },
   created() {
