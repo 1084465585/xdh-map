@@ -1,6 +1,6 @@
 <template>
   <example class="flex"> 
-    <xdh-map ref="map" type="Baidu" id="map3"  :zoom="9" :center="target" @ready="mapReady" @dblclick="a" > 
+    <xdh-map ref="map" type="Baidu" id="map3"  :zoom="9" :center="target" @ready="mapReady" @dblclick="dblClickHandle" > 
       <xdh-map-draw-panel ref="drawPanel" :types="buttons" @on-draw="isDraw = true" @on-draw-finish="isDraw = false"></xdh-map-draw-panel>
        
     </xdh-map>
@@ -81,9 +81,7 @@ export default {
       
   },
   methods: {
-    a(e) {
-      console.log(e)
-    },  
+       
     mapReady(map) {
       this.map = map
       this.view = this.map.getView()
@@ -91,9 +89,10 @@ export default {
     panelInited(plot) {
       this.plot = plot
     },
-    handleClick(e) {
+    dblClickHandle(e) {
       let feature = this.$refs.map.getFeatureAtPixel(e.pixel)
-      feature && console.log(feature) 
+      // feature && console.log(feature)
+      this.$refs.drawPanel.editFeature(feature) 
     },
     test() {
       this.$refs.drawPanel.finishDraw()

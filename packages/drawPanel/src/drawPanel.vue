@@ -1,11 +1,30 @@
 <template>
-<xdh-map-placement :placement="placement" :margin="[10]" theme="light" @dblclick="a">
+<xdh-map-placement :placement="placement" :margin="[10]" theme="light" >
   <div class="xdh-map-draw-panel">
-    <slot name="buttons">
+    <slot name="type-buttons">
       <div  class="type-btns-warp clearfix" :style="{'width': `${width * 50}px`}">
         <div class="button" v-for="(item, index) in buttonList" :key="index" :title="item.name" @click="draw(item.type)">
-          <!-- <img class="icon" :src="item.img" /> -->
+          <img class="icon" :src="item.img" />
           <div class="name">{{item.name}}</div>
+        </div>
+      </div>
+    </slot>
+    <slot name="tool-buttons">
+      <div class="tools-btns-warp clearfix">
+        <div :class="{'button': true, 'active': editingFeature}" @click="deleteClickHandle">
+          删除
+        </div>
+        <div v-if="isDrawing" :class="{'button': true, 'active': isDrawing}" @click="cancleClickHandle">
+          取消
+        </div>
+        <!-- <div class="button" @click="resetClickHandle">
+          重置
+        </div> -->
+        <div v-if="!isDrawing" :class="{'button': true, 'active': editingFeature}" @click="finishClickHandle">
+          完结
+        </div>
+        <div :class="{'button': true, 'active': true}" @click="clearClickHandle">
+          清空
         </div>
       </div>
     </slot>
@@ -44,6 +63,27 @@
       }
     }
   }
+  .tools-btns-warp{
+    margin-top: 5px;
+    border-top: 1px solid #C5C4C1;
+  
+    .button{
+      float: left; 
+      padding: 3px 5px;
+      border-radius: 3px;
+      border: 1px solid #C5C4C1;
+      margin-top: 5px;
+      font-size: 14px;
+      margin-right: 8px;
+      color: #C5C4C1;
+      pointer-events: none;
+      &.active{
+        color: #818181;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+    }
+  }
 } 
  
  
@@ -58,6 +98,7 @@
   import { parse } from 'utils/style' 
   import OlPlot from 'ol-plot'
   import 'ol-plot/dist/ol-plot.css'
+  import { getLayerByLayerName } from 'ol-plot/src/Utils/layerUtils'
    
   const style = parse({
     className: 'Style',
@@ -73,7 +114,7 @@
   })
 
   const TYPES_ARR = [
-    {type: 'TextArea', name: '文本标绘'},
+    // {type: 'TextArea', name: '文本标绘'},
     {type: 'Point', name: '点'},
     {type: 'Polyline', name: '线'},
     {type: 'Curve', name: '曲线'},
@@ -123,6 +164,10 @@
         type: Number,
         default: 4
       },
+      showTools: {
+        type: Boolean,
+        default: true
+      },
       options: {
         type: Object,
         default: () => {
@@ -140,8 +185,8 @@
         if (!this.types.length) {
           return TYPES_ARR.map((item) => {
             return {
-              ...item
-              // img: '' // require(`../../../sources/draw-panel/icon/${item.type}.png`)
+              ...item,
+              img: require(`../../../sources/draw-panel/icon/${item.type}.png`)
             }
           })
         } else {
@@ -154,7 +199,7 @@
               if (target) {
                 arr.push({
                   ...target, 
-                  img: '' // require(`../../../sources/draw-panel/icon/${target.type}.png`)
+                  img: require(`../../../sources/draw-panel/icon/${target.type}.png`)
                 })
               }
             } else {
@@ -165,7 +210,7 @@
                 arr.push({
                   ...target, 
                   ...{img: ''},
-                  // ...{img: require(`../../../sources/draw-panel/icon/${target.type}.png`)}, 
+                  ...{img: require(`../../../sources/draw-panel/icon/${target.type}.png`)}, 
                   ...item
                 })
               }
@@ -178,45 +223,123 @@
         buttonList: initBtnList(),
         map: null,
         style: style,
-        plot: null
+        plot: null, 
+        
+        isDrawing: false,
+        isEditing: false,
+
+        editingFeature: null,
+        
+        lastVersion: null,
+
+        isChange: false
       }
     },
     computed: {
       
     },
     methods: {
-      a(e) {
-        console.log(e)
-      },
+      
       ready(map) {
         this.map = map
          
         this.plot = new OlPlot(this.map, {
-          zoomToExtent: true
+          zoomToExtent: false
         })
+
+        this.plotLayer = getLayerByLayerName(this.map, this.plot.plotUtils.layerName)
         this.$emit('on-inited', this.plot) 
           
       },
       draw(type) {
+        this.isDrawing = true
         this.$emit('on-draw')
-        this.plot.plotEdit.deactivate() 
+        this.plot.plotEdit.deactivate()
+        this.isEditing = false 
         this.plot.plotDraw.active(type)
         this.plot.plotDraw.on('drawEnd', this.drawEndHandle)
       },
       drawEndHandle(e) {
-        
-        const feature = e.feature
+        this.isDrawing = false
+        const feature = e.feature 
         this.$emit('on-draw-end', feature)
-        this.plot.plotEdit.activate(feature)
-         
+        if (this.editAfterDraw) {
+          this.editingFeature = feature
+          this.plot.plotEdit.activate(feature)
+          this.isEditing = true
+          this.$emit('on-edit-start', feature) 
+        } 
+
+        
       },
-      finishDraw() {
-        if (this.plot.plotDraw.isDrawing()) {
-          this.plot.plotDraw.disActive()
-          this.$emit('on-draw-finish')
+      cancleClickHandle() {
+        this.finishDraw()
+        this.finishEdit()
+      },
+      /*
+      resetClickHandle() {
+        // console.log(this.currentFeatures)
+        this.plot.plotEdit.deactivate()
+        this.isEditing = false
+        this.editingFeature = null
+        if (this.currentFeatures) {
+          this.plot.plotUtils.removeAllFeatures()
+          this.$nextTick(() => {
+            this.plot.plotUtils.addFeatures(this.currentFeatures)
+          })
+        }
+        
+      },
+      */
+      deleteClickHandle() {
+        if (this.editingFeature) {
+          this.plot.plotEdit.deactivate()
+          this.isEditing = false
+          this.plotLayer.getSource().removeFeature(this.editingFeature)
+          this.editingFeature = null 
+
+          
         }
       },
-      finishEdit() {}
+      finishClickHandle() {
+        if (this.editingFeature) {
+          this.finishEdit()
+        } 
+      },
+      clearClickHandle() {
+        this.plot.plotUtils.removeAllFeatures()
+        this.editingFeature = null
+        this.isEditing = false
+        this.isDrawing = false
+      },
+
+      finishDraw() {
+        if (this.plot.plotDraw.isDrawing()) {
+          this.isDrawing = false
+          this.plot.plotDraw.disActive()
+          this.$emit('on-finish-draw')
+        }
+      },
+      finishEdit() {
+        this.plot.plotEdit.deactivate()
+        this.$emit('on-finish-edit')
+        this.editingFeature = null
+        this.isEditing = false
+      },
+      editFeature(feature) { 
+        if (feature && feature.get('isPlot') && !this.plot.plotDraw.isDrawing()) {
+          if (!this.isEditing) {
+            this.editingFeature = feature
+            this.plot.plotEdit.activate(feature)
+            this.isEditing = true
+            this.$emit('on-edit-start', feature)
+          } else {
+            this.finishEdit()
+          }
+        } else {
+          console.log('无法编辑此图形')
+        }
+      }
     },
     created() {
       this.parent = getParent.call(this)
