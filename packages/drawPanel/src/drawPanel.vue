@@ -17,15 +17,16 @@
         <div v-if="isDrawing" :class="{'button': true, 'active': isDrawing}" @click="cancleClickHandle">
           取消
         </div>
-        <!-- <div class="button" @click="resetClickHandle">
+        <div v-if="!isDrawing && !isEditing" :class="{'button': true, 'active': oldVersions.length}" @click="resetClickHandle">
           重置
-        </div> -->
+        </div>
         <div v-if="!isDrawing" :class="{'button': true, 'active': editingFeature}" @click="finishClickHandle">
           完结
         </div>
         <div :class="{'button': true, 'active': true}" @click="clearClickHandle">
           清空
         </div>
+       
       </div>
     </slot>
   </div> 
@@ -177,6 +178,10 @@
       editAfterDraw: {
         type: Boolean,
         default: true
+      },
+      isMemory: {
+        type: Boolean,
+        default: true
       } 
 
     },
@@ -230,9 +235,7 @@
 
         editingFeature: null,
         
-        lastVersion: null,
-
-        isChange: false
+        oldVersions: []
       }
     },
     computed: {
@@ -252,6 +255,10 @@
           
       },
       draw(type) {
+        if (this.isMemory) {
+          this.saveCurrent()
+        }
+
         this.isDrawing = true
         this.$emit('on-draw')
         this.plot.plotEdit.deactivate()
@@ -263,6 +270,8 @@
         this.isDrawing = false
         const feature = e.feature 
         this.$emit('on-draw-end', feature)
+        
+
         if (this.editAfterDraw) {
           this.editingFeature = feature
           this.plot.plotEdit.activate(feature)
@@ -276,29 +285,21 @@
         this.finishDraw()
         this.finishEdit()
       },
-      /*
+      
       resetClickHandle() {
-        // console.log(this.currentFeatures)
-        this.plot.plotEdit.deactivate()
-        this.isEditing = false
-        this.editingFeature = null
-        if (this.currentFeatures) {
+        if (this.oldVersions.length) {
+          let version = this.oldVersions.pop()
           this.plot.plotUtils.removeAllFeatures()
-          this.$nextTick(() => {
-            this.plot.plotUtils.addFeatures(this.currentFeatures)
-          })
+          this.plot.plotUtils.addFeatures(version)
         }
         
-      },
-      */
+      }, 
       deleteClickHandle() {
         if (this.editingFeature) {
           this.plot.plotEdit.deactivate()
           this.isEditing = false
           this.plotLayer.getSource().removeFeature(this.editingFeature)
-          this.editingFeature = null 
-
-          
+          this.editingFeature = null  
         }
       },
       finishClickHandle() {
@@ -324,11 +325,14 @@
         this.plot.plotEdit.deactivate()
         this.$emit('on-finish-edit')
         this.editingFeature = null
-        this.isEditing = false
+        this.isEditing = false 
       },
       editFeature(feature) { 
         if (feature && feature.get('isPlot') && !this.plot.plotDraw.isDrawing()) {
           if (!this.isEditing) {
+            if (this.isMemory) {
+              this.saveCurrent()
+            }
             this.editingFeature = feature
             this.plot.plotEdit.activate(feature)
             this.isEditing = true
@@ -339,6 +343,25 @@
         } else {
           console.log('无法编辑此图形')
         }
+      },
+      saveCurrent() {
+        let version = this.plot.plotUtils.getFeatures()
+        if (version.length) {
+          this.saveVersion(version)
+        }
+        return version 
+      },
+      saveVersion(version) {
+        if (this.oldVersions.length < 5) {
+          this.oldVersions.push(version)
+        } else {
+          this.oldVersions.shift()
+          this.oldVersions.push(version)
+        }
+        console.log('save success', this.oldVersions)
+      },
+      clearVerson() {
+        this.oldVersions = []
       }
     },
     created() {

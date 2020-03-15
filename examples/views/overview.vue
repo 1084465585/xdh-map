@@ -24,6 +24,7 @@
 </template>
 
 <script>
+  // import 'ol/ol.css'
   export default {
     // methods: {
     //   handleCopy(coord) {
