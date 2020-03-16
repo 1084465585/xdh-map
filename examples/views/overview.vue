@@ -1,36 +1,48 @@
 <template>
   
   <example>
-    <xdh-map>
-      <xdh-map-overview placement="left-bottom"
+    <xdh-map ref="map" type="Amap" @ready="mapReady" :center="[120, 30]" :zoom="5" >
+      <xdh-map-overview placement="left-bottom" 
                         :margin="[10]"
-                        theme="light"></xdh-map-overview>
+                        theme="light"></xdh-map-overview> 
 
-      <xdh-map-overview placement="right-bottom"
+      <xdh-map-overview placement="left-top" 
                         :margin="[10]"
-                        theme="dark"></xdh-map-overview>
+                        theme="light"></xdh-map-overview> 
 
-      <xdh-map-overview placement="right-top"
+      <xdh-map-overview placement="right-top" 
                         :margin="[10]"
-                        theme="dark"></xdh-map-overview>
-
-      <xdh-map-overview placement="left-top"
+                        theme="light"></xdh-map-overview>    
+                                       
+      <xdh-map-overview placement="right-bottom" 
                         :margin="[10]"
-                        theme="light"></xdh-map-overview>
-
+                        theme="light"></xdh-map-overview> 
     </xdh-map>
+    
   </example>
    
 </template>
 
 <script>
-  // import 'ol/ol.css'
+  
   export default {
-    // methods: {
-    //   handleCopy(coord) {
-    //     alert('复制：' + coord)
-    //   }
-    // }
+    data() {
+      return {
+        map: null
+         
+      }
+    },
+    methods: {
+      mapReady(map) {
+        this.map = map
+        this.view = this.map.getView()
+         
+
+      }
+    },
+    mounted() {
+      
+    }
   }
 </script>
 

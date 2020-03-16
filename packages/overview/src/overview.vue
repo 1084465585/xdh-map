@@ -1,22 +1,82 @@
 <template>
-  <xdh-map-placement :class="classes" v-bind="$props">
-    <div ref="overview" class="xdh-map-overview__map" :style="overviewStyle"></div>
-    <div class="xdh-map-overview__trigger" @click="handleClick">
+<xdh-map-placement :placement="placement" v-bind="$attrs" style="border: 1px solid blue">
+  <div ref="warp" :class="{'xdh-map-overview': true, 'close': close}" >
+    <div :class="{'xdh-map-overview__map': true}" :style="mapWarpSize"></div>
+    
+    <div :class="[{'xdh-map-overview__trigger': true}, placement]" @click="close = !close">
       <i class="iconfont" :class="iconClass"></i>
     </div>
-  </xdh-map-placement>
+  </div>
+    
+</xdh-map-placement>
 </template>
+<style scope lang="scss">
+  @import '../../../theme/_vars.scss'; 
+  .xdh-map-overview {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    transition: all 0.5s;
+    &.close{
+      width: 24px;
+      height: 24px;
+    }
+    &__trigger {
+      position: absolute;
+      z-index: 2;
+      width: 24px;
+      height: 24px;
+      border-radius: $--border-radius; 
+      background: white;
+      cursor: pointer;
+      line-height: 26px;
+      overflow: hidden;
+      :hover {
+        opacity: 0.5;
+      }
+      i {
+        font-size: 30px;
+        text-align: center;
+        transform: translateX(-4px);
+        display: inline-block;
+      }
+      &.left-top{
+        left: 0;
+        top: 0;
+      }
+      &.right-top{
+        right: 0;
+        top: 0;
+      }
+      &.left-bottom{
+        left: 0;
+        bottom: 0;
+      }
+      &.right-bottom{
+        right: 0;
+        bottom: 0;
+      }
+    }
+    &__map{
+      background: blue;
+    }  
+  }
 
+
+  
+
+  
+</style>
 <script>
   /**
    * 鹰眼控件
    * @module xdh-map-overview
    */
-  // import '../../../theme/ol.css'
-  import {OverviewMap} from 'ol/control.js'
-  import View from 'ol/View'
+ 
   import XdhMapPlacement from '../../placement'
-  import {mixProps, getParent, mapReady} from 'utils/util'
+  import {getParent, mapReady} from 'utils/util' 
+  // import { createLayer } from 'utils/layers'
 
   /**
    * 参数属性
@@ -28,74 +88,52 @@
    * @property {number[]} [margin] 外边距
    * @property {string[]} [theme] 主题 可选值 'default', 'light', 'dark'
    */
-  const vueProps = {
-    theme: {
-      type: String,
-      default: 'light'
-    },
-    width: {
-      type: Number,
-      default: 200
-    },
-    height: {
-      type: Number,
-      default: 200
-    }
-  }
-  const props = mixProps(XdhMapPlacement, {props: vueProps})
+   
 
   export default {
     name: 'XdhMapOverview',
     components: {
       XdhMapPlacement
     },
-    props: props,
+    props: {
+      placement: {
+        type: String,
+        default: 'left-bottom',
+        validator(val) {
+          return [
+            'left-top', 'right-top', 'left-bottom', 'right-bottom'
+          ].includes(val)
+        }
+      }
+    },
     data() {
       return {
-        expand: false,
+        close: false,
+        mapWarpSize: {
+          width: '100%',
+          height: '100%'
+        },
+        parent: null,
         map: null,
-        overview: null
+        overviewMap: null
       }
     },
     computed: {
-      classes() {
-        return {
-          'xdh-map-overview': true,
-          expand: this.expand
-        }
-      },
-      overviewStyle() {
-        return {
-          width: `${this.width}px`,
-          height: `${this.height}px`
-        }
-      },
+      btnClass() {
+        return ['xdh-map-overview__triggr', this.placement]
+      }, 
       iconClass() {
         if (this.placement.includes('bottom')) {
-          return this.expand ? 'icon-down' : 'icon-up'
+          return this.close ? 'icon-up' : 'icon-down'
         }
-        return this.expand ? 'icon-up' : 'icon-down'
+        return this.close ? 'icon-left' : 'icon-right'
       }
     },
     methods: {
-      renderOverview() {
-        if (this.overview) return
-        this.overview = new OverviewMap({
-          target: this.$refs.overview,
-          view: new View({
-            projection: 'EPSG:4326'
-          })
-        })
-        this.map.addControl(this.overview)
-      },
-      handleClick() {
-        this.expand = !this.expand
-        this.$nextTick(() => {
-          this.renderOverview()
-        })
-      },
-      ready(map, vm) {
+      ready(map) {
         this.map = map
+        // console.log(this.parent, this.map)
+        console.log(this.parent.$el.offsetWidth, this.parent.$el.offsetHeight)
       }
     },
     created() {
@@ -103,10 +141,15 @@
       this.parent = getParent.call(this)
       mapReady.call(this, this.ready)
     },
+    mounted() {
+      this.close = false
+      this.mapWarpSize.width = this.$refs.warp.offsetWidth + 'px'
+      this.mapWarpSize.height = this.$refs.warp.offsetHeight + 'px'
+      this.close = true
+      // this.renderOverview()
+    },
     beforeDestroy() {
-      if (this.map && this.overview) {
-        this.map.removeControl(this.overview)
-      }
+      
     }
   }
 </script>
