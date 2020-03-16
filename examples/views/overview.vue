@@ -6,17 +6,17 @@
                         :margin="[10]"
                         theme="light"></xdh-map-overview> 
 
-      <xdh-map-overview placement="left-top" 
+      <!-- <xdh-map-overview placement="left-top" 
                         :margin="[10]"
                         theme="light"></xdh-map-overview> 
 
       <xdh-map-overview placement="right-top" 
                         :margin="[10]"
                         theme="light"></xdh-map-overview>    
-                                       
+
       <xdh-map-overview placement="right-bottom" 
                         :margin="[10]"
-                        theme="light"></xdh-map-overview> 
+                        theme="light"></xdh-map-overview>  -->
     </xdh-map>
     
   </example>
