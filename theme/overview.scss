@@ -1,26 +1,22 @@
 @import './_vars.scss';
 
 .xdh-map-overview {
- 
-  box-shadow: $--shadow-base;
-  transition: all 0.3s;
-  .ol-overviewmap, .ol-overviewmap-map {
-    width: 100%;
-    height: 100%;
+  position: relative;
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  transition: all 0.5s; 
+  &.close{
+    width: 24px;
+    height: 24px;
   }
-  .ol-selectable {
-    border: 2px solid $--overview-selectable-color;
-  }
-  button {
-    display: none;
-  }
-
-
   &__trigger {
+    position: absolute;
     z-index: 2;
     width: 24px;
     height: 24px;
-    border-radius: $--border-radius;
+    border-radius: $--border-radius; 
+    background: white;
     cursor: pointer;
     line-height: 26px;
     overflow: hidden;
@@ -33,39 +29,28 @@
       transform: translateX(-4px);
       display: inline-block;
     }
-  }
-
-  &__map {
-    display: none; 
-  }
-
-  &.expand {
-    .xdh-map-overview__map {
-      display: block;
+    &.left-top{
+      left: 0;
+      top: 0;
     }
-    .xdh-map-overview__trigger {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      background: $--overview-trigger-color-light;
+    &.right-top{
+      right: 0;
+      top: 0;
     }
-    &.is-dark {
-      .xdh-map-overview__trigger {
-        background: $--overview-trigger-color-dark;
-      }
+    &.left-bottom{
+      left: 0;
+      bottom: 0;
     }
-    &.left-bottom .xdh-map-overview__trigger {
-      left: 10px;
-      bottom: 10px;
-    }
-    &.right-top .xdh-map-overview__trigger {
-      right: 10px;
-      top: 10px;
-    }
-    &.left-top .xdh-map-overview__trigger {
-      left: 10px;
-      top: 10px;
+    &.right-bottom{
+      right: 0;
+      bottom: 0;
     }
   }
-  
+  &__map{ 
+    .overview-map{
+      overflow: hidden;
+      border-radius: 3px;
+      border: 1px solid gray;
+    }
+  }  
 }
