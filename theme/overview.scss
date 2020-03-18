@@ -2,21 +2,17 @@
 
 .xdh-map-overview {
   position: relative;
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   overflow: hidden;
-  transition: all 0.5s; 
-  &.close{
-    width: 24px;
-    height: 24px;
-  }
+  transition: all 0.5s;
   &__trigger {
     position: absolute;
     z-index: 2;
     width: 24px;
     height: 24px;
     border-radius: $--border-radius; 
-    background: white;
+    
     cursor: pointer;
     line-height: 26px;
     overflow: hidden;
@@ -28,6 +24,18 @@
       text-align: center;
       transform: translateX(-4px);
       display: inline-block;
+    }
+    &.is-light{
+      background: $--overview-trigger-color-light;
+      i {
+        color: $--overview-trigger-color-dark;
+      }
+    }
+    &.is-dark{
+      background: $--overview-trigger-color-dark;
+      i {
+        color: $--overview-trigger-color-light; 
+      }
     }
     &.left-top{
       left: 0;
@@ -46,11 +54,20 @@
       bottom: 0;
     }
   }
-  &__map{ 
+  &__map{
+    opacity: 1;  
+    transition: all 0.9s;
     .overview-map{
       overflow: hidden;
       border-radius: 3px;
       border: 1px solid gray;
+    }
+  }
+  &.close{
+    width: 24px;
+    height: 24px;
+    .xdh-map-overview__map{
+      opacity: 0;
     }
   }  
 }

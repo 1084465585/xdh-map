@@ -293,21 +293,26 @@ export default {
 
       const oldLayers = [].concat(this.map.getLayers().getArray()) // 老图层集合
 
-      console.log('oldLayers', oldLayers, oldLayers[0].get('state'))
-       
+      // console.log('oldLayers', oldLayers[0].getProperties()['layerType'])
+
       this.$nextTick(() => {
         // 将map图层全部删除
-        oldLayers[0].disposeInternal()
-        oldLayers.forEach(layer => {
-          this.map.removeLayer(layer) 
-        })
+        oldLayers.forEach((layer) => {
+          if (layer.getProperties()['layerType'] === 'tile-layer') {
+            layer.disposeInternal()
+          }
+          this.map.removeLayer(layer)
+        }) 
+       
         // 在老图层集合中排除原地图图层
-        oldLayers.shift()
-         
+        let exclueLayers = oldLayers.filter((layer) => {
+          return layer.getProperties()['layerType'] !== 'tile-layer'
+        })
+        let Layer = createLayer(type)
         // 新地图图层
-        let newLayers = [].concat(createLayer(type))
+        let newLayers = [].concat(Layer)
         // 将地图图层 与 老图层集合 合并
-        newLayers = newLayers.concat(oldLayers)
+        newLayers = newLayers.concat(exclueLayers)
          
         // 从新加到地图上
         newLayers.forEach(layer => {

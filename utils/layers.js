@@ -235,5 +235,15 @@ export function createLayer(key = 'OSM') {
       }
       break
   }
+  // console.log(layer.length)
+  if (layer.length) {
+    layer.forEach((l) => {
+      l.setProperties({'layerType': 'tile-layer'})
+    })
+  } else {
+    layer.setProperties({'layerType': 'tile-layer'})
+  }
+  
+
   return layer
 }

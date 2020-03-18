@@ -7,7 +7,7 @@
       </xdh-map>
     </div>
     
-    <div :class="[{'xdh-map-overview__trigger': true}, placement]" @click="close = !close">
+    <div :class="[{'xdh-map-overview__trigger': true}, placement, `is-${this.theme}`]" @click="close = !close">
       <i class="iconfont" :class="iconClass"></i>
     </div>
   </div>
@@ -27,7 +27,7 @@
   import {getParent, mapReady} from 'utils/util'
   import {getWidth, getHeight, getTopLeft} from 'ol/extent'
   import {DragClass as Drag} from 'packages/index'
-  import {addResizeListener, removeResizeListener} from '../../../utils/resize-event' 
+  import {addResizeListener, removeResizeListener} from 'utils/resize-event' 
   const ZoomGap = 4 // .5
   /**
    * 参数属性
@@ -66,12 +66,19 @@
             strokeColor: 'green', // 边框颜色
             strokeLineCap: '', // 虚线样式
             strokeLineJoin: '', // 虚线样式
-            strokeLineDash: 0, // 虚线样式
+            strokeLineDash: [], // 虚线样式
             strokeLineDashOffset: 0,
             strokeMiterLimit: 0
           }
         }
         
+      },
+      theme: {
+        type: String,
+        default: 'light',
+        validator() {
+          return ['dark', 'light']
+        }
       }
     },
     data() {
