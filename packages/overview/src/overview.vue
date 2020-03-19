@@ -11,7 +11,6 @@
       <i class="iconfont" :class="iconClass"></i>
     </div>
   </div>
-    
 </xdh-map-placement>
 </template>
 

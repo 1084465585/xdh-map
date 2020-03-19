@@ -52,7 +52,7 @@
 ```html
 <template>
   <xdh-map class="map-icon" :zoom="10">
-    <xdh-map-image v-for="(item,index) in arr"
+    <xdh-map-image v-if="arr.length" v-for="(item,index) in arr"
                     :key="index"
                     v-bind="item" ></xdh-map-image>
   </xdh-map>
@@ -64,21 +64,20 @@ const svgToImg = function(fontClass, size, color, fontFamily = 'IconFont') {
   let canvas = document.createElement('CANVAS')
   canvas.width = size
   canvas.height = size
-  let ctx = canvas.getContext('2d')
-
+  let ctx = canvas.getContext('2d') 
   let span = document.createElement('SPAN')
   span.className = fontClass
-  document.body.appendChild(span)
+  document.body.appendChild(span) 
   let content = window.getComputedStyle(span, '::before').content
 
   ctx.fillStyle = color;
   ctx.font = `${size - 2}px ${fontFamily}`;
-
   ctx.textAlign = 'center'
   ctx.fillText(content, size / 2, size - 4);
+  
   let img = canvas.toDataURL('base64')
   document.body.removeChild(span)
-  return img
+  return img 
 }
 
 export default {
@@ -107,7 +106,11 @@ export default {
   },
   mounted() {
     this.img = svgToImg('iconfont icon-ambulance', 18, 'red')
-    this.arr = this.createIcons(500, this.img)
+    console.log('img', this.img)
+    this.$nextTick(() => {
+      this.arr = this.createIcons(500, this.img)
+    })
+   
   }
 }
 </script>

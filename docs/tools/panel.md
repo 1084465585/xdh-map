@@ -64,11 +64,12 @@
 }
 </style>
 <script>
-  import {XdhMap, XdhMapPanel } from 'xdh-map'
+  import {XdhMap, XdhMapPanel, XdhMapIcon } from 'xdh-map'
   export default {
     components: {
       XdhMap,
-      XdhMapPanel
+      XdhMapPanel,
+      XdhMapIcon
     },
     data() {
       return {

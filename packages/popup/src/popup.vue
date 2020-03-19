@@ -7,7 +7,7 @@
     <i class="xdh-map-popup__close" v-if="closable" @click="hide"></i>
     <div v-if="title" class="xdh-map-popup__title">
       <slot name="title">
-        <i :class="icon"></i> {{typeof title === 'String' ? title : '标题'}}
+        <i :class="icon"></i> {{typeof title === 'string' ? title : '标题'}}
       </slot>
     </div>
     <div class="xdh-map-popup__body" :style="{'height': height}">

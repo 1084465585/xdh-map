@@ -10,17 +10,16 @@
 
 ```html
 <template>
-<div>
-      <xdh-map :min-zoom="4" :zoom="5" type="Baidu">
-        <xdh-map-echarts :lib="lib" :options="options" @click="handleClick"></xdh-map-echarts>
-      </xdh-map>
-</div>
+  <xdh-map :min-zoom="4" :zoom="4">
+     <xdh-map-echarts :lib="lib" :options="options"></xdh-map-echarts>
+  </xdh-map>
 </template>
 
-<script>
+<script> 
+  import {XdhMap, XdhMapEcharts} from 'xdh-map'
   import echarts from 'echarts'
-  import geoCoordMap from 'demo-data/citys.json'
- import {XdhMap, XdhMapEcharts} from 'xdh-map'
+  import geoCoordMap from 'demo-data/city'
+   
 
   const data = [
     {name: '海门', value: 9},
@@ -314,8 +313,9 @@
         zlevel: 1
       }
     ]
-  };
+  }; 
 
+   
   export default {
     components: {
      XdhMap,
@@ -324,13 +324,10 @@
     data() {
       return {
         lib: echarts,
-        options: options
+        options: options 
       }
     },
     methods: {
-      show() {
-        console.log(this.lib)
-      },
       handleClick(e) {
         console.log(e)
       }
