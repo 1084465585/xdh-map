@@ -1,10 +1,10 @@
 <template>
   <example class="flex"> 
     <xdh-map ref="map" type="Baidu" id="map3"  :zoom="9" :center="target" @ready="mapReady" @dblclick="dblClickHandle" > 
-      <xdh-map-draw-panel ref="drawPanel" :types="buttons" @on-draw="isDraw = true" @on-draw-finish="isDraw = false"></xdh-map-draw-panel>
+      <xdh-map-draw-panel ref="drawPanel" placement="center-top" :width="20" :types="buttons" @on-draw="isDraw = true" @on-draw-finish="isDraw = false"></xdh-map-draw-panel>
        
     </xdh-map>
-    <button @click="test">finish draw {{isDraw ? '*' : ''}}</button>
+    <!-- <button @click="test">finish draw {{isDraw ? '*' : ''}}</button> -->
    
  
   </example>

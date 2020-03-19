@@ -1,34 +1,67 @@
 <template>
 <xdh-map-placement :placement="placement" :margin="[10]" theme="light" >
   <div class="xdh-map-draw-panel">
-    <slot name="type-buttons">
-      <div  class="type-btns-warp clearfix" :style="{'width': `${width * 50}px`}">
-        <div class="button" v-for="(item, index) in buttonList" :key="index" :title="item.name" @click="draw(item.type)">
-          <img class="icon" :src="item.img" />
-          <div class="name">{{item.name}}</div>
+    <div class="inner-warp" :style="{'width': `${width * 50}px`}">
+      <slot name="type-buttons">
+        <div  class="type-btns-warp clearfix" >
+          <div class="button" v-for="(item, index) in buttonList" :key="index" :title="item.name" @click="draw(item.type)">
+            <img class="icon" :src="item.img" />
+            <div class="name">{{item.name}}</div>
+          </div>
         </div>
-      </div>
-    </slot>
-    <slot name="tool-buttons">
-      <div class="tools-btns-warp clearfix">
-        <div :class="{'button': true, 'active': editingFeature}" @click="deleteClickHandle">
-          删除
+      </slot>
+      <slot name="tool-buttons">
+        <div v-if="useTools" class="tools-btns-warp clearfix">
+          <div :class="{'button': true, 'active': editingFeature}" @click="deleteClickHandle">
+            删除
+          </div>
+          <div v-if="isDrawing" :class="{'button': true, 'active': isDrawing}" @click="cancleClickHandle">
+            取消
+          </div>
+          <div v-if="!isDrawing && !isEditing" :class="{'button': true, 'active': oldVersions.length}" @click="resetClickHandle">
+            重置
+          </div>
+          <div v-if="!isDrawing" :class="{'button': true, 'active': editingFeature}" @click="finishClickHandle">
+            完结
+          </div>
+          <div :class="{'button': true, 'active': true}" @click="clearClickHandle">
+            清空
+          </div>
+        
         </div>
-        <div v-if="isDrawing" :class="{'button': true, 'active': isDrawing}" @click="cancleClickHandle">
-          取消
+      </slot>
+      <slot name="style-tools clearfix">
+        <div class="style-btns-warp" v-if="useStyle">
+          <div class="color-input-item">
+            背景色：<input class="color-select" type="color" v-model="editStyle.fillColor" @change="styleInputChange"  />  
+          </div> 
+          <div class="color-input-item">
+            背景透明度：
+            <!-- <em class="num-btn" @click="editStyle.fillOpacity -= 0.1">-</em> -->
+            <input  class="num-select" type="number" :min="0" :max="1" :step="0.1" v-model="editStyle.fillOpacity" @change="styleInputChange"  />  
+            <!-- <em class="num-btn" @click="editStyle.fillOpacity += 0.1">+</em> -->
+          </div> 
+
+          <div class="color-input-item">
+            边框色：<input class="color-select" type="color" v-model="editStyle.strokeColor" @change="styleInputChange"  />  
+          </div> 
+          <div class="color-input-item">
+            边框宽度：
+            <!-- <em class="num-btn" @click="editStyle.strokeWidth -= 1">-</em> -->
+            <input  class="num-select" type="number" :min="0" :max="10" :step="1" v-model="editStyle.strokeWidth" @change="styleInputChange"  />  
+            <!-- <em class="num-btn" @click="editStyle.strokeWidth += 1">+</em> -->
+          </div>
+          <div class="color-input-item">
+            透明度：
+            <!-- <em class="num-btn" @click="editStyle.opacity -= 0.1">-</em> -->
+            <input  class="num-select" type="number" :min="0" :max="1" :step="0.1" v-model="editStyle.opacity" @change="styleInputChange"  />  
+            <!-- <em class="num-btn" @click="editStyle.opacity += 0.1">+</em> -->
+          </div> 
+          <!-- <div @click="setStyleOpt">test</div> -->
         </div>
-        <div v-if="!isDrawing && !isEditing" :class="{'button': true, 'active': oldVersions.length}" @click="resetClickHandle">
-          重置
-        </div>
-        <div v-if="!isDrawing" :class="{'button': true, 'active': editingFeature}" @click="finishClickHandle">
-          完结
-        </div>
-        <div :class="{'button': true, 'active': true}" @click="clearClickHandle">
-          清空
-        </div>
-       
-      </div>
-    </slot>
+      </slot>
+    </div>
+    
   </div> 
 </xdh-map-placement>
 </template>
@@ -85,9 +118,65 @@
       }
     }
   }
+  .style-btns-warp{
+    display: block;
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    margin-top: 5px;
+    border-top: 1px solid #C5C4C1;
+    .color-input-item{
+      flex: 0 0 150px;
+      width: 150px;
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      font-size: 12px;
+      margin: 3px;
+      .color-select{
+        appearance: normal;
+        width: 24px;
+        height:24px;
+        padding: 0;
+        border: 0; 
+        outline:none; 
+      }
+      .num-select{
+        line-height: 1;
+        height: 20px;
+        width: 36px;
+        text-align: center;
+
+      }
+      .num-btn{
+        display: block;
+        width: 16px;
+        height: 16px;
+        text-align: center;
+        line-height: 12px;
+        font-size:16px;
+        font-style: normal;
+        border-radius: 50%;
+        margin: 0 2px;
+        border: 1px solid skyblue;
+        color: skyblue; 
+        cursor: pointer;
+      }
+      
+    }
+  }
 } 
- 
- 
+::-webkit-color-swatch-wrapper{
+  background-color:white;
+}
+::-webkit-color-swatch{
+  position: relative;
+}
+// input::-webkit-outer-spin-button,
+// input::-webkit-inner-spin-button {
+//     -webkit-appearance: none;
+// }
+
 </style> 
 <script>
   /**
@@ -96,7 +185,7 @@
    */  
   
   import { getParent, mapReady } from 'utils/util'
-  import { parse } from 'utils/style' 
+  import { parse, colorRgba } from 'utils/style' 
   import OlPlot from 'ol-plot'
   import 'ol-plot/dist/ol-plot.css'
   import { getLayerByLayerName } from 'ol-plot/src/Utils/layerUtils'
@@ -165,10 +254,10 @@
         type: Number,
         default: 4
       },
-      showTools: {
-        type: Boolean,
-        default: true
-      },
+      // showTools: {
+      //   type: Boolean,
+      //   default: true
+      // },
       options: {
         type: Object,
         default: () => {
@@ -182,13 +271,31 @@
       isMemory: {
         type: Boolean,
         default: true
+      },
+      useTools: {
+        type: Boolean,
+        default: true
+      },
+      useText: {
+        type: Boolean,
+        default: false
+      },
+      useStyle: {
+        type: Boolean,
+        default: true
       } 
 
     },
     data() {
       const initBtnList = () => {
+        let _TYPES_ARR = []
+        if (this.useText) {
+          _TYPES_ARR = _TYPES_ARR.concat(TYPES_ARR).concat([{type: 'TextArea', name: '文本标绘'}])
+        } else {
+          _TYPES_ARR = _TYPES_ARR.concat(TYPES_ARR)
+        }
         if (!this.types.length) {
-          return TYPES_ARR.map((item) => {
+          return _TYPES_ARR.map((item) => {
             return {
               ...item,
               img: require(`../../../sources/draw-panel/icon/${item.type}.png`)
@@ -198,7 +305,7 @@
           let arr = []
           this.types.forEach((item) => {
             if (typeof item === 'string') {
-              let target = TYPES_ARR.find((obj) => {
+              let target = _TYPES_ARR.find((obj) => {
                 return obj.type === item
               })
               if (target) {
@@ -208,7 +315,7 @@
                 })
               }
             } else {
-              let target = TYPES_ARR.find((obj) => {
+              let target = _TYPES_ARR.find((obj) => {
                 return obj.type === item.type
               })
               if (target) {
@@ -235,12 +342,23 @@
 
         editingFeature: null,
         
-        oldVersions: []
+        oldVersions: [],
+
+        // ----------------
+        editStyle: {
+          fillColor: '#cccccc',
+          fillOpacity: 1,
+          fill: '',
+          strokeColor: '#000000',
+          strokeWidth: 2,
+          opacity: 1
+        }
       }
     },
     computed: {
       
     },
+    
     methods: {
       
       ready(map) {
@@ -251,8 +369,7 @@
         })
 
         this.plotLayer = getLayerByLayerName(this.map, this.plot.plotUtils.layerName)
-        this.$emit('on-inited', this.plot) 
-          
+        this.$emit('on-inited', this.plot)
       },
       draw(type) {
         if (this.isMemory) {
@@ -265,20 +382,24 @@
         this.isEditing = false 
         this.plot.plotDraw.active(type)
         this.plot.plotDraw.on('drawEnd', this.drawEndHandle)
+        
       },
       drawEndHandle(e) {
         this.isDrawing = false
         const feature = e.feature 
-        this.$emit('on-draw-end', feature)
-        
+        if (this.useStyle) {
+          let styleOpt = this.setStyleOpt()
+          let style = this.styleInit(styleOpt)
+          feature.setStyle(style)
+        }
+        this.$emit('on-draw-end', feature) 
 
         if (this.editAfterDraw) {
           this.editingFeature = feature
           this.plot.plotEdit.activate(feature)
           this.isEditing = true
           this.$emit('on-edit-start', feature) 
-        } 
-
+        }  
         
       },
       cancleClickHandle() {
@@ -362,7 +483,43 @@
       },
       clearVerson() {
         this.oldVersions = []
-      }
+      },
+      setStyleOpt() {
+        let style = {}
+        let fillOpacity = Math.max(0, Math.min(this.editStyle.fillOpacity, 1))
+        let strokeWidth = Math.max(1, Math.min(this.editStyle.strokeWidth, 10))
+        let opacity = Math.max(0, Math.min(this.editStyle.opacity, 1))
+        style.fill = colorRgba(this.editStyle.fillColor, fillOpacity)
+        style.strokeWidth = strokeWidth
+        style.strokeColor = this.editStyle.strokeColor
+        style.opacity = opacity
+
+        // console.log('style', style)
+        return style 
+      },
+      styleInit(styleOpt) {
+        return parse({
+          className: 'Style',
+          opacity: styleOpt.opacity,
+          fill: {
+            className: 'Fill',
+            color: styleOpt.fill
+          },
+          stroke: {
+            className: 'Stroke',
+            color: styleOpt.strokeColor,
+            width: styleOpt.strokeWidth
+          }
+        })
+      },
+      styleInputChange() {
+        if (this.editingFeature) {
+          console.log('editing', this.editingFeature)
+          let styleOpt = this.setStyleOpt()
+          let style = this.styleInit(styleOpt)
+          this.editingFeature.setStyle(style)
+        }
+      } 
     },
     created() {
       this.parent = getParent.call(this)
