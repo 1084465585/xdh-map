@@ -31,12 +31,16 @@
   /**
    * 参数属性
    * @member props
-   * @property {number} [width=200] 宽度
-   * @property {number} [height=200] 高度
-   * @property {string} [placement] 停泊位置，可选值'left-top', 'center-top', 'right-top'，'left-center', 'center-center', 'right-center''left-bottom', 'center-bottom', 'right-bottom'
-   * @property {number} [zIndex=1] 层级
-   * @property {number[]} [margin] 外边距
-   * @property {string[]} [theme] 主题 可选值 'default', 'light', 'dark'
+   * @property {string} [placement] 停泊位置，可选值'left-top', 'right-top', 'left-bottom', 'right-bottom'
+   * @property {string} [theme] 主题 可选值 'default', 'light', 'dark'
+   * @property {object} [boxStyle] 选择框样式
+   * @property {number} [boxStyle.strokeWidth] 边框厚度
+   * @property {string} [boxStyle.strokeColor] 边框颜色
+   * @property {string} [boxStyle.strokeLineCap] 虚线样式
+   * @property {string} [boxStyle.strokeLineJoin] 虚线样式
+   * @property {number} [boxStyle.strokeLineDash] 虚线样式
+   * @property {number} [boxStyle.strokeLineDashOffset]
+   * @property {number} [boxStyle.strokeMiterLimit]
    */
    
 

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: packages/drawPanel/src/drawPanel.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: packages/drawPanel/src/drawPanel.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+&lt;xdh-map-placement :placement="placement" :margin="[10]" theme="light" >
+  &lt;div class="xdh-map-draw-panel">
+    &lt;slot name="type-buttons">
+      &lt;div  class="type-btns-warp clearfix" :style="{'width': `${width * 50}px`}">
+        &lt;div class="button" v-for="(item, index) in buttonList" :key="index" :title="item.name" @click="draw(item.type)">
+          &lt;img class="icon" :src="item.img" />
+          &lt;div class="name">{{item.name}}&lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/slot>
+    &lt;slot name="tool-buttons">
+      &lt;div class="tools-btns-warp clearfix">
+        &lt;div :class="{'button': true, 'active': editingFeature}" @click="deleteClickHandle">
+          删除
+        &lt;/div>
+        &lt;div v-if="isDrawing" :class="{'button': true, 'active': isDrawing}" @click="cancleClickHandle">
+          取消
+        &lt;/div>
+        &lt;div v-if="!isDrawing &amp;&amp; !isEditing" :class="{'button': true, 'active': oldVersions.length}" @click="resetClickHandle">
+          重置
+        &lt;/div>
+        &lt;div v-if="!isDrawing" :class="{'button': true, 'active': editingFeature}" @click="finishClickHandle">
+          完结
+        &lt;/div>
+        &lt;div :class="{'button': true, 'active': true}" @click="clearClickHandle">
+          清空
+        &lt;/div>
+       
+      &lt;/div>
+    &lt;/slot>
+  &lt;/div> 
+&lt;/xdh-map-placement>
+&lt;/template>
+&lt;style scoped lang="scss">
+.xdh-map-draw-panel{
+  box-sizing: border-box;
+  padding: 5px;
+  * {
+    box-sizing: border-box;
+  }
+  .type-btns-warp{
+    // width: 200px;
+    .button{
+      width: 50px;
+      border: 1px solid transparent;
+      float: left;
+      cursor: pointer;
+      .icon{
+        display: block;
+        margin: 2px auto;
+      }
+      .name{
+        font-size: 12px;
+        line-height: 2;
+        width: 100%;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      &amp;:hover{
+        border: 1px solid skyblue;
+      }
+    }
+  }
+  .tools-btns-warp{
+    margin-top: 5px;
+    border-top: 1px solid #C5C4C1;
+  
+    .button{
+      float: left; 
+      padding: 3px 5px;
+      border-radius: 3px;
+      border: 1px solid #C5C4C1;
+      margin-top: 5px;
+      font-size: 14px;
+      margin-right: 8px;
+      color: #C5C4C1;
+      pointer-events: none;
+      &amp;.active{
+        color: #818181;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+    }
+  }
+} 
+ 
+ 
+&lt;/style> 
+&lt;script>
+  /**
+   * 地图描绘控件
+   * @module xdh-map-draw-panel
+   */  
+  
+  import { getParent, mapReady } from 'utils/util'
+  import { parse } from 'utils/style' 
+  import OlPlot from 'ol-plot'
+  import 'ol-plot/dist/ol-plot.css'
+  import { getLayerByLayerName } from 'ol-plot/src/Utils/layerUtils'
+   
+  const style = parse({
+    className: 'Style',
+    fill: {
+      className: 'Fill',
+      color: 'rgba(0,0,0,.3)'
+    },
+    stroke: {
+      className: 'Stroke',
+      color: 'red',
+      width: 5
+    }
+  })
+
+  const TYPES_ARR = [
+    // {type: 'TextArea', name: '文本标绘'},
+    {type: 'Point', name: '点'},
+    {type: 'Polyline', name: '线'},
+    {type: 'Curve', name: '曲线'},
+    {type: 'Arc', name: '弓形'},
+    {type: 'Circle', name: '圆'},
+    {type: 'FreeHandLine', name: '自由线'},
+    {type: 'RectAngle', name: '矩形'},
+    {type: 'Ellipse', name: '椭圆'},
+    {type: 'Lune', name: '弓形'},
+    {type: 'Sector', name: '扇形'},
+    {type: 'ClosedCurve', name: '闭合曲面'},
+    {type: 'Polygon', name: '多边形'},
+    {type: 'FreePolygon', name: '自由面'},
+    {type: 'GatheringPlace', name: '集结地'},
+    {type: 'DoubleArrow', name: '双箭头'},
+    {type: 'StraightArrow', name: '细直箭头'},
+    {type: 'FineArrow', name: '粗单尖头箭头'},
+    {type: 'AttackArrow', name: '进攻方向'},
+    {type: 'AssaultDirection', name: '粗单直箭头'},
+    {type: 'TailedAttackArrow', name: '进攻方向（尾）'},
+    {type: 'SquadCombat', name: '分队战斗行动'},
+    {type: 'TailedSquadCombat', name: '分队战斗行动（尾）'},
+    {type: 'RectFlag', name: '矩形标志旗'},
+    {type: 'TriangleFlag', name: '三角标志旗'},
+    {type: 'CurveFlag', name: '曲线标志旗'}
+  ]
+
+  export default {
+    name: 'XdhMapDrawPanel',
+    mixins: [],
+    components: { 
+    },
+    /**
+     * 参数属性 
+     * @member props
+     */
+    props: {
+      types: {
+        type: Array,
+        default: () => { return [] }
+      },
+      placement: {
+        type: String,
+        default: 'right-center'
+      },
+      width: {
+        type: Number,
+        default: 4
+      },
+      showTools: {
+        type: Boolean,
+        default: true
+      },
+      options: {
+        type: Object,
+        default: () => {
+          return {}
+        }
+      },
+      editAfterDraw: {
+        type: Boolean,
+        default: true
+      },
+      isMemory: {
+        type: Boolean,
+        default: true
+      } 
+
+    },
+    data() {
+      const initBtnList = () => {
+        if (!this.types.length) {
+          return TYPES_ARR.map((item) => {
+            return {
+              ...item,
+              img: require(`../../../sources/draw-panel/icon/${item.type}.png`)
+            }
+          })
+        } else {
+          let arr = []
+          this.types.forEach((item) => {
+            if (typeof item === 'string') {
+              let target = TYPES_ARR.find((obj) => {
+                return obj.type === item
+              })
+              if (target) {
+                arr.push({
+                  ...target, 
+                  img: require(`../../../sources/draw-panel/icon/${target.type}.png`)
+                })
+              }
+            } else {
+              let target = TYPES_ARR.find((obj) => {
+                return obj.type === item.type
+              })
+              if (target) {
+                arr.push({
+                  ...target, 
+                  ...{img: ''},
+                  ...{img: require(`../../../sources/draw-panel/icon/${target.type}.png`)}, 
+                  ...item
+                })
+              }
+            }
+          })
+          return arr
+        }
+      }
+      return {
+        buttonList: initBtnList(),
+        map: null,
+        style: style,
+        plot: null, 
+        
+        isDrawing: false,
+        isEditing: false,
+
+        editingFeature: null,
+        
+        oldVersions: []
+      }
+    },
+    computed: {
+      
+    },
+    methods: {
+      
+      ready(map) {
+        this.map = map
+         
+        this.plot = new OlPlot(this.map, {
+          zoomToExtent: false
+        })
+
+        this.plotLayer = getLayerByLayerName(this.map, this.plot.plotUtils.layerName)
+        this.$emit('on-inited', this.plot) 
+          
+      },
+      draw(type) {
+        if (this.isMemory) {
+          this.saveCurrent()
+        }
+
+        this.isDrawing = true
+        this.$emit('on-draw')
+        this.plot.plotEdit.deactivate()
+        this.isEditing = false 
+        this.plot.plotDraw.active(type)
+        this.plot.plotDraw.on('drawEnd', this.drawEndHandle)
+      },
+      drawEndHandle(e) {
+        this.isDrawing = false
+        const feature = e.feature 
+        this.$emit('on-draw-end', feature)
+        
+
+        if (this.editAfterDraw) {
+          this.editingFeature = feature
+          this.plot.plotEdit.activate(feature)
+          this.isEditing = true
+          this.$emit('on-edit-start', feature) 
+        } 
+
+        
+      },
+      cancleClickHandle() {
+        this.finishDraw()
+        this.finishEdit()
+      },
+      
+      resetClickHandle() {
+        if (this.oldVersions.length) {
+          let version = this.oldVersions.pop()
+          this.plot.plotUtils.removeAllFeatures()
+          this.plot.plotUtils.addFeatures(version)
+        }
+        
+      }, 
+      deleteClickHandle() {
+        if (this.editingFeature) {
+          this.plot.plotEdit.deactivate()
+          this.isEditing = false
+          this.plotLayer.getSource().removeFeature(this.editingFeature)
+          this.editingFeature = null  
+        }
+      },
+      finishClickHandle() {
+        if (this.editingFeature) {
+          this.finishEdit()
+        } 
+      },
+      clearClickHandle() {
+        this.plot.plotUtils.removeAllFeatures()
+        this.editingFeature = null
+        this.isEditing = false
+        this.isDrawing = false
+      },
+
+      finishDraw() {
+        if (this.plot.plotDraw.isDrawing()) {
+          this.isDrawing = false
+          this.plot.plotDraw.disActive()
+          this.$emit('on-finish-draw')
+        }
+      },
+      finishEdit() {
+        this.plot.plotEdit.deactivate()
+        this.$emit('on-finish-edit')
+        this.editingFeature = null
+        this.isEditing = false 
+      },
+      editFeature(feature) { 
+        if (feature &amp;&amp; feature.get('isPlot') &amp;&amp; !this.plot.plotDraw.isDrawing()) {
+          if (!this.isEditing) {
+            if (this.isMemory) {
+              this.saveCurrent()
+            }
+            this.editingFeature = feature
+            this.plot.plotEdit.activate(feature)
+            this.isEditing = true
+            this.$emit('on-edit-start', feature)
+          } else {
+            this.finishEdit()
+          }
+        } else {
+          console.log('无法编辑此图形')
+        }
+      },
+      saveCurrent() {
+        let version = this.plot.plotUtils.getFeatures()
+        if (version.length) {
+          this.saveVersion(version)
+        }
+        return version 
+      },
+      saveVersion(version) {
+        if (this.oldVersions.length &lt; 5) {
+          this.oldVersions.push(version)
+        } else {
+          this.oldVersions.shift()
+          this.oldVersions.push(version)
+        }
+        console.log('save success', this.oldVersions)
+      },
+      clearVerson() {
+        this.oldVersions = []
+      }
+    },
+    created() {
+      this.parent = getParent.call(this)
+      mapReady.call(this, this.ready)
+    },
+    mounted() {
+       
+       
+    },
+    beforeDestroy() {
+       
+    }
+  }
+&lt;/script>
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-xdh-map.html">xdh-map</a></li><li><a href="module-xdh-map-circle.html">xdh-map-circle</a></li><li><a href="module-xdh-map-dialog.html">xdh-map-dialog</a></li><li><a href="module-xdh-map-draw.html">xdh-map-draw</a></li><li><a href="module-xdh-map-draw-arc.html">xdh-map-draw-arc</a></li><li><a href="module-xdh-map-draw-panel.html">xdh-map-draw-panel</a></li><li><a href="module-xdh-map-drawdown.html">xdh-map-drawdown</a></li><li><a href="module-xdh-map-echarts.html">xdh-map-echarts</a></li><li><a href="module-xdh-map-geo-layer.html">xdh-map-geo-layer</a></li><li><a href="module-xdh-map-group.html">xdh-map-group</a></li><li><a href="module-xdh-map-heat.html">xdh-map-heat</a></li><li><a href="module-xdh-map-html.html">xdh-map-html</a></li><li><a href="module-xdh-map-icon.html">xdh-map-icon</a></li><li><a href="module-xdh-map-image.html">xdh-map-image</a></li><li><a href="module-xdh-map-line.html">xdh-map-line</a></li><li><a href="module-xdh-map-mask.html">xdh-map-mask</a></li><li><a href="module-xdh-map-measure.html">xdh-map-measure</a></li><li><a href="module-xdh-map-overview.html">xdh-map-overview</a></li><li><a href="module-xdh-map-panel.html">xdh-map-panel</a></li><li><a href="module-xdh-map-placement.html">xdh-map-placement</a></li><li><a href="module-xdh-map-pointer.html">xdh-map-pointer</a></li><li><a href="module-xdh-map-polygon.html">xdh-map-polygon</a></li><li><a href="module-xdh-map-popup.html">xdh-map-popup</a></li><li><a href="module-xdh-map-rectangle.html">xdh-map-rectangle</a></li><li><a href="module-xdh-map-scatter.html">xdh-map-scatter</a></li><li><a href="module-xdh-map-text.html">xdh-map-text</a></li><li><a href="module-xdh-map-track.html">xdh-map-track</a></li><li><a href="module-xdh-map-type.html">xdh-map-type</a></li><li><a href="module-xdh-map-warp.html">xdh-map-warp</a></li><li><a href="module-xdh-map-zoom.html">xdh-map-zoom</a></li><li><a href="module-xdh-map-zoom-panel.html">xdh-map-zoom-panel</a></li></ul><h3>Classes</h3><ul><li><a href="ol.interaction.areaSelect.html">areaSelect</a></li><li><a href="ol.interaction.drag.html">drag</a></li><li><a href="ol.source.TileSuperMapRest.html">TileSuperMapRest</a></li></ul><h3>Events</h3><ul><li><a href="module-xdh-map-type.html#~event:change">change</a></li><li><a href="module-xdh-map.html#~event:changeType">changeType</a></li><li><a href="module-xdh-map-pointer.html#~event:copy">copy</a></li><li><a href="module-xdh-map-draw.html#~event:drawend">drawend</a></li><li><a href="module-xdh-map-draw.html#~event:drawstart">drawstart</a></li><li><a href="module-xdh-map-draw.html#~event:modifyend">modifyend</a></li><li><a href="module-xdh-map-draw.html#~event:modifystart">modifystart</a></li><li><a href="module-xdh-map-geo-layer.html#~event:mouseEnter">mouseEnter</a></li><li><a href="module-xdh-map-track.html#~event:move">move</a></li><li><a href="global.html#event:on-boxEnd">on-boxEnd</a></li><li><a href="global.html#event:on-boxStart">on-boxStart</a></li><li><a href="global.html#event:on-dragDown">on-dragDown</a></li><li><a href="global.html#event:on-dragMove">on-dragMove</a></li><li><a href="global.html#event:on-dragUp">on-dragUp</a></li><li><a href="module-xdh-map-measure.html#~event:on-measureEnd">on-measureEnd</a></li><li><a href="module-xdh-map-drawdown.html#~event:on-toggle">on-toggle</a></li><li><a href="module-xdh-map.html#~event:ready">ready</a></li><li><a href="module-xdh-map-track.html#~event:start">start</a></li><li><a href="module-xdh-map-track.html#~event:stop">stop</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bd09ToGcj02">bd09ToGcj02</a></li><li><a href="global.html#bd09ToGps84">bd09ToGps84</a></li><li><a href="global.html#bd09ToWgs84">bd09ToWgs84</a></li><li><a href="global.html#capitalize">capitalize</a></li><li><a href="global.html#convertToWgs84">convertToWgs84</a></li><li><a href="global.html#createLayer">createLayer</a></li><li><a href="global.html#createTdtLayer">createTdtLayer</a></li><li><a href="global.html#D2R">D2R</a></li><li><a href="global.html#featureStyleRender">featureStyleRender</a></li><li><a href="global.html#gcj02ToBd09">gcj02ToBd09</a></li><li><a href="global.html#gcj02ToWgs84">gcj02ToWgs84</a></li><li><a href="global.html#gcjToGps84">gcjToGps84</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getParent">getParent</a></li><li><a href="global.html#gps84ToGcj02">gps84ToGcj02</a></li><li><a href="global.html#keyMap">keyMap</a></li><li><a href="global.html#LAYERS">LAYERS</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#mixProps">mixProps</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#outOfChina">outOfChina</a></li><li><a href="global.html#pi">pi</a></li><li><a href="global.html#prefix">prefix</a></li><li><a href="global.html#props">props</a></li><li><a href="global.html#set">set</a></li><li><a href="global.html#StyleMap">StyleMap</a></li><li><a href="global.html#wgs84ToBd09">wgs84ToBd09</a></li><li><a href="global.html#wgs84ToGcj02">wgs84ToGcj02</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Thu Mar 19 2020 15:21:48 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
