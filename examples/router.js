@@ -153,6 +153,10 @@ const router = new Router({
             component: () => import('./views/data-layer/index.vue')
           },
           {
+            path: 'draw-panel/normal',
+            component: () => import('./views/draw-panel/normal.vue')
+          },
+          {
             path: 'test',
             component: () => import('./views/test.vue')
           },

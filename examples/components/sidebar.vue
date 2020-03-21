@@ -90,6 +90,11 @@
         <router-link to="/type">Type</router-link>
       </dd>
 
+      <dt>综合画图</dt>
+      <dd>
+        <router-link to="/draw-panel/normal">默认使用</router-link>
+      </dd>
+
       <dt>动效组件</dt>
       <dd>
         <router-link to="/dialog">Dialog</router-link>

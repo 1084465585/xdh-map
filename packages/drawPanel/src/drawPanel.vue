@@ -240,6 +240,15 @@
     /**
      * 参数属性 
      * @member props
+     * @property {array} types 画板功能类型，默认为空时表示激活全部功能
+     * @property {string} placement 控件在地图的放置方位
+     * @property {number} width 长度单位（此width值为按钮的横向排列个数，按钮宽为50px, 控件宽度为 50*width）
+     * @property {object} options ol-plot 的 配置项 （略）
+     * @property {boolean} editAfterDraw 添加图形后是否直接进入编辑模式（默认true）
+     * @property {boolean} isMemory 是否开启记忆功能
+     * @property {boolean} useTools 显示工具按钮
+     * @property {boolean} useText 使用添加文字功能 （默认false,体验一般）
+     * @property {boolean} useStyle 使用样式修改工具 
      */
     props: {
       types: {
@@ -253,11 +262,7 @@
       width: {
         type: Number,
         default: 4
-      },
-      // showTools: {
-      //   type: Boolean,
-      //   default: true
-      // },
+      }, 
       options: {
         type: Object,
         default: () => {
@@ -365,10 +370,16 @@
         this.map = map
          
         this.plot = new OlPlot(this.map, {
-          zoomToExtent: false
+          zoomToExtent: false,
+          ...this.options
         })
 
         this.plotLayer = getLayerByLayerName(this.map, this.plot.plotUtils.layerName)
+        /**
+         * 画图工具初始化完成事件
+         * @event on-inited
+         * @param {Object} plot
+         */
         this.$emit('on-inited', this.plot)
       },
       draw(type) {
@@ -377,6 +388,10 @@
         }
 
         this.isDrawing = true
+        /**
+         * 开始添加图形
+         * @event on-draw
+         */
         this.$emit('on-draw')
         this.plot.plotEdit.deactivate()
         this.isEditing = false 
@@ -392,15 +407,24 @@
           let style = this.styleInit(styleOpt)
           feature.setStyle(style)
         }
+        /**
+         * 当前画图完结事件
+         * @event on-draw-end
+         * @param {Object} feature
+         */
         this.$emit('on-draw-end', feature) 
 
         if (this.editAfterDraw) {
           this.editingFeature = feature
           this.plot.plotEdit.activate(feature)
           this.isEditing = true
+          /**
+           * 开始修改图形
+           * @event on-edit-start
+           * @param {Object} feature
+           */
           this.$emit('on-edit-start', feature) 
-        }  
-        
+        } 
       },
       cancleClickHandle() {
         this.finishDraw()
@@ -413,7 +437,6 @@
           this.plot.plotUtils.removeAllFeatures()
           this.plot.plotUtils.addFeatures(version)
         }
-        
       }, 
       deleteClickHandle() {
         if (this.editingFeature) {
@@ -439,11 +462,19 @@
         if (this.plot.plotDraw.isDrawing()) {
           this.isDrawing = false
           this.plot.plotDraw.disActive()
+          /**
+           * 添加图形结束事件（不是完结，强制结束）
+           * @event on-finish-draw
+           */
           this.$emit('on-finish-draw')
         }
       },
       finishEdit() {
         this.plot.plotEdit.deactivate()
+        /**
+         * 完成修改图形
+         * @event on-finish-edit
+         */
         this.$emit('on-finish-edit')
         this.editingFeature = null
         this.isEditing = false 
@@ -479,7 +510,7 @@
           this.oldVersions.shift()
           this.oldVersions.push(version)
         }
-        console.log('save success', this.oldVersions)
+        // console.log('save success', this.oldVersions)
       },
       clearVerson() {
         this.oldVersions = []
@@ -514,7 +545,6 @@
       },
       styleInputChange() {
         if (this.editingFeature) {
-          console.log('editing', this.editingFeature)
           let styleOpt = this.setStyleOpt()
           let style = this.styleInit(styleOpt)
           this.editingFeature.setStyle(style)

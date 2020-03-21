@@ -1,10 +1,11 @@
 <template>
   <example class="flex"> 
     <xdh-map ref="map" type="Baidu" id="map3"  :zoom="9" :center="target" @ready="mapReady" @dblclick="dblClickHandle" > 
-      <xdh-map-draw-panel ref="drawPanel" placement="center-top" :width="20" :types="buttons" @on-draw="isDraw = true" @on-draw-finish="isDraw = false"></xdh-map-draw-panel>
+      <xdh-map-draw-panel style="display: none" ref="drawPanel" placement="center-top" :width="20" :types="buttons" @on-draw="isDraw = true" @on-draw-finish="isDraw = false" :use-tools="false" :use-style="false">
+        <div slot="type-buttons"></div>
+      </xdh-map-draw-panel>
        
     </xdh-map>
-    <!-- <button @click="test">finish draw {{isDraw ? '*' : ''}}</button> -->
    
  
   </example>
@@ -28,28 +29,9 @@
  
 </style>
 <script> 
-
-import {parseStyle} from '../../../packages'
-// import OlPlot from 'ol-plot'
-
-// import Point from 'ol/geom/Point'
-
-// import {Vector as VectorLayer} from 'ol/layer';
-// import VectorSource from 'ol/source/Vector';
+ 
 
  
-const pathStyle = parseStyle({
-  className: 'Style',
-  fill: {
-    className: 'Fill',
-    color: 'rgba(0,0,0,.3)'
-  },
-  stroke: {
-    className: 'Stroke',
-    color: 'red',
-    width: 2
-  }
-})
 
  
 export default {
@@ -57,11 +39,8 @@ export default {
   data() {
     return {
       path: [[113, 23], [112.4, 23.4], [112.4, 23.9]],
-      map: null,
-      view: null,  
-      target: [113, 23],
-
-      style: pathStyle,
+      map: null, 
+      target: [113, 23], 
       arr: [],
       plot: null,
       buttons: [
@@ -83,27 +62,19 @@ export default {
   methods: {
        
     mapReady(map) {
-      this.map = map
-      this.view = this.map.getView()
+      this.map = map 
     },
     panelInited(plot) {
       this.plot = plot
     },
     dblClickHandle(e) {
-      let feature = this.$refs.map.getFeatureAtPixel(e.pixel)
-      // feature && console.log(feature)
+      let feature = this.$refs.map.getFeatureAtPixel(e.pixel) 
       this.$refs.drawPanel.editFeature(feature) 
-    },
-    test() {
-      this.$refs.drawPanel.finishDraw()
-    } 
+    }
   },
-  created() {
-    
+  created() { 
   },
   mounted() {
-    // console.log('ccc', VectorContext)
-    
   }
 }
 </script>
