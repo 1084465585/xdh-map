@@ -27,7 +27,9 @@
           <div :class="{'button': true, 'active': true}" @click="clearClickHandle">
             清空
           </div>
-        
+          <div :class="{'button': true, 'active': true}" @click="getClickHandle">
+            获取
+          </div>
         </div>
       </slot>
       <slot name="style-tools clearfix">
@@ -65,143 +67,28 @@
   </div> 
 </xdh-map-placement>
 </template>
-<style scoped lang="scss">
-.xdh-map-draw-panel{
-  box-sizing: border-box;
-  padding: 5px;
-  * {
-    box-sizing: border-box;
-  }
-  .type-btns-warp{
-    // width: 200px;
-    .button{
-      width: 50px;
-      border: 1px solid transparent;
-      float: left;
-      cursor: pointer;
-      .icon{
-        display: block;
-        margin: 2px auto;
-      }
-      .name{
-        font-size: 12px;
-        line-height: 2;
-        width: 100%;
-        text-align: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      &:hover{
-        border: 1px solid skyblue;
-      }
-    }
-  }
-  .tools-btns-warp{
-    margin-top: 5px;
-    border-top: 1px solid #C5C4C1;
-  
-    .button{
-      float: left; 
-      padding: 3px 5px;
-      border-radius: 3px;
-      border: 1px solid #C5C4C1;
-      margin-top: 5px;
-      font-size: 14px;
-      margin-right: 8px;
-      color: #C5C4C1;
-      pointer-events: none;
-      &.active{
-        color: #818181;
-        cursor: pointer;
-        pointer-events: auto;
-      }
-    }
-  }
-  .style-btns-warp{
-    display: block;
-    width: 100%;
-    display: flex;
-    flex-flow: row wrap;
-    margin-top: 5px;
-    border-top: 1px solid #C5C4C1;
-    .color-input-item{
-      flex: 0 0 150px;
-      width: 150px;
-      display: flex;
-      flex-flow: row nowrap;
-      align-items: center;
-      font-size: 12px;
-      margin: 3px;
-      .color-select{
-        appearance: normal;
-        width: 24px;
-        height:24px;
-        padding: 0;
-        border: 0; 
-        outline:none; 
-      }
-      .num-select{
-        line-height: 1;
-        height: 20px;
-        width: 36px;
-        text-align: center;
 
-      }
-      .num-btn{
-        display: block;
-        width: 16px;
-        height: 16px;
-        text-align: center;
-        line-height: 12px;
-        font-size:16px;
-        font-style: normal;
-        border-radius: 50%;
-        margin: 0 2px;
-        border: 1px solid skyblue;
-        color: skyblue; 
-        cursor: pointer;
-      }
-      
-    }
-  }
-} 
-::-webkit-color-swatch-wrapper{
-  background-color:white;
-}
-::-webkit-color-swatch{
-  position: relative;
-}
-// input::-webkit-outer-spin-button,
-// input::-webkit-inner-spin-button {
-//     -webkit-appearance: none;
-// }
-
-</style> 
 <script>
   /**
    * 地图描绘控件
    * @module xdh-map-draw-panel
    */  
-  
+
+   /**
+   * 插槽
+   * @member slots
+   * @property {string} type-buttons 类型按钮容器
+   * @property {string} tool-buttons 工具按钮容器
+   * @property {string} style-tools 样式工具容器
+   * 
+   */
+  import XdhMapPlacement from 'packages/placement'
   import { getParent, mapReady } from 'utils/util'
   import { parse, colorRgba } from 'utils/style' 
   import OlPlot from 'ol-plot'
   import 'ol-plot/dist/ol-plot.css'
   import { getLayerByLayerName } from 'ol-plot/src/Utils/layerUtils'
    
-  const style = parse({
-    className: 'Style',
-    fill: {
-      className: 'Fill',
-      color: 'rgba(0,0,0,.3)'
-    },
-    stroke: {
-      className: 'Stroke',
-      color: 'red',
-      width: 5
-    }
-  })
 
   const TYPES_ARR = [
     // {type: 'TextArea', name: '文本标绘'},
@@ -232,10 +119,56 @@
     {type: 'CurveFlag', name: '曲线标志旗'}
   ]
 
+  const initBtnList = function(vue) {
+    let _TYPES_ARR = []
+    if (vue.useText) {
+      _TYPES_ARR = _TYPES_ARR.concat(TYPES_ARR).concat([{type: 'TextArea', name: '文本标绘'}])
+    } else {
+      _TYPES_ARR = _TYPES_ARR.concat(TYPES_ARR)
+    }
+    if (!vue.types.length) {
+      return _TYPES_ARR.map((item) => {
+        return {
+          ...item,
+          img: require(`../../../sources/draw-panel/icon/${item.type}.png`)
+        }
+      })
+    } else {
+      let arr = []
+      vue.types.forEach((item) => {
+        if (typeof item === 'string') {
+          let target = _TYPES_ARR.find((obj) => {
+            return obj.type === item
+          })
+          if (target) {
+            arr.push({
+              ...target, 
+              img: require(`../../../sources/draw-panel/icon/${target.type}.png`)
+            })
+          }
+        } else {
+          let target = _TYPES_ARR.find((obj) => {
+            return obj.type === item.type
+          })
+          if (target) {
+            arr.push({
+              ...target, 
+              ...{img: ''},
+              ...{img: require(`../../../sources/draw-panel/icon/${target.type}.png`)}, 
+              ...item
+            })
+          }
+        }
+      })
+      return arr
+    }
+  }
+
   export default {
     name: 'XdhMapDrawPanel',
     mixins: [],
-    components: { 
+    components: {
+      XdhMapPlacement 
     },
     /**
      * 参数属性 
@@ -291,55 +224,11 @@
       } 
 
     },
-    data() {
-      const initBtnList = () => {
-        let _TYPES_ARR = []
-        if (this.useText) {
-          _TYPES_ARR = _TYPES_ARR.concat(TYPES_ARR).concat([{type: 'TextArea', name: '文本标绘'}])
-        } else {
-          _TYPES_ARR = _TYPES_ARR.concat(TYPES_ARR)
-        }
-        if (!this.types.length) {
-          return _TYPES_ARR.map((item) => {
-            return {
-              ...item,
-              img: require(`../../../sources/draw-panel/icon/${item.type}.png`)
-            }
-          })
-        } else {
-          let arr = []
-          this.types.forEach((item) => {
-            if (typeof item === 'string') {
-              let target = _TYPES_ARR.find((obj) => {
-                return obj.type === item
-              })
-              if (target) {
-                arr.push({
-                  ...target, 
-                  img: require(`../../../sources/draw-panel/icon/${target.type}.png`)
-                })
-              }
-            } else {
-              let target = _TYPES_ARR.find((obj) => {
-                return obj.type === item.type
-              })
-              if (target) {
-                arr.push({
-                  ...target, 
-                  ...{img: ''},
-                  ...{img: require(`../../../sources/draw-panel/icon/${target.type}.png`)}, 
-                  ...item
-                })
-              }
-            }
-          })
-          return arr
-        }
-      }
+    data() { 
       return {
-        buttonList: initBtnList(),
+        buttonList: initBtnList(this),
         map: null,
-        style: style,
+         
         plot: null, 
         
         isDrawing: false,
@@ -361,9 +250,15 @@
       }
     },
     computed: {
-      
     },
-    
+    watch: {
+      types() {
+        this.buttonList = initBtnList(this)
+      },
+      useText() {
+        this.buttonList = initBtnList(this)
+      }
+    },
     methods: {
       
       ready(map) {
@@ -413,7 +308,8 @@
          * @param {Object} feature
          */
         this.$emit('on-draw-end', feature) 
-
+        // feature.setProperties({'id': new Date().getTime()})
+        // console.log('feature', feature.getProperties()) 
         if (this.editAfterDraw) {
           this.editingFeature = feature
           this.plot.plotEdit.activate(feature)
@@ -449,13 +345,20 @@
       finishClickHandle() {
         if (this.editingFeature) {
           this.finishEdit()
-        } 
+        } else {
+          this.finishDraw()
+        }
       },
       clearClickHandle() {
         this.plot.plotUtils.removeAllFeatures()
         this.editingFeature = null
         this.isEditing = false
         this.isDrawing = false
+      },
+      getClickHandle() {
+        let allFeatures = this.plot.plotUtils.getFeatures()
+        this.$emit('on-getAll', allFeatures)
+        return allFeatures
       },
 
       finishDraw() {

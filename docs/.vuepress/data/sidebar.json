@@ -33,7 +33,8 @@
         "overview",
         "zoom",
         "scale",
-        "type"
+        "type",
+        "draw-panel"
       ]
     }
   ],

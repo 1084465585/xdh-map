@@ -157,6 +157,10 @@ const router = new Router({
             component: () => import('./views/draw-panel/normal.vue')
           },
           {
+            path: 'draw-panel/custom',
+            component: () => import('./views/draw-panel/custom.vue')
+          },
+          {
             path: 'test',
             component: () => import('./views/test.vue')
           },

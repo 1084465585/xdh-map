@@ -94,6 +94,9 @@
       <dd>
         <router-link to="/draw-panel/normal">默认使用</router-link>
       </dd>
+      <dd>
+        <router-link to="/draw-panel/custom">自定义使用</router-link>
+      </dd>
 
       <dt>动效组件</dt>
       <dd>

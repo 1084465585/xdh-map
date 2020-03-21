@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[52],{1123:function(t,n,e){"use strict";e.r(n);var p=e(146),a={components:{XdhMap:p.c,XdhMapText:p.D}},o=e(16),s=Object(o.a)(a,function(){var t=this.$createElement,n=this._self._c||t;return n("xdh-map",[n("xdh-map-text",{attrs:{text:"文字内容",position:[120,30],font:"40px"}})],1)},[],!1,null,null,null);n.default=s.exports}}]);
