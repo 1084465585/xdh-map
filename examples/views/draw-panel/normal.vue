@@ -52,7 +52,7 @@ export default {
       this.plot = plot
     },
     dblClickHandle(e) {
-      let feature = this.$refs.map.getFeatureAtPixel(e.pixel) 
+      let feature = this.$refs.map.getFeatureAtPixel(e.pixel)
       this.$refs.drawPanel.editFeature(feature) 
     },
     setTypes() { 

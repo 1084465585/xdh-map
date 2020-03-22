@@ -78,6 +78,7 @@ export default {
     },
     dblClickHandle(e) {
       let feature = this.$refs.map.getFeatureAtPixel(e.pixel) 
+     
       this.$refs.drawPanel.editFeature(feature) 
     },
     drawType(type) {

@@ -276,6 +276,7 @@
          * @param {Object} plot
          */
         this.$emit('on-inited', this.plot)
+        this.plot.plotDraw.on('drawEnd', this.drawEndHandle)
       },
       draw(type) {
         if (this.isMemory) {
@@ -291,7 +292,7 @@
         this.plot.plotEdit.deactivate()
         this.isEditing = false 
         this.plot.plotDraw.active(type)
-        this.plot.plotDraw.on('drawEnd', this.drawEndHandle)
+        
         
       },
       drawEndHandle(e) {
@@ -308,8 +309,10 @@
          * @param {Object} feature
          */
         this.$emit('on-draw-end', feature) 
-        // feature.setProperties({'id': new Date().getTime()})
-        // console.log('feature', feature.getProperties()) 
+        
+        // let currentId = new Date().getTime()
+        // feature.setId(currentId)
+         
         if (this.editAfterDraw) {
           this.editingFeature = feature
           this.plot.plotEdit.activate(feature)
@@ -383,6 +386,7 @@
         this.isEditing = false 
       },
       editFeature(feature) { 
+        // console.log('editNow', feature)
         if (feature && feature.get('isPlot') && !this.plot.plotDraw.isDrawing()) {
           if (!this.isEditing) {
             if (this.isMemory) {
