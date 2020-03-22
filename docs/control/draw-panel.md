@@ -113,6 +113,40 @@
 
 :::
 
+## ol-plot
+
+> draw-panel 组件 基于 ol-plot 矢量画图库实现， draw-panel 组件初始化后会派发一个 on-inited 事件 将 "ol-plot"的实例 “plot” 派发出来。用户可以直接使用 ol-plot 的 API 进行 自定义开发 [ol-plot文档](https://github.com/sakitam-fdd/ol-plot)
+
+### plot 制作图形的类型
+
+| 类型 | 名称  |
+| --- | --- |
+|'Point'|'点'|
+|'Polyline'|'线'|
+|'Curve'|'曲线'|
+|'Arc'|'弓形'|
+|'Circle'|'圆'|
+|'FreeHandLine'|'自由线'|
+|'RectAngle'|'矩形'|
+|'Ellipse'|'椭圆'|
+|'Lune'|'弓形'|
+|'Sector'|'扇形'|
+|'ClosedCurve'|'闭合曲面'|
+|'Polygon'|'多边形'|
+|'FreePolygon'|'自由面'|
+|'GatheringPlace'|'集结地'|
+|'DoubleArrow'|'双箭头'|
+|'StraightArrow'|'细直箭头'|
+|'FineArrow'|'粗单尖头箭头'|
+|'AttackArrow'|'进攻方向'|
+|'AssaultDirection'|'粗单直箭头'|
+|'TailedAttackArrow'|'进攻方向（尾）'|
+|'SquadCombat'|'分队战斗行动'|
+|'TailedSquadCombat'|'分队战斗行动（尾）'|
+|'RectFlag'|'矩形标志旗'|
+|'TriangleFlag'|'三角标志旗'|
+|'CurveFlag'|'曲线标志旗'|
+
 ## 自定义画板
 
 :::demo
