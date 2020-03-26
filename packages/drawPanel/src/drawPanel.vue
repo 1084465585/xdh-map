@@ -17,10 +17,7 @@
           </div>
           <div v-if="isDrawing" :class="{'button': true, 'active': isDrawing}" @click="cancleClickHandle">
             取消
-          </div>
-          <div v-if="!isDrawing && !isEditing" :class="{'button': true, 'active': oldVersions.length}" @click="resetClickHandle">
-            重置
-          </div>
+          </div> 
           <div v-if="!isDrawing" :class="{'button': true, 'active': editingFeature}" @click="finishClickHandle">
             完结
           </div>
@@ -178,7 +175,6 @@
      * @property {number} width 长度单位（此width值为按钮的横向排列个数，按钮宽为50px, 控件宽度为 50*width）
      * @property {object} options ol-plot 的 配置项 （略）
      * @property {boolean} editAfterDraw 添加图形后是否直接进入编辑模式（默认true）
-     * @property {boolean} isMemory 是否开启记忆功能
      * @property {boolean} useTools 显示工具按钮
      * @property {boolean} useText 使用添加文字功能 （默认false,体验一般）
      * @property {boolean} useStyle 使用样式修改工具 
@@ -206,10 +202,6 @@
         type: Boolean,
         default: true
       },
-      isMemory: {
-        type: Boolean,
-        default: true
-      },
       useTools: {
         type: Boolean,
         default: true
@@ -234,9 +226,7 @@
         isDrawing: false,
         isEditing: false,
 
-        editingFeature: null,
-        
-        oldVersions: [],
+        editingFeature: null, 
 
         // ----------------
         editStyle: {
@@ -246,7 +236,8 @@
           strokeColor: '#000000',
           strokeWidth: 2,
           opacity: 1
-        }
+        },
+        featuresMap: {}
       }
     },
     computed: {
@@ -279,10 +270,6 @@
         this.plot.plotDraw.on('drawEnd', this.drawEndHandle)
       },
       draw(type) {
-        if (this.isMemory) {
-          this.saveCurrent()
-        }
-
         this.isDrawing = true
         /**
          * 开始添加图形
@@ -291,9 +278,7 @@
         this.$emit('on-draw')
         this.plot.plotEdit.deactivate()
         this.isEditing = false 
-        this.plot.plotDraw.active(type)
-        
-        
+        this.plot.plotDraw.active(type) 
       },
       drawEndHandle(e) {
         this.isDrawing = false
@@ -310,8 +295,9 @@
          */
         this.$emit('on-draw-end', feature) 
         
-        // let currentId = new Date().getTime()
-        // feature.setId(currentId)
+        let currentId = new Date().getTime()
+        feature.setId(currentId)
+        this.featuresMap[currentId] = feature
          
         if (this.editAfterDraw) {
           this.editingFeature = feature
@@ -328,15 +314,8 @@
       cancleClickHandle() {
         this.finishDraw()
         this.finishEdit()
-      },
-      
-      resetClickHandle() {
-        if (this.oldVersions.length) {
-          let version = this.oldVersions.pop()
-          this.plot.plotUtils.removeAllFeatures()
-          this.plot.plotUtils.addFeatures(version)
-        }
       }, 
+       
       deleteClickHandle() {
         if (this.editingFeature) {
           this.plot.plotEdit.deactivate()
@@ -359,9 +338,8 @@
         this.isDrawing = false
       },
       getClickHandle() {
-        let allFeatures = this.plot.plotUtils.getFeatures()
-        this.$emit('on-getAll', allFeatures)
-        return allFeatures
+        this.$emit('on-getAll', this.featuresMap)
+        return this.featuresMap
       },
 
       finishDraw() {
@@ -389,9 +367,6 @@
         // console.log('editNow', feature)
         if (feature && feature.get('isPlot') && !this.plot.plotDraw.isDrawing()) {
           if (!this.isEditing) {
-            if (this.isMemory) {
-              this.saveCurrent()
-            }
             this.editingFeature = feature
             this.plot.plotEdit.activate(feature)
             this.isEditing = true
@@ -402,25 +377,6 @@
         } else {
           console.log('无法编辑此图形')
         }
-      },
-      saveCurrent() {
-        let version = this.plot.plotUtils.getFeatures()
-        if (version.length) {
-          this.saveVersion(version)
-        }
-        return version 
-      },
-      saveVersion(version) {
-        if (this.oldVersions.length < 5) {
-          this.oldVersions.push(version)
-        } else {
-          this.oldVersions.shift()
-          this.oldVersions.push(version)
-        }
-        // console.log('save success', this.oldVersions)
-      },
-      clearVerson() {
-        this.oldVersions = []
       },
       setStyleOpt() {
         let style = {}

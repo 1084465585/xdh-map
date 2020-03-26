@@ -1,7 +1,7 @@
 <template>
   <example class="flex"> 
     <xdh-map ref="map" type="Baidu"    :zoom="9" :center="center" @ready="mapReady" @dblclick="dblClickHandle" > 
-      <xdh-map-draw-panel ref="drawPanel" :placement="placement" :width="width" :types="types" :use-tools="useTools" :use-style="useStyle" :use-text="useText">   
+      <xdh-map-draw-panel ref="drawPanel" :placement="placement" :width="width" :types="types" :use-tools="useTools" :use-style="useStyle" :use-text="useText" @on-getAll="showAllFeatures">   
       </xdh-map-draw-panel>  
 
       <xdh-map-placement placement="left-top" :margin="[10, 10]" theme="light">
@@ -90,6 +90,9 @@ export default {
     setVertical() {
       this.width = 4
       this.placement = 'right-center'
+    },
+    showAllFeatures(map) {
+      console.log(map)
     }
   }
   
