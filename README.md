@@ -67,7 +67,7 @@ npm i element-ui @xdh/my --save
 
 安装项目依赖插件
 ```sh 
-npm i babel-plugin-component sass sass-loader --save-dev
+npm i babel-plugin-component node-sass sass-loader --save-dev
 ```
 
 #### 2、配置 `babel.config.js`
