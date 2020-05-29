@@ -6,7 +6,7 @@
 
 ![info](https://images.gitee.com/uploads/images/2020/0529/101300_8d254ed7_1386281.png)
 
-# 重要说明
+## 重要说明
 
 `xdh-map` 完成了升级改版， 为了提供更好的开发体验，现已集成到了【MY】。 代码仓库已迁移到 [https://gitee.com/newgateway/my](https://gitee.com/newgateway/my)
 
