@@ -139,6 +139,7 @@ module.exports = {
 #### 4、引用组件
 到此，你可以开始引入组件开始编码了，如：
 ```html 
+
 <template>
   <my-map></my-map>
 </template>
