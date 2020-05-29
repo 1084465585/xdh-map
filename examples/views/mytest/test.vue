@@ -4,10 +4,7 @@
       <xdh-map-draw-panel style="display: none" ref="drawPanel" placement="center-top" :width="20" :types="buttons" @on-draw="isDraw = true" @on-draw-finish="isDraw = false" :use-tools="false" :use-style="false">
         <div slot="type-buttons"></div>
       </xdh-map-draw-panel>
-       
     </xdh-map>
-   
- 
   </example>
 </template>
 <style scoped lang="scss">
