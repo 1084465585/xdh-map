@@ -1,11 +1,11 @@
 <template>
   <example>
-    <div style="height: 400px" id="map" class="map">
+    <div style="height: 400px;background:#ff0;" id="map" class="map">
       
     </div>  
     <div>
-      <button @click="test">test</button>
-      <button @click="test2">test2</button>
+      <button @click="test">test2</button>
+      <button @click="test2">test3</button>
     </div>
   </example>
 </template>
