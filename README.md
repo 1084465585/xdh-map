@@ -6,10 +6,6 @@
 
 ![info](http://newgateway.gitee.io/xdh-map/img/1.png)
 
-## 重要说明
-
-`xdh-map` 完成了升级改版， 为了提供更好的开发体验，现已集成到了 `my`。 代码仓库已迁移到 [https://gitee.com/newgateway/my](https://gitee.com/newgateway/my)
-
 
 ## 开发指南
 
