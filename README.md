@@ -4,7 +4,10 @@
 包含文本、图形、html、热力图、轨迹回放等20个组件，支持与ECharts结合实现散点、飞行迁徙等基于地理位置的图表，满足项目常见需求。 
 使用者不需要有地图相关专业知识，甚至不需要写任何JS代码就能实现通用功能。
 
-![info](http://newgateway.gitee.io/xdh-map/img/1.png)
+![info](https://images.gitee.com/uploads/images/2020/0529/101300_8d254ed7_1386281.png)
+
+重要说明
+'xdh-map' 完成了升级改版， 为了提供更好的开发体验，现已集成到了 my。 代码仓库已迁移到 [https://gitee.com/newgateway/my](https://gitee.com/newgateway/my)
 
 
 ## 开发指南
@@ -16,17 +19,17 @@
 
 ## 预览
 
-![info](http://newgateway.gitee.io/xdh-map/img/2.jpg)
+![info](https://images.gitee.com/uploads/images/2020/0529/101300_9eb21d13_1386281.jpeg)
 
-![info](http://newgateway.gitee.io/xdh-map/img/3.jpg)
+![info](https://images.gitee.com/uploads/images/2020/0529/101300_1d2deb0d_1386281.jpeg)
 
-![info](http://newgateway.gitee.io/xdh-map/img/4.jpg)
+![info](https://images.gitee.com/uploads/images/2020/0529/101301_0a6ab494_1386281.jpeg)
 
-![info](http://newgateway.gitee.io/xdh-map/img/5.jpg)
+![info](https://images.gitee.com/uploads/images/2020/0529/101300_c64e0713_1386281.jpeg)
 
-![info](http://newgateway.gitee.io/xdh-map/img/6.jpg)
+![info](https://images.gitee.com/uploads/images/2020/0529/101301_3fc645f5_1386281.jpeg)
 
-![info](http://newgateway.gitee.io/xdh-map/img/7.jpg)
+![info](https://images.gitee.com/uploads/images/2020/0529/101301_0e78ba10_1386281.jpeg)
 
 
 ## 安装
