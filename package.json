@@ -2,7 +2,22 @@
   "name": "xdh-map",
   "version": "2.0.0",
   "main": "lib/xdhmap.common.js",
-  "private": true,
+  "keywords": [
+    "openlayers",
+    "map",
+    "track",
+    "vue",
+    "ol",
+    "pgis",
+    "echarts"
+  ],
+  "description": "基于Openlayers的Vue组件封装",
+  "homepage": "http://newgateway.gitee.io/my/ui/map/",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitee.com/newgateway/xdh-map.git"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
