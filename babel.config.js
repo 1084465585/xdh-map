@@ -1,11 +1,5 @@
 module.exports = {
   presets: [
-    '@vue/app'
-  ],
-  sourceType: 'unambiguous',
-  babelrcRoots: [
-    '.',
-    'packages/*',
-    'utils/*'
+    '@vue/cli-plugin-babel/preset'
   ]
 }

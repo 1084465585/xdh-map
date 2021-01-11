@@ -1,66 +1,32 @@
 {
   "name": "xdh-map",
-  "version": "1.2.13",
-  "keywords": [
-    "openlayers",
-    "map",
-    "track",
-    "vue",
-    "ol",
-    "pgis",
-    "echarts"
-  ],
-  "description": "基于Openlayers的Vue组件封装",
-  "homepage": "http://newgateway.gitee.io/xdh-map/",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://gitee.com/newgateway/xdh-map.git"
-  },
+  "version": "2.0.0",
   "main": "lib/xdhmap.common.js",
+  "private": true,
   "scripts": {
-    "serve": "node --max_old_space_size=4096 node_modules/@vue/cli-service/bin/vue-cli-service.js serve",
-    "dev": "npm run serve -- --open",
-    "build": "vue-cli-service build && npm run jsdoc",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit",
-    "jsdoc": "jsdoc -c ./jsdoc.conf.js -r",
-    "lib": "vue-cli-service build --target lib --name xdhmap --dest lib packages/index.js",
-    "build:docs": "npm run init:docs && vuepress build docs",
-    "dev:docs": "npm run init:docs && vuepress dev docs",
-    "init:docs": "node docs/.vuepress/extend/init.js"
+    "lib": "vue-cli-service build --target lib --name xdhmap --dest lib src/index.js",
+    "copy": "node build/copy"
   },
-  "dependencies": {
-    "animejs": "^3.0.1",
-    "axios": "^0.19.0",
-    "chaikin-smooth": "^1.0.4",
-    "clipboard": "^2.0.4",
-    "crypto-js": "^3.1.9-1",
-    "element-ui": "^2.9.1",
-    "gcoord": "^0.2.3",
-    "ol": "^6.2.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.8.0",
-    "@vue/cli-plugin-eslint": "^3.8.0",
-    "@vue/cli-plugin-unit-jest": "^3.8.0",
-    "@vue/cli-service": "^3.8.0",
-    "@vue/eslint-config-standard": "^4.0.0",
-    "@vue/test-utils": "^1.0.0-beta.20",
-    "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
-    "babel-jest": "^23.6.0",
-    "echarts": "^4.2.1",
-    "eslint": "^5.16.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "jsdoc": "^3.6.2",
-    "node-sass": "^4.12.0",
-    "ol-plot": "^3.0.0",
-    "sass-loader": "^7.1.0",
-    "vue": "^2.6.10",
-    "vue-router": "^3.0.6",
-    "vue-template-compiler": "^2.6.10",
-    "vuepress": "^1.0.0"
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-standard": "^5.1.2",
+    "@xdh/my": "^4.2.0-rc.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^6.2.2",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^10.1.0",
+    "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
     "root": true,
@@ -71,6 +37,9 @@
       "plugin:vue/essential",
       "@vue/standard"
     ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
     "rules": {
       "indent": 0,
       "vue/script-indent": 0,
@@ -92,43 +61,16 @@
       "no-mixed-operators": 0,
       "padded-blocks": 0,
       "eol-last": 0,
-      "object-curly-spacing": 0
-    },
-    "parserOptions": {
-      "parser": "babel-eslint"
+      "object-curly-spacing": 0,
+      "no-callback-literal": 0
     }
   },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
+  "eslintIgnore": [
+    "lib"
+  ],
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not ie <= 8"
-  ],
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.vue$": "vue-jest",
-      ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
-      "^.+\\.jsx?$": "babel-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "snapshotSerializers": [
-      "jest-serializer-vue"
-    ],
-    "testMatch": [
-      "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
-    ],
-    "testURL": "http://localhost/"
-  }
+    "not dead"
+  ]
 }
